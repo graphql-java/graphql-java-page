@@ -20,3 +20,4 @@ copyright = "&copy; Andreas Marek"
     # Short subtitle/tagline. This is displayed in the header.
     # subtitle = "Short subtitle/tagline of your blog"
     themecolor = "#hexcolor" # Defines the tab color in Chrome for Android.
+    theme = "ghostwriter"
