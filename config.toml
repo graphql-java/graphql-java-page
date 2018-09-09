@@ -4,7 +4,6 @@ title = ""
 # Copyright notice. This is displayer in the footer.
 copyright = "&copy; Andreas Marek"
 theme = "simple-hugo"
-relativeURLs = true
 
 [params]
     # Social accounts. Link to these accounts are displayed in the header and
