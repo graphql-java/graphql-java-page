@@ -1,4 +1,4 @@
-baseurl = "graphql-java.com"
+baseurl = "/"
 languageCode = "en-us"
 title = "graphql-java.com"
 # Copyright notice. This is displayer in the footer.
