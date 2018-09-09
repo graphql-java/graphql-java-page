@@ -3,11 +3,22 @@ languageCode = "en-us"
 title = ""
 # Copyright notice. This is displayer in the footer.
 copyright = "&copy; Andreas Marek"
-theme = "simple-hugo"
+theme = "timer-hugo"
+
+[menu]
+    # Navbar Menus
+    [[menu.nav]]
+        name    = "Blog"
+        url     = "/blog"
+        weight  = 5
 
 [params]
     # Social accounts. Link to these accounts are displayed in the header and
     # footer.
+    home = "Home"
+    logo = "images/logo.png"
+    dateFormat = "6 January 2006"
+
     twitter = "graphql_java"
     github = "graphql-java"
     # Google Analytics API key.
