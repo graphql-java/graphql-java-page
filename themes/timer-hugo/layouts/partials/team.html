@@ -19,24 +19,9 @@
                     {{ with .designation }}<p class="team_designation">{{ . }}</p>{{ end }}
                     {{ with .description }}<p class="team_text">{{ . }}</p>{{ end }}
                     <p class="social-icons">
-                        {{ with .facebook }}
-                        <a href="{{ . }}" class="facebook" target="_blank">
-                            <i class="ion-social-facebook-outline"></i>
-                        </a>
-                        {{ end }}
                         {{ with .twitter }}
                         <a href="{{ . }}" target="_blank">
                             <i class="ion-social-twitter-outline"></i>
-                        </a>
-                        {{ end }}
-                        {{ with .linkedIn }}
-                        <a href="{{ . }}" target="_blank">
-                            <i class="ion-social-linkedin-outline"></i>
-                        </a>
-                        {{ end }}
-                        {{ with .googleplus }}
-                        <a href="{{ . }}" target="_blank">
-                            <i class="ion-social-googleplus-outline"></i>
                         </a>
                         {{ end }}
                     </p>
