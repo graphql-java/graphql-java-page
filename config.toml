@@ -32,3 +32,11 @@ theme = "timer-hugo"
     # Short subtitle/tagline. This is displayed in the header.
     # subtitle = "Short subtitle/tagline of your blog"
     themecolor = "#hexcolor" # Defines the tab color in Chrome for Android.
+
+    [params.banner]
+        enable  = true
+        bgImage = "images/slider.jpg"
+        heading = "Welcome to graphql-java.com"
+        description = "This is the homepage of the GraphQL Java implementation"
+        btn     = false
+

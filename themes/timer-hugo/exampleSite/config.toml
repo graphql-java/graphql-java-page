@@ -1,7 +1,7 @@
 baseURL = "http://example.org/"
 languageCode = "en-us"
 title = "Timer | Responsive Multipurpose Bootstrap Hugo Template"
-theme = "timer-hugo"
+theme = "../.."
 
 # We Used Ionicons Icon font for Icon, for more details check this link - https://ionicons.com/
 
