@@ -6,7 +6,10 @@ copyright = "&copy; Andreas Marek"
 theme = "timer-hugo"
 
 [menu]
-    # Navbar Menus
+     [[menu.nav]]
+        name    = "About"
+        url     = "/about"
+        weight  = 2
     [[menu.nav]]
         name    = "Blog"
         url     = "/blog"
