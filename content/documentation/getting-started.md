@@ -9,17 +9,18 @@ tags: [introduction]
 How to use the latest release with Gradle
 Make sure mavenCentral is among your repos:
 
-```
+{{< highlight groovy "linenos=table" >}}
 repositories {
     mavenCentral()
 }
-```
+{{< / highlight >}}
+
 Dependency:
 
-```
+{{< highlight groovy "linenos=table" >}}
 dependencies {
   compile 'com.graphql-java:graphql-java:9.0'
 }
-```
+{{< / highlight >}}
 
 
