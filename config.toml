@@ -7,12 +7,16 @@ theme = "timer-hugo"
 
 [menu]
      [[menu.nav]]
-        name    = "About"
-        url     = "/about"
-        weight  = 2
+        name    = "Documentation"
+        url     = "/documentation"
+        weight  = 3
     [[menu.nav]]
         name    = "Blog"
         url     = "/blog"
+        weight  = 4
+     [[menu.nav]]
+        name    = "About"
+        url     = "/about"
         weight  = 5
 
 [params]
