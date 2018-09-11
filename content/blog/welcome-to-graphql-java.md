@@ -1,8 +1,9 @@
 ---
-title: "Welcome to graphql-java.com"
+title: "Welcome to graphql-java"
 date: 2018-09-09T12:52:46+10:00
+author: Andreas Marek
 draft: false
-tags: [introduction]
+tags: []
 ---
 
 This is the homepage of the graphql-java project: the Java Implementation of [GraphQL](https://graphql.org).
