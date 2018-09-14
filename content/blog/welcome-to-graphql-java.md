@@ -6,8 +6,9 @@ draft: false
 tags: []
 ---
 
-
 This is the homepage of the graphql-java project: the Java Implementation of [GraphQL](https://graphql.org).
 
 The main project is the [graphql-java library](https://github.com/graphql-java/graphql-java)
+
+WIP
 
