@@ -14,10 +14,14 @@ theme = "timer-hugo"
         name    = "Blog"
         url     = "/blog"
         weight  = 4
+    [[menu.nav]]
+        name    = "Contact"
+        url     = "/contact"
+        weight  = 5
      [[menu.nav]]
         name    = "About"
         url     = "/about"
-        weight  = 5
+        weight  = 6
 
 [params]
     # Social accounts. Link to these accounts are displayed in the header and
