@@ -5,10 +5,10 @@
 {{- range .Site.Params.custom_js -}}
 <script src="{{ $.Site.BaseURL }}{{ . }}"></script>
 {{ end }}
-<script src="{{ .Site.BaseURL }}js/docs.min.js"></script>
-<script src="{{ .Site.BaseURL }}js/main.js"></script>
+<script src="{{ .Site.BaseURL }}/js/docs.min.js"></script>
+<script src="{{ .Site.BaseURL }}/js/main.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<script src="{{ .Site.BaseURL }}js/ie10-viewport-bug-workaround.js"></script>
+<script src="{{ .Site.BaseURL }}/js/ie10-viewport-bug-workaround.js"></script>
 {{- if .Params.highlight -}}
 {{ "<!-- Syntax highlighting -->" | safeHTML }}
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
