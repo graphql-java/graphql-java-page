@@ -18,12 +18,12 @@ pygmentsUseClasses=true
   weight = 200
   url = "/documentation/"
 [[menu.main]]
-  name = "about"
-  identifier = "about"
-  weight = 300
-  url = "/about/"
-[[menu.main]]
   name = "contact"
   identifier = "contact"
-  weight = 400
+  weight = 300
   url = "/contact/"
+[[menu.main]]
+  name = "about"
+  identifier = "about"
+  weight = 400
+  url = "/about/"
