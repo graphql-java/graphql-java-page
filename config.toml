@@ -16,7 +16,7 @@ pygmentsUseClasses=true
   name = "documentation"
   identifier = "documentation"
   weight = 200
-  url = "/documentation/"
+  url = "/documentation/latest/"
 [[menu.main]]
   name = "contact"
   identifier = "contact"
