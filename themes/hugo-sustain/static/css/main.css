@@ -233,3 +233,7 @@ div.footer{
 .contact-content {
   font-size: 20px;
 }
+
+.highlight pre {
+  border: none;
+}

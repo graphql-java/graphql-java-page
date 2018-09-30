@@ -10,7 +10,7 @@
       </section>
       <section class="home-section blog">
         <h1 class="home-section-title">Latest blog posts</h1>
-        {{ range first 3 (where .Data.Pages "Section" "in" ("blog")) }}
+        {{ range first 3 (where .Data.Pages "Type" "blog") }}
         <div>
           <a href="{{ .RelPermalink }}">
             {{ .Title }}
@@ -26,7 +26,7 @@
       <section class="home-section docs">
         <h1 class="home-section-title">Check our documentation</h1>
         <div class="docs-list">
-          {{ range first 3 (where .Data.Pages "Section" "in" ("documentation")) }}
+          {{ range first 3 (where .Data.Pages "Type" "documentation") }}
 
           <a href="{{ .RelPermalink }}" class="doc-item">
             <div>
