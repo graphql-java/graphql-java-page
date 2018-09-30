@@ -1,0 +1,28 @@
+{{ partial "head" . }}
+
+<body>
+  <div id="wrap">
+    <!-- Header -->
+    {{ partial "header" . }}
+    <div class="container">
+      <h3>Documentation</h3>
+      <div class="panel panel-default">
+        <div class="docs-list">
+          {{ range .Data.Pages }}
+
+          <a href="{{ .RelPermalink }}" class="doc-item">
+              <div>
+                <h5 class="doc-title">{{ .Title | markdownify }}</h5>
+                <div class="doc-description">{{ .Description }}</div>
+              </div>
+          </a>
+          {{ end }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Footer -->
+  {{ partial "footer" . }}
+</body>
+
+</html>

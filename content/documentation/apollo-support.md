@@ -1,10 +1,10 @@
 ---
-title: "Creating a schema"
+title: "Apollo support"
 date: 2018-09-09T12:52:46+10:00
 draft: false
 tags: [introduction]
-weight: 200
-description: A schema is the first step in creating a GraphQL server implementation
+weight: 1500
+description: A few words describing the contents of this section, blah, blah, blah.
 ---
 # Creating a schema
 
