@@ -224,3 +224,12 @@ div.footer{
   color:#EB0195;
   font-size: 18px;
 }
+
+.contact-form {
+  margin: 0 auto;
+  width: 60%;
+}
+
+.contact-content {
+  font-size: 20px;
+}
