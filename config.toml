@@ -3,51 +3,27 @@ languageCode = "en-us"
 title = ""
 # Copyright notice. This is displayer in the footer.
 copyright = "&copy; Andreas Marek"
-theme = "timer-hugo"
+theme = "hugo-sustain"
+pygmentsUseClasses=true
 
-[menu]
-     [[menu.nav]]
-        name    = "Documentation"
-        url     = "/documentation"
-        weight  = 3
-    [[menu.nav]]
-        name    = "Blog"
-        url     = "/blog"
-        weight  = 4
-    [[menu.nav]]
-        name    = "Contact"
-        url     = "/contact"
-        weight  = 5
-     [[menu.nav]]
-        name    = "About"
-        url     = "/about"
-        weight  = 6
-
-[params]
-    # Social accounts. Link to these accounts are displayed in the header and
-    # footer.
-    home = "Home"
-    logo = "images/logo.png"
-    dateFormat = "6 January 2006"
-
-    twitter = "graphql_java"
-    github = "graphql-java"
-    # Google Analytics API key.
-    ga_api_key = "UA-55733269-1"
-    # Mixpanel API key.
-    # mixpanel_api_key = "Your Mixpanel API key"
-    # author = "Your Name"
-    # avatar = "/andi.jpeg"
-    # contact = "Your contact link (ex. mailto:foo@example.com)"
-    # bio = "Your short bio"
-    # Short subtitle/tagline. This is displayed in the header.
-    # subtitle = "Short subtitle/tagline of your blog"
-    themecolor = "#hexcolor" # Defines the tab color in Chrome for Android.
-
-    [params.banner]
-        enable  = true
-        bgImage = "images/slider.jpg"
-        heading = "Welcome to graphql-java.com"
-        description = "This is the homepage of the GraphQL Java implementation"
-        btn     = false
-
+## Main Menu
+[[menu.main]]
+  name = "blog"
+  weight = 100
+  identifier = "blog"
+  url = "/blog/"
+[[menu.main]]
+  name = "documentation"
+  identifier = "documentation"
+  weight = 200
+  url = "/documentation/"
+[[menu.main]]
+  name = "about"
+  identifier = "about"
+  weight = 300
+  url = "/about/"
+[[menu.main]]
+  name = "contact"
+  identifier = "contact"
+  weight = 400
+  url = "/contact/"

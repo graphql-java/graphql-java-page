@@ -1,0 +1,48 @@
+{{ partial "head" . }}
+
+<body>
+  <div id="wrap">
+    {{ partial "header" . }}
+    <div class="container">
+      <section class="home-section about">
+        <h1 class="home-section-title">GraphQL Java Home</h1>
+        <h3 class="home-section-about">This is the home page of the GraphQL Java implementation</h3>
+      </section>
+      <section class="home-section blog">
+        <h1 class="home-section-title">Latest blog posts</h1>
+        {{ range first 3 (where .Data.Pages "Section" "in" ("blog")) }}
+        <div>
+          <a href="{{ .RelPermalink }}">
+            {{ .Title }}
+          </a>
+          <div>{{ .Params.Author }}, {{ .Date.Format "Jan 2, 2006" }}</div>
+        </div>
+        <hr />
+        {{ end }}
+        <div class="home-section-more">
+          <a href="blog/">More...</a>
+        </div>
+      </section>
+      <section class="home-section docs">
+        <h1 class="home-section-title">Check our documentation</h1>
+        <div class="docs-list">
+          {{ range first 3 (where .Data.Pages "Section" "in" ("documentation")) }}
+
+          <a href="{{ .RelPermalink }}" class="doc-item">
+            <div>
+              <h5 class="doc-title">{{ .Title | markdownify }}</h5>
+              <div class="doc-description">{{ .Description }}</div>
+            </div>
+          </a>
+          {{ end }}
+        </div>
+        <div class="home-section-more">
+          <a href="documentation/">More...</a>
+        </div>
+      </section>
+    </div>
+  </div>
+  {{ partial "footer" . }}
+</body>
+
+</html>
