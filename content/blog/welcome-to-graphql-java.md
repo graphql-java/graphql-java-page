@@ -1,6 +1,6 @@
 ---
 title: "Welcome to the new GraphQL Java homepage"
-date: 2018-10-02T17:00:00+10:00
+date: 2018-10-01T16:00:00+10:00
 author: Andreas Marek
 draft: false
 tags: []
