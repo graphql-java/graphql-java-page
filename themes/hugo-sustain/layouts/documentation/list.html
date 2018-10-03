@@ -7,9 +7,18 @@
     <div class="container">
       <h3>Documentation</h3>
       <select class="version-selector">
-        <option value="latest">Latest</option>
-        <option value="v10">v10</option>
-        <option value="v9">v9</option>
+        {{ $latestDocs :=  .Site.Params.latestDocs }}
+        {{ range (readDir "./content/documentation") }}
+          {{ if ne .Name "_index.md"}}
+
+              {{ if eq .Name  $latestDocs }}
+                <option value={{ .Name }}>{{ .Name }} - latest</option>
+              {{ else }}
+                <option value={{ .Name }}>{{ .Name }}</option>
+              {{ end }}
+
+          {{ end }}
+        {{ end }}
       </select>
       <div class="panel panel-default">
         <div class="docs-list">

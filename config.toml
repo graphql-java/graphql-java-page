@@ -1,10 +1,12 @@
 baseurl = "https://www.graphql-java.com"
 languageCode = "en-us"
 title = ""
-# Copyright notice. This is displayer in the footer.
-copyright = "&copy; Andreas Marek"
 theme = "hugo-sustain"
 pygmentsUseClasses=true
+
+[params]
+  latestReleases = ["v9.4", "v10.0"]
+  latestDocs = "v10"
 
 ## Main Menu
 [[menu.main]]
