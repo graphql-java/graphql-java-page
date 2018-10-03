@@ -6,6 +6,11 @@
     {{ partial "header" . }}
     <div class="container">
       <h3>Documentation</h3>
+      <select class="version-selector">
+        <option value="latest">Latest</option>
+        <option value="v10">v10</option>
+        <option value="v9">v9</option>
+      </select>
       <div class="panel panel-default">
         <div class="docs-list">
           {{ range .Data.Pages }}
@@ -23,6 +28,21 @@
   </div>
   <!-- Footer -->
   {{ partial "footer" . }}
+  <script >
+    window.addEventListener('load', function() {
+      var versionSelector = document.querySelector('.version-selector');
+      var versionFromUrl = window.location.href.split('/').filter(part => !!part).reverse()[0];
+
+      versionSelector.value = versionFromUrl;
+      versionSelector.style.visibility = 'visible';
+
+      versionSelector.addEventListener('change', function(e) {
+        var selectedVersion = e.target.value;
+
+        window.location.assign('/documentation/' + selectedVersion);
+      });
+    });
+  </script>
 </body>
 
 </html>

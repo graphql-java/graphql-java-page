@@ -40,3 +40,13 @@
         width: 100%;
     }
 }
+
+.version-selector {
+    font-size: 16px;
+    border: solid 1px #333;
+    background-color: #fff;
+    width: 80px;
+    text-align: center;
+    text-align-last: center;
+    visibility: hidden;
+}
