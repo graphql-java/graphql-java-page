@@ -5,30 +5,38 @@
     <!-- Header -->
     {{ partial "header" . }}
     <div class="container">
-      <h3>Documentation</h3>
-      <select class="version-selector">
-        {{ $latestDocs :=  .Site.Params.latestDocs }}
-        {{ range (readDir "./content/documentation") }}
-          {{ if ne .Name "_index.md"}}
+      <div class="documentation-header">
+        <div class="version-selector">
+          <select id="version-selector__select" class="version-selector__select" title="Choose a version">
+            <option value="">check different version</option>
+            {{ $latestDocs := .Site.Params.latestDocs }}
+            {{ range (readDir "./content/documentation") }}
+            {{ if ne .Name "_index.md"}}
 
-              {{ if eq .Name  $latestDocs }}
-                <option value={{ .Name }}>{{ .Name }} - latest</option>
-              {{ else }}
-                <option value={{ .Name }}>{{ .Name }}</option>
-              {{ end }}
+            {{ if eq .Name $latestDocs }}
+            <option value={{ .Name }}>{{ .Name }} - latest</option>
+            {{ else }}
+            <option value={{ .Name }}>{{ .Name }}</option>
+            {{ end }}
 
-          {{ end }}
-        {{ end }}
-      </select>
+            {{ end }}
+            {{ end }}
+          </select>
+        </div>
+        <h3>Documentation</h3>
+        <h4 class="selected-version">
+          version: <strong>{{ replace (replace .File.Dir "documentation" "") "/" ""}}</strong>
+        </h4>
+      </div>
       <div class="panel panel-default">
         <div class="docs-list">
           {{ range .Data.Pages }}
 
           <a href="{{ .RelPermalink }}" class="doc-item">
-              <div>
-                <h5 class="doc-title">{{ .Title | markdownify }}</h5>
-                <div class="doc-description">{{ .Description }}</div>
-              </div>
+            <div>
+              <h5 class="doc-title">{{ .Title | markdownify }}</h5>
+              <div class="doc-description">{{ .Description }}</div>
+            </div>
           </a>
           {{ end }}
         </div>
@@ -37,18 +45,16 @@
   </div>
   <!-- Footer -->
   {{ partial "footer" . }}
-  <script >
-    window.addEventListener('load', function() {
-      var versionSelector = document.querySelector('.version-selector');
-      var versionFromUrl = window.location.href.split('/').filter(part => !!part).reverse()[0];
+  <script>
+    window.addEventListener('load', function () {
+      var versionSelector = document.querySelector('.version-selector__select');
 
-      versionSelector.value = versionFromUrl;
-      versionSelector.style.visibility = 'visible';
-
-      versionSelector.addEventListener('change', function(e) {
+      versionSelector.addEventListener('change', function (e) {
         var selectedVersion = e.target.value;
-
-        window.location.assign('/documentation/' + selectedVersion);
+        
+        if(selectedVersion) {
+          window.location.assign('/documentation/' + selectedVersion);
+        }
       });
     });
   </script>

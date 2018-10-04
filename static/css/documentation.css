@@ -1,3 +1,13 @@
+.documentation-header {
+    position: relative;
+}
+
+.version-selector {
+    position: absolute;
+    right: 20px;
+    top: 0;
+}
+
 .docs-list {
     display: flex;
     flex-wrap: wrap;
@@ -41,12 +51,8 @@
     }
 }
 
-.version-selector {
+.version-selector__select {
     font-size: 16px;
     border: solid 1px #333;
     background-color: #fff;
-    width: 160px;
-    text-align: center;
-    text-align-last: center;
-    visibility: hidden;
 }
