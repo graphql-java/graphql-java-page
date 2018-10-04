@@ -39,14 +39,15 @@
       <section class="home-section docs">
         <h1 class="home-section-title">Check our documentation</h1>
         <div class="docs-list">
-          {{ range first 3 (where .Data.Pages "Type" "documentation") }}
-
-          <a href="{{ .RelPermalink }}" class="doc-item">
-            <div>
-              <h5 class="doc-title">{{ .Title | markdownify }}</h5>
-              <div class="doc-description">{{ .Description }}</div>
-            </div>
-          </a>
+          {{ $latestDocsDir := (print "documentation/" .Site.Params.latestDocs) }}
+          {{ $latestDocsDir := (print $latestDocsDir "/") }}
+          {{ range first 3 (where .Site.Pages "File.Dir" $latestDocsDir) }}
+            <a href="{{ .RelPermalink }}" class="doc-item">
+              <div>
+                <h5 class="doc-title">{{ .Title | markdownify }}</h5>
+                <div class="doc-description">{{ .Description }}</div>
+              </div>
+            </a>
           {{ end }}
         </div>
         <div class="home-section-more">
