@@ -96,7 +96,7 @@ Here is how you might put this in place:
 
         //
         // a batch loader function that will be called with N or more keys for batch loading
-        // This can be a singleton object since its stateless
+        // This can be a singleton object since it's stateless
         //
         BatchLoader<String, Object> characterBatchLoader = new BatchLoader<String, Object>() {
             @Override
@@ -133,9 +133,11 @@ Here is how you might put this in place:
 
 
         //
-        // this instrumentation implementation will dispatched all the data loaders
-        // as each level fo the graphql query is executed and hence make batched objects
+        // this instrumentation implementation will dispatch all the data loaders
+        // as each level of the graphql query is executed and hence make batched objects
         // available to the query and the associated DataFetchers
+        //
+        // In this case we use options to make it keep statistics on the batching efficiency
         //
         DataLoaderDispatcherInstrumentationOptions options = DataLoaderDispatcherInstrumentationOptions
                 .newOptions().includeStatistics(true);
