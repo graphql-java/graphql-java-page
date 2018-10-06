@@ -36,40 +36,39 @@ The result of this query is displayed below. You can see that Han, Leia, Luke an
 share many friends in common.
 
 {{< highlight json "linenos=table" >}}
-
-        [
-          hero: [
-            name: 'R2-D2',
-            friends: [
-              [
-                name: 'Luke Skywalker',
-                friends: [
-                  [name: 'Han Solo'],
-                  [name: 'Leia Organa'],
-                  [name: 'C-3PO'],
-                  [name: 'R2-D2']
+        {
+          "hero": {
+            "name": "R2-D2",
+            "friends": [
+              {
+                "name": "Luke Skywalker",
+                "friends": [
+                  {"name": "Han Solo"},
+                  {"name": "Leia Organa"},
+                  {"name": "C-3PO"},
+                  {"name": "R2-D2"}
                 ]
-              ],
-              [
-                name: 'Han Solo',
-                friends: [
-                  [name: 'Luke Skywalker'],
-                  [name: 'Leia Organa'],
-                  [name: 'R2-D2']
+              },
+              {
+                "name": "Han Solo",
+                "friends": [
+                  {"name": "Luke Skywalker"},
+                  {"name": "Leia Organa"},
+                  {"name": "R2-D2"}
                 ]
-              ],
-              [
-                name: 'Leia Organa',
-                friends: [
-                  [name: 'Luke Skywalker'],
-                  [name: 'Han Solo'],
-                  [name: 'C-3PO'],
-                  [name: 'R2-D2']
+              },
+              {
+                "name": "Leia Organa",
+                "friends": [
+                  {"name": "Luke Skywalker"},
+                  {"name": "Han Solo"},
+                  {"name": "C-3PO"},
+                  {"name": "R2-D2"}
                 ]
-              ]
+              }
             ]
-          ]
-        ]
+          }
+        }
 {{< / highlight >}}
 
 A naive implementation would call a `DataFetcher` to retrieve a person object every time it was invoked.
