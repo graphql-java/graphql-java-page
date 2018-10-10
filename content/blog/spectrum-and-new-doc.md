@@ -11,7 +11,7 @@ We have two exciting changes to announce:
 
 We are moving our support channel from [gitter](https://gitter.im/graphql-java/graphql-java) to [spectrum](https://spectrum.chat/graphql-java). Gitter served us well over the years, but with more and more people using GraphQL Java we are looking for better ways to support our community and we think spectrum is the right place to do that. Especially the Threads oriented view compared to one chat room is something we are looking forward to.
 
-Please ask new questions at https://spectrum.chat/graphql-java. We will close the gitter room in the next couple of days.
+Please ask new questions at https://spectrum.chat/graphql-java. We will stop answering questions in the gitter room and direct people to spectrum. The gitter room will be closed in a couple of weeks.
 
 
 # New documentation home
