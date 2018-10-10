@@ -20,5 +20,5 @@ We are also moving our documentation from [readthedocs](https://graphql-java.rea
 
 While the the new documentation is currently similar to the old one the layout is already an improvement and code examples are much easier readable than before. We are planning more improvements over time.
 
-Cheers,
+Cheers,<br>
 Andi
