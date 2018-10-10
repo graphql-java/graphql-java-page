@@ -1,3 +1,8 @@
+
+.documentation-home__item.documentation-home__item {
+    text-align: center;
+}
+
 .docs-list {
     display: flex;
     flex-wrap: wrap;

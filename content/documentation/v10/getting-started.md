@@ -26,7 +26,7 @@ Dependency:
 
 {{< highlight groovy "linenos=table" >}}
     dependencies {
-      compile 'com.graphql-java:graphql-java:9.0'
+      compile 'com.graphql-java:graphql-java:10.0'
     }
 {{< / highlight >}}
 
@@ -39,7 +39,7 @@ Dependency:
     <dependency>
         <groupId>com.graphql-java</groupId>
         <artifactId>graphql-java</artifactId>
-        <version>9.0</version>
+        <version>10.0</version>
     </dependency>
 {{< / highlight >}}
 
@@ -48,9 +48,41 @@ Dependency:
 
 This is the famous "hello world" in ``graphql-java``:
 
-.. literalinclude:: ../src/test/java/HelloWorld.java
-    :language: java
+{{< highlight java "linenos=table" >}}
+import graphql.ExecutionResult;
+import graphql.GraphQL;
+import graphql.schema.GraphQLSchema;
+import graphql.schema.StaticDataFetcher;
+import graphql.schema.idl.RuntimeWiring;
+import graphql.schema.idl.SchemaGenerator;
+import graphql.schema.idl.SchemaParser;
+import graphql.schema.idl.TypeDefinitionRegistry;
 
+import static graphql.schema.idl.RuntimeWiring.newRuntimeWiring;
+
+public class HelloWorld {
+
+    public static void main(String[] args) {
+        String schema = "type Query{hello: String}";
+
+        SchemaParser schemaParser = new SchemaParser();
+        TypeDefinitionRegistry typeDefinitionRegistry = schemaParser.parse(schema);
+
+        RuntimeWiring runtimeWiring = newRuntimeWiring()
+                .type("Query", builder -> builder.dataFetcher("hello", new StaticDataFetcher("world")))
+                .build();
+
+        SchemaGenerator schemaGenerator = new SchemaGenerator();
+        GraphQLSchema graphQLSchema = schemaGenerator.makeExecutableSchema(typeDefinitionRegistry, runtimeWiring);
+
+        GraphQL build = GraphQL.newGraphQL(graphQLSchema).build();
+        ExecutionResult executionResult = build.execute("{hello}");
+
+        System.out.println(executionResult.getData().toString());
+        // Prints: {hello=world}
+    }
+}
+{{< / highlight >}}
 
 ## Using the latest development build
 ----------------------------------
