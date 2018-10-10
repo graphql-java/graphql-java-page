@@ -18,7 +18,7 @@ Please ask new questions at https://spectrum.chat/graphql-java. We will close th
 
 We are also moving our documentation from [readthedocs](https://graphql-java.readthedocs.io) to our own page at [graphql-java.com/documentation](https://www.graphql-java.com/documentation/). 
 
-While the the new documentation is currently similar to the old one the layout is already an improvement and code examples are much easier readable than before. We are planning mor improvements over time.
+While the the new documentation is currently similar to the old one the layout is already an improvement and code examples are much easier readable than before. We are planning more improvements over time.
 
 Cheers,
 Andi
