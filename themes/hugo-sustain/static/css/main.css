@@ -238,3 +238,15 @@ div.footer{
 .highlight pre {
   border: none;
 }
+
+.blogpost h1 {
+  font-size: 26px;
+}
+
+.blogpost h2 {
+  font-size: 22px;
+}
+
+.blogpost h3 {
+  font-size: 20px;
+}
