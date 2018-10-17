@@ -177,7 +177,7 @@ system designer is how you will use context in your fetchers if at all.  Some pe
 data fetchers automatically and hence don't need to use this.
 
 
-* ``ExecutionTypeInfo getFieldTypeInfo()`` - the field type information is a catch all bucket of field type information that is built up as
+* ``ExecutionStepInfo getExecutionStepInfo()`` - the field type information is a catch all bucket of field type information that is built up as
 the query is executed.  The following section explains more on this.
 
 * ``DataFetchingFieldSelectionSet getSelectionSet()`` - the selection set represents the child fields that have been "selected" under neath the
@@ -189,12 +189,12 @@ query.
 
 
 
-## The interesting parts of ExecutionTypeInfo
+## The interesting parts of ExecutionStepInfo
 
-The execution of a graphql query creates a call tree of fields and their types.  ``graphql.execution.ExecutionTypeInfo.getParentTypeInfo``
+The execution of a graphql query creates a call tree of fields and their types.  ``graphql.execution.ExecutionStepInfo.getParentTypeInfo``
 allows you to navigate upwards and see what types and fields led to the current field execution.
 
-Since this forms a tree path during execution, the ``graphql.execution.ExecutionTypeInfo.getPath`` method returns the representation of that
+Since this forms a tree path during execution, the ``graphql.execution.ExecutionStepInfo.getPath`` method returns the representation of that
 path.  This can be useful for logging and debugging queries.
 
 There are also helper methods there to help you get the underlying type name of non null and list wrapped types.
