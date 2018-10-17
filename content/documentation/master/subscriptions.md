@@ -3,15 +3,17 @@ title: "Subscriptions"
 date: 2018-09-09T12:52:46+10:00
 draft: false
 tags: [documentation]
-weight: 120
-description: Subscriptions
+weight: 107
+description: Graphql subscriptions allow you subscribe to a reactive source and as new data arrives
+             a graphql query is applied over that data and the results are passed on.
+
 ---
 # Subscriptions
 
 ## Subscription Queries
 
 Graphql subscriptions allow you subscribe to a reactive source and as new data arrives
-then a graphql query is applied over that data and the results are passed on.
+a graphql query is applied over that data and the results are passed on.
 
 See http://graphql.org/blog/subscriptions-in-graphql-and-relay/ for more general details on
 graphql subscriptions.

@@ -3,8 +3,8 @@ title: "Execution"
 date: 2018-09-09T12:52:46+10:00
 draft: false
 tags: [documentation]
-weight: 111
-description: Execution
+weight: 102
+description: How to execute a query using the graphql-java engine
 ---
 # Execution
 

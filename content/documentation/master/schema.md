@@ -3,15 +3,17 @@ title: "Schema"
 date: 2018-09-09T12:52:46+10:00
 draft: false
 tags: [documentation]
-weight: 117
-description: Schema
+weight: 101
+description: Your GraphQL API has a schema which defines each field that can be queried or
+             mutated and what types those fields are.
+
 ---
 # Creating a schema
 
 
-A schema defines your GraphQL API by defining each field that can be queried or
-mutated.
-
+Your GraphQL API has a schema which defines each field that can be queried or
+             mutated and what types those fields are.
+             
 ``graphql-java`` offers two different ways of defining the schema: Programmatically as Java code or
 via a special graphql dsl (called SDL).
 

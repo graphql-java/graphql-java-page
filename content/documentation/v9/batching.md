@@ -3,8 +3,8 @@ title: "Batching"
 date: 2018-09-09T12:52:46+10:00
 draft: false
 tags: [documentation]
-weight: 101
-description: Batching
+weight: 105
+description: How to avoid the dreaded N+1 calls for data and make your graphql system more efficient
 ---
 # Using Dataloader
 

@@ -3,8 +3,8 @@ title: "Defer"
 date: 2018-09-09T12:52:46+10:00
 draft: false
 tags: [documentation]
-weight: 107
-description: Defer
+weight: 108
+description: Often when executing a query you have two classes of data.  The data you need immediately and the data that could arrive little bit later.
 ---
 # Deferred Execution
 

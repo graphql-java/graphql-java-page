@@ -3,8 +3,8 @@ title: "Concerns"
 date: 2018-09-09T12:52:46+10:00
 draft: false
 tags: [documentation]
-weight: 102
-description: Application concerns
+weight: 111
+description:  Outlines certain application level concerns and how to address them
 ---
 # Application concerns
 

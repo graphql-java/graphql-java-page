@@ -3,8 +3,8 @@ title: "Data mapping"
 date: 2018-09-09T12:52:46+10:00
 draft: false
 tags: [documentation]
-weight: 106
-description: Data mapping
+weight: 103
+description: How graphql-java maps object data to graphql types
 ---
 # Mapping data
 
