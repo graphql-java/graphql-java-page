@@ -4,7 +4,7 @@ date: 2018-09-09T12:52:46+10:00
 draft: false
 tags: [documentation]
 weight: 117
-description: SDL Directives
+description: How SDL Directives can be used to adjust the behavior of your graphql API
 ---
 # Schema Directives
 

@@ -3,8 +3,8 @@ title: "Field selection"
 date: 2018-09-09T12:52:46+10:00
 draft: false
 tags: [documentation]
-weight: 112
-description: Field selection
+weight: 109
+description: How you can efficiently look ahead at the selected fields lower in the query
 ---
 # Field Selection
 

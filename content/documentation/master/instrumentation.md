@@ -3,8 +3,9 @@ title: "Instrumentation"
 date: 2018-09-09T12:52:46+10:00
 draft: false
 tags: [documentation]
-weight: 115
-description: Instrumentation
+weight: 106
+description: Instrumentation allows you to inject code that can observe the execution of a query
+             and also change the runtime behaviours
 ---
 # Instrumentation
 

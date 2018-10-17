@@ -4,7 +4,7 @@ date: 2018-09-09T12:52:46+10:00
 draft: false
 tags: [documentation]
 weight: 109
-description: Exceptions
+description: Outlines the exceptions used in graphql-java
 ---
 # Runtime Exceptions
 

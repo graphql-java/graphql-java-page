@@ -3,8 +3,8 @@ title: "Contributions"
 date: 2018-09-09T12:52:46+10:00
 draft: false
 tags: [documentation]
-weight: 103
-description: Contributions
+weight: 1000
+description: Every contribution to make this project better is welcome. Thank you!
 ---
 # Contributions
 

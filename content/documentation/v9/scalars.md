@@ -3,8 +3,8 @@ title: "Scalars"
 date: 2018-09-09T12:52:46+10:00
 draft: false
 tags: [documentation]
-weight: 116
-description: Scalars
+weight: 104
+description: How scalar types work in graphql and how to write your own scalars
 ---
 # Scalars in graphql
 
