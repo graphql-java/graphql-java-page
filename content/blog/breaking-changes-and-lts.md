@@ -12,7 +12,7 @@ We do that because we are optimizing for long-term growth: GraphQL Java is 3 1/2
 
 We do it also because of resource constraints: we are an open source private run project with limited time and resources. We can’t afford maintaining a badly designed project in the long-term. Every bad design, every bad naming makes adding features and adopting to new requirements harder, more time consuming and more unlikely. We also want to make external contributions as easy as possible because we can’t do it all ourself.
 
-The last reason is personally and it is about fun. I don’t wanna maintain a badly designed project. I need to have fun if I wanna continue to invest a large amount of private time in GraphQL Java.
+The last reason is personal and it is about fun. I don’t wanna maintain a badly designed project. I need to have fun if I wanna continue to invest a large amount of private time in GraphQL Java.
 
 Does that mean we just refactor as crazy and break everything all the time? No it doesn’t. We follow some rules about breaking changes: 
 - We never take a functionality away. We deprecate things and make it clear that we don’t really support them anymore, but we don’t take them away without a clear alternative.
