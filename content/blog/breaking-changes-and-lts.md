@@ -24,8 +24,9 @@ Does that mean we just refactor as crazy and break everything all the time? No i
 
 - Even if we prioritize clean design higher than API stability in general we always weigh the benefits of the change vs the cost of adapting to it. There is no hard rule to that, but we always ask: is it worth it?
 
-But  we understand that not every Organization allows for regular updating major versions of GraphQL Java. This is why we started to maintain a Long-term support (LTS) version of GraphQL Java: 9.x. We will continue to back port all bug fixes to 9.x for some time and we will announce when we will switch to a new LTS version. It is not clear yet how long this time span will be and it depends also on your feedback. 
-Please contribute to this [spectrum thread](https://spectrum.chat/thread/196ab67d-2770-4f3f-b1b3-b056ecb3a2e1) and let us know what suits you best. If you have special needs and you don’t wanna discuss it in public you can also reach us via [contact form](https://www.graphql-java.com/contact/).
+But  we understand that not every Organization allows for regular updating major versions of GraphQL Java. This is why we started to maintain a Long-term support (LTS) version of GraphQL Java: 9.x. We will continue to back port all bug fixes to 9.x for some time and we will announce when we will switch to a new LTS version. 
+
+It is not clear yet how long this time span will be and it depends also on your feedback. **Please contribute to this [spectrum thread](https://spectrum.chat/thread/196ab67d-2770-4f3f-b1b3-b056ecb3a2e1) and let us know what suits you best.** If you have special needs and you don’t wanna discuss it in public you can also reach us via [contact form](https://www.graphql-java.com/contact/).
 
 
 Cheers,<br>
