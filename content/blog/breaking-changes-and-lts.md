@@ -15,9 +15,13 @@ We do it also because of resource constraints: we are an open source private run
 The last reason is personal and it is about fun. I don’t wanna maintain a badly designed project. I need to have fun if I wanna continue to invest a large amount of private time in GraphQL Java.
 
 Does that mean we just refactor as crazy and break everything all the time? No it doesn’t. We follow some rules about breaking changes: 
+
 - We never take a functionality away. We deprecate things and make it clear that we don’t really support them anymore, but we don’t take them away without a clear alternative.
+
 - We try to favor simple breaking changes the compiler will catch. For example renaming a method is such a simple change.
+
 - We try to document in our release notes every breaking change clearly.
+
 - Even if we prioritize clean design higher than API stability in general we always weigh the benefits of the change vs the cost of adapting to it. There is no hard rule to that, but we always ask: is it worth it?
 
 But  we understand that not every Organization allows for regular updating major versions of GraphQL Java. This is why we started to maintain a Long-term support (LTS) version of GraphQL Java: 9.x. We will continue to back port all bug fixes to 9.x for some time and we will announce when we will switch to a new LTS version. It is not clear yet how long this time span will be and it depends also on your feedback. 
