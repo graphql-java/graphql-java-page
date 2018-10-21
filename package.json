@@ -4,7 +4,7 @@
   "description": "",
   "main": "index-generator.js",
   "scripts": {
-    "algolia:index": "node scripts/index-generator.js"
+    "index:generate": "node scripts/index-generator.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/graphql-java/graphql-java-page/issues"
   },
-  "homepage": "https://github.com/graphql-java/graphql-java-page#readme"
+  "homepage": "https://github.com/graphql-java/graphql-java-page#readme",
+  "devDependencies": {
+    "algoliasearch": "^3.30.0"
+  }
 }
