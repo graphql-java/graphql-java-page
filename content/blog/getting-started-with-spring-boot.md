@@ -150,24 +150,42 @@ type Query {
 type Book {
   id: ID
   name: String
-  price: Price
-  availableCopies: Int
-  pageCount: Int
-  author: Person
-}
-
-type Price {
-  price: String
-  currency: String
-}
-
-type Person {
-  firstName: String
-  lastName: String
 }
 
 {{< / highlight >}}
 
+This schema defines one query: `books` which results a list of `Book`s. It also defines the type `Book` which has two fields: `id` and `name`. 
+
+> The Domain Specific Language shown above which is used to describe a schema is called Schema Definition Language or SDL.
+
+But so far it is just a normal text. We need to "bring it to live" by reading the file and parsing it.
+We are using Guava to read the file at runtime from our classpath:
+
+{{< highlight java "linenos=table" >}}
+URL url = Resources.getResource("schema.graphql");
+String sdl = Resources.toString(url, Charsets.UTF_8);
+{{< / highlight >}}
+
+We now using GraphQL Java for the first time: We are transforming the `sdl` into a `TypeDefinitionRegistry`:
+
+
+{{< highlight java "linenos=table" >}}
+  TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(sdl);
+{{< / highlight >}}
+
+This `TypeDefinitionRegistry` is just a parsed version of the schema definition file.
+
+## Creating a GraphQLSchema
+
+The `typeRegistry` defined above is just types: it describes how the schema looks like, but not how it actually works when a query is executed.  
+
+
+### DataFetcher
+
+Probably the most important concept of a GraphQL Java server is a `DataFetcher`:
+A `DataFetcher` fetches the Data for one field while the query is executed. 
+
+While GraphQL Java is executing a query it calls the appropriate `DataFetcher` for each field it encounters in query.
 
 
 
