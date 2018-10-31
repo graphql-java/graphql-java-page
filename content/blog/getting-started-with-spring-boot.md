@@ -182,11 +182,21 @@ The `typeRegistry` defined above is just types: it describes how the schema look
 
 ### DataFetcher
 
-Probably the most important concept of a GraphQL Java server is a `DataFetcher`:
+Probably the most important concept for a GraphQL Java server is a `DataFetcher`:
 A `DataFetcher` fetches the Data for one field while the query is executed. 
 
 While GraphQL Java is executing a query it calls the appropriate `DataFetcher` for each field it encounters in query.
+A `DataFetcher` is a Interface with a single method, taking a single argument of type `DataFetcherEnvironment`.
+
+For our first iteration we are doing the simplest possible thing that works: we are fetching the books we wanna display from in-memory. 
+
+Our code looks like this:
+
+{{< highlight java "linenos=table" >}}
+....
+{{< / highlight >}}
 
 
+Important: **Every** field from the schema has a `DataFetcher` associated with. Most of them have a actually the defaultData
 
 
