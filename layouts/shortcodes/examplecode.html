@@ -1,0 +1,25 @@
+{{- .Scratch.Set "jsonUrl" "https://forexample.us-west-1.staging.public.atl-paas.net/forexample.json" -}}
+{{- $url := .Get "url" -}}
+{{- .Scratch.Add "jsonUrl" "?url=" -}}
+{{- .Scratch.Add "jsonUrl" $url -}}
+{{- if .Get "figure" -}}
+    {{- $figure := .Get "figure" -}}
+    {{- .Scratch.Add "jsonUrl" "&figure=" -}}
+    {{- .Scratch.Add "jsonUrl" $figure -}}
+{{- end -}}
+{{- if .Get "lines" -}}
+    {{- $lines := .Get "lines" -}}
+    {{- .Scratch.Add "jsonUrl" "&lines=" -}}
+    {{- .Scratch.Add "jsonUrl" $lines -}}
+{{- end -}}
+{{- if .Get "prefix" -}}
+    {{- $prefix := .Get "prefix" -}}
+    {{- .Scratch.Add "jsonUrl" "&prefix=" -}}
+    {{- .Scratch.Add "jsonUrl" $prefix -}}
+{{- end -}}
+
+{{- $fullUrl := .Scratch.Get "jsonUrl" -}}
+{{- if $fullUrl -}}
+    {{ $json := getJSON  $fullUrl  }}
+    {{- $json.example | safeHTML -}}
+{{- end -}}
