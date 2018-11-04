@@ -258,7 +258,25 @@ Example:
             .build();
 {{< / highlight >}}
 
+To make a programmatically-generated schema executable, you can just instantiate a `GraphQLSchema` object directly, and pass in your root `Query` (and `Mutation`) `GraphQLObjectType` objects, as shown in the example below:
 
+{{< highlight java "linenos=table" >}}
+
+
+    GraphQLObjectType queryType = newObject()
+            .name("QueryType")
+            .field(newFieldDefinition()
+                    .name("hello")
+                    .type(GraphQLString)
+                    .dataFetcher(new StaticDataFetcher("world!"))
+            .build();
+
+    GraphQLSchema schema = new GraphQLSchema(queryType);
+
+    // Make the schema executable
+    GraphQL executor = GraphQL.newGraphQL(graphQLSchema).build()
+    ExecutionResult executionResult = executor.execute("{hello}");
+{{< / highlight >}}
 
 ## Types
 
