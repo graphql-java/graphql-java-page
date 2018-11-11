@@ -63,10 +63,6 @@ html, body {
 .navbar-default .navbar-toggle .icon-bar {
   background-color: #6b6b6b;
 }
-.navbar-default .navbar-collapse,
-.navbar-default .navbar-form {
-  border-color: #6b6b6b;
-}
 .navbar-default .navbar-link {
   color: #6b6b6b;
 }
@@ -78,7 +74,6 @@ html, body {
 .container {
   width: auto;
   margin: 0 100px;
-  /* max-width: 800px; */
   text-align: center;
 }
 .container .text-muted {
@@ -239,6 +234,26 @@ div.footer{
   font-size: 20px;
 }
 
+@media (min-width: 767px) {
+  .navbar-nav {
+    font-size: 18px;
+  }
+
+  .navbar-default {
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar-default .navbar-collapse {
+    display: flex !important;
+    width: 100%;
+  }
+
+  .navbar-default .navbar-collapse .aa-input-container {
+    margin-left: auto;
+    margin-right: 100px;
+  }
+}
 @media (max-width: 767px) {
   .navbar-default .navbar-nav .open .dropdown-menu > li > a {
     color: #6b6b6b;

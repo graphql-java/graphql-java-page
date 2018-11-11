@@ -1,3 +1,6 @@
 public
 .DS_STORE
 .idea
+dist
+node_modules
+.vscode
