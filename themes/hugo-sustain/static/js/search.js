@@ -55,5 +55,5 @@ autocomplete(
   ]
 )
 .on('autocomplete:selected', function(event, suggestion, dataset) {
-        window.location.assign('/documentation/v10/getting-started/');
+        window.location.assign(`/${suggestion.url}`);
   });
