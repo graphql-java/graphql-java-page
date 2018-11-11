@@ -19,7 +19,7 @@ guidance on when to use what. There are also currently more tutorials out there 
 compared to tutorials which do.
 
 The other reason people might think that GraphQL Java is not suitable is because the [core project](https://github.com/graphql-java/graphql-java) 
-doesn't provide any easy way to get a full service with HTTP endpoint up and running. 
+doesn't provide any easy way to get full service with HTTP endpoint up and running. 
 And the existing third party projects providing for example Spring Boot support 
 are adding abstractions.
 
