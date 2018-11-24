@@ -19,7 +19,7 @@ This will be a place where we can add non standard but useful extensions to grap
 
 The major scalars we have added on day one are
 
- * A aforementioned DateTime scalar as well as a Date and Time scalar
+ * The aforementioned DateTime scalar as well as a Date and Time scalar
  * A Object scalar or sometimes know as a JSON scalar that allows a map of values to be returned as a scalar value
  * Some numeric scalars that constrain the values allowed
  * A Regex scalar that allows a string to fit a regular expression
