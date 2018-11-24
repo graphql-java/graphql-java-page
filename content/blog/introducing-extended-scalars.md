@@ -21,7 +21,7 @@ The major scalars we have added on day one are
 
  * The aforementioned DateTime scalar as well as a Date and Time scalar
  * A Object scalar or sometimes know as a JSON scalar that allows a map of values to be returned as a scalar value
- * Some numeric scalars that constrain the values allowed
+ * Some numeric scalars that constrain the values allowed such as `PositiveInt`
  * A Regex scalar that allows a string to fit a regular expression
  * A Url scalar that produces `java.net.URL` objects at runtime 
  * And finally an aliasing technique that allows you to create more meaningfully named scalar values
