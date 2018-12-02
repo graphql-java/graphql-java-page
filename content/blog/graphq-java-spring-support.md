@@ -16,6 +16,6 @@ Currently it supports GET and POST requests and allows for some basic customizat
 In future we are looking into supporting more advanced features like file upload or subscriptions.
 
 As always contributions are more than welcome and we are hoping to grow this project together with the 
-community: please open a new issue or leave a comment on [spectrum chat](https://spectrum.chat/graphql-java) about your wishes.
+community: please open a [new issue](https://github.com/graphql-java/graphql-java-spring/issues/new) or leave a comment on [spectrum chat](https://spectrum.chat/graphql-java) about your wishes.
 
 More details on how to use it can be found on the github page: https://github.com/graphql-java/graphql-java-spring
