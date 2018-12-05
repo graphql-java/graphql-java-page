@@ -69,12 +69,12 @@ We would create a singleton ``graphql.schema.GraphQLScalarType`` instance for th
 The real work in any custom scalar implementation is the ``graphql.schema.Coercing`` implementation.  This is responsible for 3 functions
 
 * ``parseValue`` - takes a variable input object and converts into the Java runtime representation
-* ``parseLiteral`` - takes an AST literal ``graphql.language.Value` as input and converts into the Java runtime representation
+* ``parseLiteral`` - takes an AST literal ``graphql.language.Value`` as input and converts into the Java runtime representation
 * ``serialize`` - takes a Java object and converts it into the output shape for that scalar
 
 So your custom scalar code has to handle 2 forms of input (parseValue / parseLiteral)  and 1 form of output (serialize).
 
-Imagine this query, which uses variables, AST literals and outputs our scalar type ```email``.
+Imagine this query, which uses variables, AST literals and outputs our scalar type ``email``.
 
 {{< highlight graphql "linenos=table" >}}
     mutation Contact($mainContact: Email!) {

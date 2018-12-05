@@ -183,7 +183,7 @@ the query is executed.  The following section explains more on this.
 * ``DataFetchingFieldSelectionSet getSelectionSet()`` - the selection set represents the child fields that have been "selected" under neath the
 currently executing field. This can be useful to help look ahead to see what sub field information a client wants.  The following section explains more on this.
 
-* ```ExecutionId getExecutionId()`` - each query execution is given a unique id.  You can use this perhaps on logs to tag each individual
+* ``ExecutionId getExecutionId()`` - each query execution is given a unique id.  You can use this perhaps on logs to tag each individual
 query.
 
 

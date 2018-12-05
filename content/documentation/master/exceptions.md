@@ -28,7 +28,7 @@ These are not graphql errors in execution but rather totally unacceptable condit
 
  -  `graphql.execution.UnresolvedTypeException`
 
- is thrown if a  graphql.schema.TypeResolver` fails to provide a concrete
+ is thrown if a `graphql.schema.TypeResolver` fails to provide a concrete
  object type given a interface or union type.
 
 
@@ -47,7 +47,7 @@ These are not graphql errors in execution but rather totally unacceptable condit
  -  `graphql.schema.validation.InvalidSchemaException`
 
  is thrown if the schema is not valid when built via
-  graphql.schema.GraphQLSchema.Builder#build()`
+  `graphql.schema.GraphQLSchema.Builder#build()`
 
  -  `graphql.execution.UnknownOperationException`
 

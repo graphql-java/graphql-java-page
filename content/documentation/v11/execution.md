@@ -419,7 +419,7 @@ By default the "query" execution strategy is ``graphql.execution.AsyncExecutionS
 each field as ``CompleteableFuture`` objects and not care which ones complete first.  This strategy allows for the most
 performant execution.
 
-The data fetchers invoked can themselves return `CompletionStage`` values and this will create
+The data fetchers invoked can themselves return ``CompletionStage`` values and this will create
 fully asynchronous behaviour.
 
 So imagine a query as follows
