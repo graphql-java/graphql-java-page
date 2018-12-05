@@ -223,6 +223,6 @@ The sub fields here of the ``products`` field represent the selection set of tha
 so the data fetcher can optimise the data access queries.  For example an SQL backed system may be able to use the field sub selection to
 only retrieve the columns that have been asked for.
 
-In the example above we have asked for ``selectionLocations`` information and hence we may be able to make an more efficient data access query where
+In the example above we have asked for ``sellingLocations`` information and hence we may be able to make an more efficient data access query where
 we ask for product information and selling location information at the same time.
 
