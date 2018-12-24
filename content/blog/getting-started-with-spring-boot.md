@@ -75,15 +75,17 @@ We barely touched GraphQL. Further information can be found on the official page
 
 # GraphQL Java Overview
 
-[GraphQL Java](https://www.graphql-java.com) is the Java (server) implementation for GraphQL. The [GraphQL Java Github Repo](https://github.com/graphql-java/graphql-java) contains the actual source code. 
+[GraphQL Java](https://www.graphql-java.com) is the Java (server) implementation for GraphQL. 
+The are several repositories in the GraphQL Java Github org. The most important one is the [GraphQL Java Engine](https://github.com/graphql-java/graphql-java) which is basis for everything else.
+
+We will also use the [GraphQL Java Spring Boot](https://github.com/graphql-java/graphql-java-spring) adapter, which takes care of exposing your GraphQL API via HTTP.
 
 GraphQL Java itself is only concerned with executing queries. It doesn't deal with any HTTP or JSON related topics. For these aspects we will use [Spring Boot](https://spring.io/projects/spring-boot).
  
 The main steps of creating a GraphQL Java server are:
 
-- Defining a GraphQL Schema.
-- Defining on how the actual data for a query is fetched. 
-- Exposing the server via HTTP (via Spring Boot). 
+1. Defining a GraphQL Schema.
+2. Defining on how the actual data for a query is fetched. 
 
 
 # Our example app: an online store for books
@@ -98,7 +100,6 @@ We will build a GraphQL server which will cover the following use cases:
 
 1. get a list of available books
 1. get specific book details
-1. order a book
 
 We will incrementally build our app. 
 
@@ -114,7 +115,7 @@ Select:
 
 - Gradle Project
 - Java 
-- Spring Boot 2.x 
+- Spring Boot 2.1.x 
 
 For the project metadata we use:
 
@@ -126,25 +127,27 @@ As dependency we just select `Web`.
 A click on `Generate Project` will give you a ready to use Spring Boot app.
 All subsequently mentioned files and paths will be relative to this generated project.
 
-We are adding two dependency to our project inside the `dependencies` section of `build.gradle`:
+We are adding three dependencies to our project inside the `dependencies` section of `build.gradle`:
 
-the first one is GraphQL Java itself and the second one is [Google Guava](https://github.com/google/guava). Guava is not strictly needed but it will make our life easier.
+the first two are GraphQL Java and GraphQL Java Spring and then we also add [Google Guava](https://github.com/google/guava). Guava is not strictly needed but it will make our life a little bit easier.
 
 {{< highlight groovy "linenos=table" >}}
 dependencies {
   ...
   implementation('com.graphql-java:graphql-java:11.0')
+  implementation "com.graphql-java:graphql-java-spring-boot-starter-webmvc:1.0"
   implementation('com.google.guava:guava:26.0-jre')
 }
 {{< / highlight >}}
 
-## Defining our first schema
+## Defining the schema
 
 We are creating a new file `schema.graphqls` in `src/main/resources` with the following content:
 
 {{< highlight graphql "linenos=table" >}}
 type Query {
   books: [Books]
+  bookById(id: ID!): Book
 }
 
 type Book {
@@ -154,7 +157,9 @@ type Book {
 
 {{< / highlight >}}
 
-This schema defines one query: `books` which results a list of `Book`s. It also defines the type `Book` which has two fields: `id` and `name`. 
+This schema defines two top level fields (fields in the type `Query`): `books` which results in a list of `Book`s and a `bookById` to query a specific Book by id. 
+
+It also defines the type `Book` which has two fields: `id` and `name`.
 
 > The Domain Specific Language shown above which is used to describe a schema is called Schema Definition Language or SDL.
 
@@ -197,6 +202,6 @@ Our code looks like this:
 {{< / highlight >}}
 
 
-Important: **Every** field from the schema has a `DataFetcher` associated with. Most of them have a actually the defaultData
+Important: **Every** field from the schema has a `DataFetcher` associated with. Most of them have the a default `DataFetcher` of type `PropertyDataFetcher`.
 
 
