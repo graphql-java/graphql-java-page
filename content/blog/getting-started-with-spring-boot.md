@@ -4,6 +4,7 @@ author = "Andreas Marek"
 tags = []
 categories = []
 date = 2018-10-22T01:00:00+10:00
+toc = "true"
 +++
 
 This is a tutorial for people who never development a GraphQL server with Java. Some Spring Boot and Java knowledge is required. While we give a brief introduction into GraphQL the focus of this tutorial is on developing a GraphQL server in Java.
@@ -88,7 +89,7 @@ The main steps of creating a GraphQL Java server are:
 2. Defining on how the actual data for a query is fetched. 
 
 
-# Our example app: an online store for books
+# Our example API: getting book details
 
 Our example app we will build is a simple online store for books.
 We assume the very simple user flow: 
@@ -107,7 +108,7 @@ We will incrementally build our app.
 Schema and API design itself is interesting and challenging but we will focus on implementing the server and not discuss the actual schema design choices.
 
 
-# Step 1: Create a Spring Boot app
+# Create a Spring Boot app
 
 The easiest way to create a Spring Boot app is to use the initializr at https://start.spring.io/.
 
@@ -140,7 +141,7 @@ dependencies {
 }
 {{< / highlight >}}
 
-## Defining the schema
+# Defining the schema
 
 We are creating a new file `schema.graphqls` in `src/main/resources` with the following content:
 
@@ -185,9 +186,9 @@ This `TypeDefinitionRegistry` is just a parsed version of the schema definition 
 The `typeRegistry` defined above is just types: it describes how the schema looks like, but not how it actually works when a query is executed.  
 
 
-### DataFetcher
+# DataFetchers
 
-Probably the most important concept for a GraphQL Java server is a `DataFetcher`:
+Probably the most important concept for a GraphQL Java server is a `DataFetcher`: 
 A `DataFetcher` fetches the Data for one field while the query is executed. 
 
 While GraphQL Java is executing a query it calls the appropriate `DataFetcher` for each field it encounters in query.
@@ -198,10 +199,23 @@ For our first iteration we are doing the simplest possible thing that works: we 
 Our code looks like this:
 
 {{< highlight java "linenos=table" >}}
-....
+
 {{< / highlight >}}
 
 
 Important: **Every** field from the schema has a `DataFetcher` associated with. Most of them have the a default `DataFetcher` of type `PropertyDataFetcher`.
 
+# Exposing the schema via HTTP
+
+The last step is to actually expose the GraphQL schema via HTTP. This is done via the GraphQL Java Spring adapter.
+
+The only thing you have todo is to actually define a `Bean` of type `GraphQL` in you Spring Boot app.
+
+
+{{< highlight java "linenos=table" >}}
+  
+{{< / highlight >}}
+
+
+# Full source code 
 

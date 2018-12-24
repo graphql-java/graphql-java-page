@@ -11,6 +11,9 @@
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="blogpost">
+            {{ if (eq .Params.toc "true") }}
+              {{.TableOfContents}}
+            {{ end }}
             {{ .Content }}
           </div>
         </div>
