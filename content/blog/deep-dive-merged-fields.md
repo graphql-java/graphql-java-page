@@ -19,36 +19,36 @@ GraphQL allows for a field to be declared multiple times in a query as long as i
 Valid GraphQL queries are:
 
 {{< highlight graphql "linenos=table" >}}
-        {
-          foo
-          foo
-        }
+{
+  foo
+  foo
+}
 {{< / highlight >}}
 
 <p/>
 
 {{< highlight graphql "linenos=table" >}}
-        {
-          foo(id: "123")
-          foo(id: "123")
-          foo(id: "123")
-        }
+{
+  foo(id: "123")
+  foo(id: "123")
+  foo(id: "123")
+}
 {{< / highlight >}}
 <p/>
 
 {{< highlight graphql "linenos=table" >}}
-        {
-          foo(id: "123") {
-            id
-          }
-          foo(id: "123") {
-            name
-          }
-          foo(id: "123") {
-            id 
-            name
-          }
-        }
+{
+  foo(id: "123") {
+    id
+  }
+  foo(id: "123") {
+    name
+  }
+  foo(id: "123") {
+    id 
+    name
+  }
+}
 {{< / highlight >}}
 
 Each of these queries will result in a result with just one "foo" key, not two or three. 
@@ -56,55 +56,56 @@ Each of these queries will result in a result with just one "foo" key, not two o
 Invalid Queries are:
 
 {{< highlight graphql "linenos=table" >}}
-        {
-          foo
-          foo(id: "123")
-        }
+{
+  foo
+  foo(id: "123")
+}
 {{< / highlight >}}
 <p/>
 {{< highlight graphql "linenos=table" >}}
-        {
-          foo(id: "123")
-          foo(id: "456", id2: "123")
-        }
+{
+  foo(id: "123")
+  foo(id: "456", id2: "123")
+}
 {{< / highlight >}}
 <p/>
 {{< highlight graphql "linenos=table" >}}
-        {
-          foo(id: "123")
-          foo: foo2
-        }
+{
+  foo(id: "123")
+  foo: foo2
+}
 {{< / highlight >}}
 
-The reason whey they are not valid, is because the fields are different: in the first two examples the arguments differ and the third query actually has two different fields under the same key.
+The reason why they are not valid, is because the fields are different: in the first two examples the arguments differ and the third query actually has two different fields under the same key.
 
 # Motivation
 
 The examples so far don't seem really useful, but it all makes sense when you add fragments:
 
 {{< highlight graphql "linenos=table" >}}
-        {
-          ...myFragment1
-          ...myFragment2
-        }
+{
+  ...myFragment1
+  ...myFragment2
+}
 
-        fragment myFragment1 on Query {
-          foo(id: "123") {
-            name
-          }
-        }
-        fragment myFragment2 on Query {
-          foo(id: "123") {
-            url
-          }
-        }
+fragment myFragment1 on Query {
+  foo(id: "123") {
+    name
+  }
+}
+fragment myFragment2 on Query {
+  foo(id: "123") {
+    url
+  }
+}
 
 {{< / highlight >}}
 
 <p/>
 Fragments are designed to be written by different parties (for example different components in a UI) which should not know anything about each other. Requiring that every field can only be declared once would make this objective unfeasible.  
 
-But by allowing it as long as the fields are the same allows fragments to be authored in an independent from each other.  
+But by allowing fields merging, as long as the fields are the same, allows fragments to be authored in an independent way from each other.
+
 
 # Rules when fields can be merged
 
@@ -177,39 +178,41 @@ fragment conflictingDifferingResponses on Pet {
 One thing to keep in my mind is that the sub selections of fields are merged together. For example here `foo` is resolved once and than `id` and `name` is resolved.
 
 {{< highlight graphql "linenos=table" >}}
-        {
-          foo(id: "123") {
-            id
-          }
-          foo(id: "123") {
-            name
-          }
-        }
+{
+  foo(id: "123") {
+    id
+  }
+  foo(id: "123") {
+    name
+  }
+}
 {{< / highlight >}}
 
 This query is the same as:
 
 {{< highlight graphql "linenos=table" >}}
-        {
-          foo(id: "123") {
-            id
-            name
-          }
-        }
+{
+  foo(id: "123") {
+    id
+    name
+  }
+}
 {{< / highlight >}}
 
 The second thing to keep in mind is that different directives can be on each field:
 
 {{< highlight graphql "linenos=table" >}}
-        {
-          foo(id: "123") @myDirective {
-            id
-          }
-          foo(id: "123") @myOtherDirective {
-            name
-          }
-        }
+{
+  foo(id: "123") @myDirective {
+    id
+  }
+  foo(id: "123") @myOtherDirective {
+    name
+  }
+}
 {{< / highlight >}}
+
+So if you want to know all directives for the current field you are resolving you actually need to look at all of the merged fields from the query.
 
 # Merged fields in graphql-js and GraphQl Java
 
