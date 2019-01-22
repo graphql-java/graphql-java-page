@@ -18,7 +18,7 @@ GraphQL allows for a field to be declared multiple times in a query as long as i
 
 Valid GraphQL queries are:
 
-{{< highlight graphql "linenos=table" >}}
+{{< highlight Scala "linenos=table" >}}
 {
   foo
   foo
@@ -27,7 +27,7 @@ Valid GraphQL queries are:
 
 <p/>
 
-{{< highlight graphql "linenos=table" >}}
+{{< highlight Scala "linenos=table" >}}
 {
   foo(id: "123")
   foo(id: "123")
@@ -36,7 +36,7 @@ Valid GraphQL queries are:
 {{< / highlight >}}
 <p/>
 
-{{< highlight graphql "linenos=table" >}}
+{{< highlight Scala "linenos=table" >}}
 {
   foo(id: "123") {
     id
@@ -55,21 +55,21 @@ Each of these queries will result in a result with just one "foo" key, not two o
 
 Invalid Queries are:
 
-{{< highlight graphql "linenos=table" >}}
+{{< highlight Scala "linenos=table" >}}
 {
   foo
   foo(id: "123")
 }
 {{< / highlight >}}
 <p/>
-{{< highlight graphql "linenos=table" >}}
+{{< highlight Scala "linenos=table" >}}
 {
   foo(id: "123")
   foo(id: "456", id2: "123")
 }
 {{< / highlight >}}
 <p/>
-{{< highlight graphql "linenos=table" >}}
+{{< highlight Scala "linenos=table" >}}
 {
   foo(id: "123")
   foo: foo2
@@ -82,7 +82,7 @@ The reason why they are not valid, is because the fields are different: in the f
 
 The examples so far don't seem really useful, but it all makes sense when you add fragments:
 
-{{< highlight graphql "linenos=table" >}}
+{{< highlight Scala "linenos=table" >}}
 {
   ...myFragment1
   ...myFragment2
@@ -113,7 +113,7 @@ The specific details when fields can be merged are written down in [Field Select
 
 The rules are what you would expect in general and they basically say that fields must be the same. The following examples are taken from the spec and they are all valid:
 
-{{< highlight graphql "linenos=table" >}}
+{{< highlight Scala "linenos=table" >}}
 fragment mergeIdenticalFields on Dog {
   name
   name
@@ -134,7 +134,7 @@ fragment mergeIdenticalFieldsWithIdenticalValues on Dog {
 
 The most complex case happens when you have fields in fragments on different types:
 
-{{< highlight graphql "linenos=table" >}}
+{{< highlight Scala "linenos=table" >}}
 fragment safeDifferingFields on Pet {
   ... on Dog {
     volume: barkVolume
@@ -147,7 +147,7 @@ fragment safeDifferingFields on Pet {
 
 This is normally invalid because `volume` is an alias for two different fields `barkVolume` and `meowVolume` but because only one of the some are actually resolved and they both return a value of the same type (we assume here that `barkVolume` and `meowVolume` are both of the same type) it is valid.
 
-{{< highlight graphql "linenos=table" >}}
+{{< highlight Scala "linenos=table" >}}
 fragment safeDifferingArgs on Pet {
   ... on Dog {
     doesKnowCommand(dogCommand: SIT)
@@ -162,7 +162,7 @@ This is again a valid case because even if the first `doesKnowCommand` has a dif
 
 In the next example `someValue` has different types (we assume that `nickname` is a `String` and `meowVolume` is a `Int`) and therefore the query is not valid:
 
-{{< highlight graphql "linenos=table" >}}
+{{< highlight Scala "linenos=table" >}}
 fragment conflictingDifferingResponses on Pet {
   ... on Dog {
     someValue: nickname
@@ -177,7 +177,7 @@ fragment conflictingDifferingResponses on Pet {
 
 One thing to keep in my mind is that the sub selections of fields are merged together. For example here `foo` is resolved once and than `id` and `name` is resolved.
 
-{{< highlight graphql "linenos=table" >}}
+{{< highlight Scala "linenos=table" >}}
 {
   foo(id: "123") {
     id
@@ -190,7 +190,7 @@ One thing to keep in my mind is that the sub selections of fields are merged tog
 
 This query is the same as:
 
-{{< highlight graphql "linenos=table" >}}
+{{< highlight Scala "linenos=table" >}}
 {
   foo(id: "123") {
     id
@@ -201,7 +201,7 @@ This query is the same as:
 
 The second thing to keep in mind is that different directives can be on each field:
 
-{{< highlight graphql "linenos=table" >}}
+{{< highlight Scala "linenos=table" >}}
 {
   foo(id: "123") @myDirective {
     id
