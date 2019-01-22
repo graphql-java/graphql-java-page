@@ -287,7 +287,9 @@ To make a programmatically-generated schema executable, you can just instantiate
                     .dataFetcher(new StaticDataFetcher("world!"))
             .build();
 
-    GraphQLSchema schema = new GraphQLSchema(queryType);
+    GraphQLSchema schema = GraphQLSchema.newSchema()
+            .query(queryType)
+            .build();
 
     // Make the schema executable
     GraphQL executor = GraphQL.newGraphQL(graphQLSchema).build()
