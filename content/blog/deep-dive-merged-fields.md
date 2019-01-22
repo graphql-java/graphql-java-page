@@ -214,7 +214,7 @@ The second thing to keep in mind is that different directives can be on each fie
 
 So if you want to know all directives for the current field you are resolving you actually need to look at all of the merged fields from the query.
 
-# Merged fields in graphql-js and GraphQl Java
+# Merged fields in graphql-js and GraphQL Java
 
 In graphql-js merged fields are relevant when you implement a resolver and you need access to the specific ast field of the query. The `info` objects has a property `fieldNodes` which gives you access to all ast fields which are merged together.
 
