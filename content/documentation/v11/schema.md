@@ -273,10 +273,10 @@ To make a programmatically-generated schema executable, you can just instantiate
 
     GraphQLSchema schema = GraphQLSchema.newSchema()
             .query(queryType)
-            .build()
+            .build();
 
     // Make the schema executable
-    GraphQL executor = GraphQL.newGraphQL(graphQLSchema).build()
+    GraphQL executor = GraphQL.newGraphQL(graphQLSchema).build();
     ExecutionResult executionResult = executor.execute("{hello}");
 {{< / highlight >}}
 
