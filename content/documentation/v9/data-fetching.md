@@ -183,7 +183,7 @@ the query is executed.  The following section explains more on this.
 * ``DataFetchingFieldSelectionSet getSelectionSet()`` - the selection set represents the child fields that have been "selected" under neath the
 currently executing field. This can be useful to help look ahead to see what sub field information a client wants.  The following section explains more on this.
 
-* ```ExecutionId getExecutionId()`` - each query execution is given a unique id.  You can use this perhaps on logs to tag each individual
+* ``ExecutionId getExecutionId()`` - each query execution is given a unique id.  You can use this perhaps on logs to tag each individual
 query.
 
 
@@ -223,6 +223,6 @@ The sub fields here of the ``products`` field represent the selection set of tha
 so the data fetcher can optimise the data access queries.  For example an SQL backed system may be able to use the field sub selection to
 only retrieve the columns that have been asked for.
 
-In the example above we have asked for ``selectionLocations`` information and hence we may be able to make an more efficient data access query where
+In the example above we have asked for ``sellingLocations`` information and hence we may be able to make an more efficient data access query where
 we ask for product information and selling location information at the same time.
 
