@@ -337,7 +337,7 @@ The result of the `DataFetcher` from the parent field is made available via `get
 We then use the previously fetched book to get the `authorId` and then look for that specific author in the same way we look for a specific book.
 
 
-# Try our the API
+# Try out the API
 This is all needed to actually build a working GraphQL API. After the starting the Spring Boot application the API is available on `http://localhost:8080/graphql`. 
 
 The easiest way to try out and explore a GraphQL API is to use a tool like [GraphQL Playground](https://github.com/prisma/graphql-playground). Download it and run it.
