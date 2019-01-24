@@ -34,6 +34,7 @@ With GraphQL you send the following query to server to get the details for the b
 
 This is not JSON (even if it looks remotely similar), it is a GraphQL query. 
 It basically says:
+
 - query a book with a specific id
 - get me the id, name, pageCount and author from that book
 - for the author I want to know the firstName and lastName
