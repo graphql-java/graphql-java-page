@@ -20,7 +20,7 @@ With GraphQL you send the following query to server to get the details for the b
 
 {{< highlight scala "linenos=table" >}}
 {
-  bookById(id: "123"){
+  bookById(id: "book-1"){
     id
     name
     pageCount
@@ -39,11 +39,11 @@ But the response is normal JSON:
 { 
   "bookById":
   {
-    "id":"123",
+    "id":"book-1",
     "name":"Harry Potter and the Philosopher's Stone",
     "pageCount":223,
     "author": {
-      "firstName":"J. K.",
+      "firstName":"Joanne",
       "lastName":"Rowling"
     }
   }
@@ -248,12 +248,108 @@ public interface DataFetcher<T> {
 
 Important: **Every** field from the schema has a `DataFetcher` associated with. If you don't specify any `DataFetcher` for a specific field the default `PropertyDataFetcher` is used.
 
-We are creating a new class `GraphQLDataFetchers 
+We are creating a new class `GraphQLDataFetchers` which contains a sample list of books and authors.
+
+The full implementation looks like that and we will look at it in detail:
 
 
+{{< highlight java "linenos=table" >}}
+@Component
+public class GraphQLDataFetchers {
 
-# Testing the API  
+    private static List<Map<String, String>> books = Arrays.asList(
+            ImmutableMap.of("id", "book-1",
+                    "name", "Moby Dick",
+                    "pageCount", "635",
+                    "authorId", "author-1"),
+            ImmutableMap.of("id", "book-2",
+                    "name", "Harry Potter and the Philosopher's Stone",
+                    "pageCount", "223",
+                    "authorId", "author-2"),
+            ImmutableMap.of("id", "book-3",
+                    "name", "Interview with the vampire",
+                    "pageCount", "371",
+                    "authorId", "author-3")
+    );
+
+    private static List<Map<String, String>> authors = Arrays.asList(
+            ImmutableMap.of("id", "author-1",
+                    "firstName", "Herman",
+                    "lastName", "Melville"),
+            ImmutableMap.of("id", "author-2",
+                    "firstName", "Joanne",
+                    "lastName", "Rowling"),
+            ImmutableMap.of("id", "author-3",
+                    "firstName", "Anne",
+                    "lastName", "Rice")
+    );
+
+    public DataFetcher getBookByIdDataFetcher() {
+        return dataFetchingEnvironment -> {
+            String bookId = dataFetchingEnvironment.getArgument("id");
+            return books
+                    .stream()
+                    .filter(book -> book.get("id").equals(bookId))
+                    .findFirst()
+                    .orElse(null);
+        };
+    }
+
+    public DataFetcher getAuthorDataFetcher() {
+        return dataFetchingEnvironment -> {
+            Map<String,String> book = dataFetchingEnvironment.getSource();
+            String authorId = book.get("authorId");
+            return authors
+                    .stream()
+                    .filter(author -> author.get("id").equals(authorId))
+                    .findFirst()
+                    .orElse(null);
+        };
+    }
+}
+
+{{< / highlight >}}
+<p/>
+
+## Source of the data
+We are getting our books and authors from a static list inside the class. This is made just for this tutorial. It is very important to understand that GraphQL doesn't dictate in anyway where the data comes from. This is the power of GraphQL: it can come from a static in memory list, from a database or an external service  
+
+
+## Book DataFetcher
+Our first method `getBookByIdDataFetcher` returns a `DataFetcher` implementation which takes a `DataFetcherEnvironment` and returns a book.
+In our case this means we need to get the `id` argument from the `bookById` field and find the book with this specific id. If we can't find it we just return null. 
+
+The "id" in `String bookId = dataFetchingEnvironment.getArgument("id");` is the "id" from the `bookById` query field in the schema: 
+
+{{< highlight scala "linenos=table" >}}
+type Query {
+  bookById(id: ID): Book 
+}
+...
+{{< / highlight >}}
+
+
+## Author DataFetcher
+Our second method `getAuthorDataFetcher` returns a `DataFetcher` for getting the author for a specific book.
+The difference to the book `DataFetcher` is that we don't have an argument, but we have a book instance.
+The result of the `DataFetcher` from the parent field is made available via `getSource`. This is an important concept to understand: the `DataFetcher` for each field in GraphQL are called from top to down and the previous result is the `source` property of the `DataFetcherEnvironment`. 
+
+We then use the previously fetched book to get the `authorId` and then look for that specific author in the same way we look for a specific book.
+
+
+# Try our the API
+This is all needed to actually build a working GraphQL API. After the starting the Spring Boot application the API is available on `http://localhost:8080/graphql`. 
+
+The easiest way to try out and explore a GraphQL API is to use a tool like [GraphQL Playground](https://github.com/prisma/graphql-playground). Download it and run it.
+
+After starting it you will be asked for a URL, enter "http://localhost:8080/graphql". 
+
+After that you can query our example API and you should get back the result we mentioned in the beginning. It should look like this:
+
+![GraphQL Playground](/images/playground.png)
 
 
 # Complete example source code 
+
+The complete project with the full source code can be found here: https://github.com/graphql-java/tutorials/tree/master/book-details 
 
