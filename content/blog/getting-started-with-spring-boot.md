@@ -3,7 +3,7 @@ title = "Getting started with GraphQL Java and Spring Boot"
 author = "Andreas Marek"
 tags = []
 categories = []
-date = 2018-10-22T01:00:00+10:00
+date = 2019-01-23
 toc = "true"
 +++
 
@@ -18,9 +18,9 @@ For example we wanna query the details for specific book from a online store bac
 
 With GraphQL you send the following query to server to get the details for the book with the id "123":
 
-{{< highlight graphql "linenos=table" >}}
+{{< highlight scala "linenos=table" >}}
 {
-  book(id: "123"){
+  bookById(id: "123"){
     id
     name
     pageCount
@@ -32,17 +32,20 @@ With GraphQL you send the following query to server to get the details for the b
 }
 {{< / highlight >}}
 
-This is not JSON (even if it looks remotely similar), but it is a GraphQL query.
+This is not JSON (even if it looks remotely similar), it is a GraphQL query.
 
 But the response is normal JSON:
 {{< highlight json "linenos=table" >}}
-{
-  "id":"123",
-  "name":"Harry Potter and the Philosopher's Stone",
-  "pageCount":223,
-  "author": {
-    "firstName":"J. K.",
-    "lastName":"Rowling"
+{ 
+  "bookById":
+  {
+    "id":"123",
+    "name":"Harry Potter and the Philosopher's Stone",
+    "pageCount":223,
+    "author": {
+      "firstName":"J. K.",
+      "lastName":"Rowling"
+    }
   }
 }
 {{< / highlight >}}
@@ -51,62 +54,45 @@ One very important property of GraphQL is that it is statically typed: the serve
 
 The schema for the above query looks like this:
 
-{{< highlight graphql "linenos=table" >}}
+{{< highlight scala "linenos=table" >}}
 type Query {
-  book(id: ID): Book 
+  bookById(id: ID): Book 
 }
 
 type Book {
   id: ID
   name: String
   pageCount: Int
-  author: Person
+  author: Author
 }
 
-type Person {
+type Author {
+  id: ID
   firstName: String
   lastName: String
 }
 {{< / highlight >}}
 
-This tutorial will focus on how to implement a GraphQL server in Java.
+This tutorial will focus on how to implement a GraphQL server with schema in Java.
 
 We barely touched GraphQL. Further information can be found on the official page: https://graphql.github.io/learn/
-
 
 # GraphQL Java Overview
 
 [GraphQL Java](https://www.graphql-java.com) is the Java (server) implementation for GraphQL. 
 The are several repositories in the GraphQL Java Github org. The most important one is the [GraphQL Java Engine](https://github.com/graphql-java/graphql-java) which is basis for everything else.
 
-We will also use the [GraphQL Java Spring Boot](https://github.com/graphql-java/graphql-java-spring) adapter, which takes care of exposing your GraphQL API via HTTP.
-
-GraphQL Java itself is only concerned with executing queries. It doesn't deal with any HTTP or JSON related topics. For these aspects we will use [Spring Boot](https://spring.io/projects/spring-boot).
+GraphQL Java Engine itself is only concerned with executing queries. It doesn't deal with any HTTP or JSON related topics. For these aspects we will use the [GraphQL Java Spring Boot](https://github.com/graphql-java/graphql-java-spring) adapter which takes care of exposing our API via Spring Boot over HTTP.
  
 The main steps of creating a GraphQL Java server are:
 
 1. Defining a GraphQL Schema.
 2. Defining on how the actual data for a query is fetched. 
 
-
 # Our example API: getting book details
 
-Our example app we will build is a simple online store for books.
-We assume the very simple user flow: 
-
-the user comes to our page and sees all available books for order.
-They can select a specific book and look up the details. If they like it they can order it.
-
-We will build a GraphQL server which will cover the following use cases:
-
-1. get a list of available books
-1. get specific book details
-
-We will incrementally build our app. 
-
-> **What about the schema/API design?**<br/>
-Schema and API design itself is interesting and challenging but we will focus on implementing the server and not discuss the actual schema design choices.
-
+Our example app will be a simple API to get details for a specific book.
+This is in no way a comprehensive API, but it is enough for this tutorial.
 
 # Create a Spring Boot app
 
@@ -121,7 +107,7 @@ Select:
 For the project metadata we use:
 
 - Group: `com.graphql-java.tutorial`
-- Artifact: `online-store`
+- Artifact: `book-details`
 
 As dependency we just select `Web`.
 
@@ -132,59 +118,117 @@ We are adding three dependencies to our project inside the `dependencies` sectio
 
 the first two are GraphQL Java and GraphQL Java Spring and then we also add [Google Guava](https://github.com/google/guava). Guava is not strictly needed but it will make our life a little bit easier.
 
+The dependencies will look like that:
+
 {{< highlight groovy "linenos=table" >}}
 dependencies {
-  ...
-  implementation('com.graphql-java:graphql-java:11.0')
-  implementation "com.graphql-java:graphql-java-spring-boot-starter-webmvc:1.0"
-  implementation('com.google.guava:guava:26.0-jre')
+    implementation 'com.graphql-java:graphql-java:11.0' // NEW
+    implementation 'com.graphql-java:graphql-java-spring-boot-starter-webmvc:1.0' // NEW
+    implementation 'com.google.guava:guava:26.0-jre' // NEW
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 {{< / highlight >}}
 
-# Defining the schema
+# Schema
 
 We are creating a new file `schema.graphqls` in `src/main/resources` with the following content:
 
-{{< highlight graphql "linenos=table" >}}
+{{< highlight scala "linenos=table" >}}
 type Query {
-  books: [Books]
-  bookById(id: ID!): Book
+  bookById(id: ID): Book 
 }
 
 type Book {
   id: ID
   name: String
+  pageCount: Int
+  author: Author
 }
 
+type Author {
+  id: ID
+  firstName: String
+  lastName: String
+}
 {{< / highlight >}}
+<p/>
 
-This schema defines two top level fields (fields in the type `Query`): `books` which results in a list of `Book`s and a `bookById` to query a specific Book by id. 
+This schema defines one top level field (field in the type `Query`):  `bookById` which returns the details of a specific book.
 
-It also defines the type `Book` which has two fields: `id` and `name`.
+It also defines the type `Book` which has the fields: `id`, `name`, `pageCount` and `author`.
+`author` is of type `Author`, which is defined after `Book`.
 
 > The Domain Specific Language shown above which is used to describe a schema is called Schema Definition Language or SDL.
 
 But so far it is just a normal text. We need to "bring it to live" by reading the file and parsing it.
-We are using Guava to read the file at runtime from our classpath:
+
+We are creating a new `GraphQLProvider` class in the package `com.graphqljava.tutorial.bookdetails` with an `init` method which will create a `GraphQL` instance:
 
 {{< highlight java "linenos=table" >}}
-URL url = Resources.getResource("schema.graphql");
-String sdl = Resources.toString(url, Charsets.UTF_8);
+
+@Component
+public class GraphQLProvider {
+
+    private GraphQL graphQL;
+
+    @Bean
+    public GraphQL graphQL() {
+        return graphQL;
+    }
+
+    @PostConstruct
+    public void init() throws IOException {
+        URL url = Resources.getResource("schema.graphqls");
+        String sdl = Resources.toString(url, Charsets.UTF_8);
+        GraphQLSchema graphQLSchema = buildSchema(sdl);
+        this.graphQL = GraphQL.newGraphQL(graphQLSchema).build();
+    }
+
+    private GraphQLSchema buildSchema(String sdl) {
+      //TODO
+    }
+}
 {{< / highlight >}}
+<p/>
 
-We now using GraphQL Java for the first time: We are transforming the `sdl` into a `TypeDefinitionRegistry`:
 
+We are using Guava to read the file at runtime from our classpath, then create a `GraphQLSchema` and `GraphQL` instance. This `GraphQL` instance is exposed as Spring Bean. The GraphQL Java Spring adapter will use that `GraphQL` instance to expose it the schema over HTTP on the default url `/graphql`. 
+
+
+What we still need to do is to implement the `buildSchema` method which creates the `GraphQLSchema` instance:
 
 {{< highlight java "linenos=table" >}}
-  TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(sdl);
+    @Autowired
+    GraphQLDataFetchers graphQLDataFetchers;
+
+    private GraphQLSchema buildSchema(String sdl) {
+        TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(sdl);
+        RuntimeWiring runtimeWiring = buildWiring();
+        SchemaGenerator schemaGenerator = new SchemaGenerator();
+        return schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);
+    }
+
+    private RuntimeWiring buildWiring() {
+        return RuntimeWiring.newRuntimeWiring()
+                .type(newTypeWiring("Query")
+                        .dataFetcher("bookById", graphQLDataFetchers.getBookByIdDataFetcher()))
+                .type(newTypeWiring("Book")
+                        .dataFetcher("author", graphQLDataFetchers.getAuthorDataFetcher())
+                        .build())
+                .build();
+    }
 {{< / highlight >}}
+<p/>
 
-This `TypeDefinitionRegistry` is just a parsed version of the schema definition file.
+`TypeDefinitionRegistry` is the parsed version of our schema file. `SchemaGenerator` combines the `TypeDefinitionRegistry` with `RuntimeWiring` to actually make the `GraphQLSchema`.
 
-## Creating a GraphQLSchema
+`buildRuntimeWiring` uses the `graphQLDataFetchers` bean to actually register two `DataFetcher`:
 
-The `typeRegistry` defined above is just types: it describes how the schema looks like, but not how it actually works when a query is executed.  
+- One to retrieve a book with a specific ID
+- One to get the author for a specific book. 
 
+`DataFetcher` and how to implement the `GraphQLDataFetcher` bean is explained in the next section.
 
 # DataFetchers
 
@@ -192,30 +236,24 @@ Probably the most important concept for a GraphQL Java server is a `DataFetcher`
 A `DataFetcher` fetches the Data for one field while the query is executed. 
 
 While GraphQL Java is executing a query it calls the appropriate `DataFetcher` for each field it encounters in query.
-A `DataFetcher` is a Interface with a single method, taking a single argument of type `DataFetcherEnvironment`.
-
-For our first iteration we are doing the simplest possible thing that works: we are fetching the books we wanna display from in-memory. 
-
-Our code looks like this:
-
-{{< highlight java "linenos=table" >}}
-
-{{< / highlight >}}
-
-
-Important: **Every** field from the schema has a `DataFetcher` associated with. Most of them have the a default `DataFetcher` of type `PropertyDataFetcher`.
-
-# Exposing the schema via HTTP
-
-The last step is to actually expose the GraphQL schema via HTTP. This is done via the GraphQL Java Spring adapter.
-
-The only thing you have todo is to actually define a `Bean` of type `GraphQL` in you Spring Boot app.
+A `DataFetcher` is an Interface with a single method, taking a single argument of type `DataFetcherEnvironment`:
 
 
 {{< highlight java "linenos=table" >}}
-  
+public interface DataFetcher<T> {
+    T get(DataFetchingEnvironment dataFetchingEnvironment) throws Exception;
+}
 {{< / highlight >}}
+<p/>
+
+Important: **Every** field from the schema has a `DataFetcher` associated with. If you don't specify any `DataFetcher` for a specific field the default `PropertyDataFetcher` is used.
+
+We are creating a new class `GraphQLDataFetchers 
 
 
-# Full source code 
+
+# Testing the API  
+
+
+# Complete example source code 
 
