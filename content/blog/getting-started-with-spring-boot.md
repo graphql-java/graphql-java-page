@@ -7,14 +7,14 @@ date = 2019-01-23
 toc = "true"
 +++
 
-This is a tutorial for people who never development a GraphQL server with Java. Some Spring Boot and Java knowledge is required. While we give a brief introduction into GraphQL, the focus of this tutorial is on developing a GraphQL server in Java.
+This is a tutorial for people who have never development a GraphQL server with Java. Some Spring Boot and Java knowledge is required. While we give a brief introduction into GraphQL, the focus of this tutorial is on developing a GraphQL server in Java.
 
 
 # GraphQL in 3 minutes
 
 GraphQL is a query language to retrieve data from a server. It is an alternative to REST, SOAP or gRPC in some way. 
 
-For example, we wanna query the details for specific book from a online store backend.
+Let's suppose we want to query the details for a specific book from a online store backend.
 
 With GraphQL you send the following query to server to get the details for the book with the id "123":
 
@@ -80,7 +80,7 @@ type Author {
 
 This tutorial will focus on how to implement a GraphQL server with exactly this schema in Java.
 
-We barely touched GraphQL. Further information can be found on the official page: https://graphql.github.io/learn/
+We've barely scratched the surface of what's possible with GraphQL. Further information can be found on the official page: https://graphql.github.io/learn/
 
 # GraphQL Java Overview
 
@@ -166,7 +166,7 @@ It also defines the type `Book` which has the fields: `id`, `name`, `pageCount` 
 
 > The Domain Specific Language shown above which is used to describe a schema is called Schema Definition Language or SDL. More details about it can be found [here](https://graphql.org/learn/schema/).
 
-But so far it is just a normal text. We need to "bring it to live" by reading the file and parsing it.
+But so far this is just normal text. We need to "bring it to live" by reading the file and parsing it.
 
 We create a new `GraphQLProvider` class in the package `com.graphqljava.tutorial.bookdetails` with an `init` method which will create a `GraphQL` instance:
 
@@ -197,7 +197,7 @@ public class GraphQLProvider {
 {{< / highlight >}}
 <p/>
 
-We use Guava to read the file at runtime from our classpath, then create a `GraphQLSchema` and `GraphQL` instance. This `GraphQL` instance is exposed as Spring Bean. The GraphQL Java Spring adapter will use that `GraphQL` instance to make our schema available via HTTP on the default url `/graphql`. 
+We use Guava to read the file at runtime from our classpath, then create a `GraphQLSchema` and `GraphQL` instance. This `GraphQL` instance is exposed as a Spring Bean. The GraphQL Java Spring adapter will use that `GraphQL` instance to make our schema available via HTTP on the default url `/graphql`. 
 
 What we still need to do is to implement the `buildSchema` method which creates the `GraphQLSchema` instance:
 
@@ -338,7 +338,7 @@ This is an important concept to understand: the `DataFetcher` for each field in 
 We then use the previously fetched book to get the `authorId` and look for that specific author in the same way we look for a specific book.
 
 # Try out the API
-This is all that is needed to actually build a working GraphQL API. After the starting the Spring Boot application the API is available on `http://localhost:8080/graphql`. 
+This is all you actually need to build a working GraphQL API. After the starting the Spring Boot application the API is available on `http://localhost:8080/graphql`. 
 
 The easiest way to try out and explore a GraphQL API is to use a tool like [GraphQL Playground](https://github.com/prisma/graphql-playground). Download it and run it.
 
