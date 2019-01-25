@@ -7,8 +7,7 @@ date = 2019-01-23
 toc = "true"
 +++
 
-This is a tutorial for people who have never development a GraphQL server with Java. Some Spring Boot and Java knowledge is required. While we give a brief introduction into GraphQL, the focus of this tutorial is on developing a GraphQL server in Java.
-
+This is a tutorial for people who want to create a GraphQL server in Java. It requires some Spring Boot and Java knowledge and while we give a brief introduction into GraphQL, the focus of this tutorial is on developing a GraphQL server in Java.
 
 # GraphQL in 3 minutes
 
@@ -32,7 +31,7 @@ With GraphQL you send the following query to server to get the details for the b
 }
 {{< / highlight >}}
 
-This is not JSON (even if it looks remotely similar), it is a GraphQL query. 
+This is not JSON (even though it looks deliberately similar), it is a GraphQL query. 
 It basically says:
 
 - query a book with a specific id
@@ -55,7 +54,7 @@ The response is normal JSON:
 }
 {{< / highlight >}}
 
-One very important property of GraphQL is that it is statically typed: the server knows exactly of the shape of every object you can query and any client can actually "inspect" the server and ask for the so called "schema". The schema describes what queries are possible and what fields you can get back. (Note: when we refer to schema here, we always refer to a "GraphQL Schema", which is not related to other schemas like "JSON Schema") 
+One very important property of GraphQL is that it is statically typed: the server knows exactly the shape of every object you can query and any client can actually "introspect" the server and ask for the so called "schema". The schema describes what queries are possible and what fields you can get back. (Note: when we refer to schema here, we always refer to a "GraphQL Schema", which is not related to other schemas like "JSON Schema" or "Database Schema") 
 
 The schema for the above query looks like this:
 
@@ -92,7 +91,7 @@ GraphQL Java Engine itself is only concerned with executing queries. It doesn't 
 The main steps of creating a GraphQL Java server are:
 
 1. Defining a GraphQL Schema.
-2. Defining on how the actual data for a query is fetched. 
+2. Deciding on how the actual data for a query is fetched.
 
 # Our example API: getting book details
 
@@ -166,7 +165,7 @@ It also defines the type `Book` which has the fields: `id`, `name`, `pageCount` 
 
 > The Domain Specific Language shown above which is used to describe a schema is called Schema Definition Language or SDL. More details about it can be found [here](https://graphql.org/learn/schema/).
 
-But so far this is just normal text. We need to "bring it to live" by reading the file and parsing it.
+Once we have this file we need to "bring it to life" by reading the file and parsing it and adding code to fetch data for it.
 
 We create a new `GraphQLProvider` class in the package `com.graphqljava.tutorial.bookdetails` with an `init` method which will create a `GraphQL` instance:
 
@@ -191,15 +190,16 @@ public class GraphQLProvider {
     }
 
     private GraphQLSchema buildSchema(String sdl) {
-      //TODO
+      // TODO: we will create the schema here later 
     }
 }
 {{< / highlight >}}
 <p/>
 
-We use Guava to read the file at runtime from our classpath, then create a `GraphQLSchema` and `GraphQL` instance. This `GraphQL` instance is exposed as a Spring Bean. The GraphQL Java Spring adapter will use that `GraphQL` instance to make our schema available via HTTP on the default url `/graphql`. 
+We use Guava `Resources` to read the file from our classpath, then create a `GraphQLSchema` and `GraphQL` instance. This `GraphQL` instance is exposed as a Spring Bean. The GraphQL Java Spring adapter will use that `GraphQL` instance to make our schema available via HTTP on the default url `/graphql`. 
 
-What we still need to do is to implement the `buildSchema` method which creates the `GraphQLSchema` instance:
+What we still need to do is to implement the `buildSchema` method which creates the `GraphQLSchema` instance and wires in code to fetch data:
+
 
 {{< highlight java "linenos=table" >}}
     @Autowired
@@ -225,7 +225,7 @@ What we still need to do is to implement the `buildSchema` method which creates 
 
 `TypeDefinitionRegistry` is the parsed version of our schema file. `SchemaGenerator` combines the `TypeDefinitionRegistry` with `RuntimeWiring` to actually make the `GraphQLSchema`.
 
-`buildRuntimeWiring` uses the `graphQLDataFetchers` bean to actually register two `DataFetcher`:
+`buildRuntimeWiring` uses the `graphQLDataFetchers` bean to actually register two `DataFetcher`s:
 
 - One to retrieve a book with a specific ID
 - One to get the author for a specific book. 
@@ -252,7 +252,7 @@ Important: **Every** field from the schema has a `DataFetcher` associated with. 
 
 We are creating a new class `GraphQLDataFetchers` which contains a sample list of books and authors.
 
-The full implementation looks like that and we will look at it in detail:
+The full implementation looks like this which we will look at it in detail soon:
 
 
 {{< highlight java "linenos=table" >}}
