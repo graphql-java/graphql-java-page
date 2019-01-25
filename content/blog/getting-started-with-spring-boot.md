@@ -337,6 +337,29 @@ This is an important concept to understand: the `DataFetcher` for each field in 
 
 We then use the previously fetched book to get the `authorId` and look for that specific author in the same way we look for a specific book.
 
+## Default DataFetchers
+We only implement two `DataFetchers`. As mentioned above, if you don't specify one, the default `PropertyDataFetcher` is used. In our case it means `Book.id`, `Book.name`, `Book.pageCount`, `Author.id`, `Author.firstName` and `Author.lastName` all have a default `PropertyDataFetcher` associated with it.
+
+A `PropertyDataFetcher` tries to lookup a property on a Java object in multiple ways. In case of a `java.util.Map` it simply looks up the property by key. This works perfectly fine for us because the keys of the book and author Maps are the same as the fields specified in the schema. For example in the schema we define for the Book type the field `pageCount` and the book `DataFetcher` returns a `Map` with a key `pageCount`. Because the field name is the same as the key in the `Map`("pageCount") the `PropertyDateFetcher` works for us.
+
+Lets assume for a second we have a mismatch and the book `Map` has a key `totalPages` instead of `pageCount`. This would result in a `null` value for `pageCount` for every book, because the `PropertyDataFetcher` can't fetch the right value. In order to fix that you would have to register a new `DataFetcher` for `Book.pageCount` which looks like this:
+
+{{< highlight java "linenos=table" >}}
+...
+    public DataFetcher getPageCountDataFetcher() {
+        return dataFetchingEnvironment -> {
+            Map<String,String> book = dataFetchingEnvironment.getSource();
+            return book.get("totalPages");
+        };
+    }
+...
+{{< / highlight >}}
+
+<p/>
+This `DataFetcher` would fix that problem by looking up the right key in the book `Map`. 
+(Again: we don't need that for our example, because we don't have naming mismatch)
+
+
 # Try out the API
 This is all you actually need to build a working GraphQL API. After the starting the Spring Boot application the API is available on `http://localhost:8080/graphql`. 
 
@@ -348,7 +371,12 @@ After that, you can query our example API and you should get back the result we 
 
 ![GraphQL Playground](/images/playground.png)
 
-# Complete example source code 
+# Complete example source code and more information
 
 The complete project with the full source code can be found here: https://github.com/graphql-java/tutorials/tree/master/book-details 
+
+More information about GraphQL Java can be found in the [documentation](https://www.graphql-java.com/documentation/). 
+
+We also have [spectrum chat](https://spectrum.chat/graphql-java) for any question or problems.
+
 
