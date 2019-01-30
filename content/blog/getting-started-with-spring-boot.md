@@ -1,7 +1,7 @@
 +++
 title = "Getting started with GraphQL Java and Spring Boot"
 author = "Andreas Marek"
-tags = [spring, tutorial]
+tags = ["spring", "tutorial"]
 categories = []
 date = 2019-01-23
 toc = "true"
