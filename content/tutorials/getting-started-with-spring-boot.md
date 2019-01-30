@@ -177,7 +177,7 @@ public class GraphQLProvider {
     private GraphQL graphQL;
 
     @Bean
-    public GraphQL graphQL() {
+    public GraphQL graphQL() { 
         return graphQL;
     }
 
@@ -230,7 +230,11 @@ What we still need to do is to implement the `buildSchema` method which creates 
 - One to retrieve a book with a specific ID
 - One to get the author for a specific book. 
 
-`DataFetcher` and how to implement the `GraphQLDataFetcher` bean is explained in the next section.
+`DataFetcher` and how to implement the `GraphQLDataFetchers` bean is explained in the next section.
+
+Overall the process of creating a `GraphQL` and `GraphQLSchema` instance looks like this:
+
+![Creating GraphQL](/images/graphql_creation.png)
 
 # DataFetchers
 
@@ -345,7 +349,21 @@ A `PropertyDataFetcher` tries to lookup a property on a Java object in multiple 
 Lets assume for a second we have a mismatch and the book `Map` has a key `totalPages` instead of `pageCount`. This would result in a `null` value for `pageCount` for every book, because the `PropertyDataFetcher` can't fetch the right value. In order to fix that you would have to register a new `DataFetcher` for `Book.pageCount` which looks like this:
 
 {{< highlight java "linenos=table" >}}
-...
+
+    // In the GraphQLProvider class
+    private RuntimeWiring buildWiring() {
+        return RuntimeWiring.newRuntimeWiring()
+                .type(newTypeWiring("Query")
+                        .dataFetcher("bookById", graphQLDataFetchers.getBookByIdDataFetcher()))
+                .type(newTypeWiring("Book")
+                        .dataFetcher("author", graphQLDataFetchers.getAuthorDataFetcher())
+                        // This line is new: we need to register the additional DataFetcher
+                        .dataFetcher("pageCount", graphQLDataFetchers.getPageCountDataFetcher()))
+                .build();
+    }
+
+    // In the GraphQLDataFetchers class
+    // Implement the DataFetcher
     public DataFetcher getPageCountDataFetcher() {
         return dataFetchingEnvironment -> {
             Map<String,String> book = dataFetchingEnvironment.getSource();
@@ -357,7 +375,7 @@ Lets assume for a second we have a mismatch and the book `Map` has a key `totalP
 
 <p/>
 This `DataFetcher` would fix that problem by looking up the right key in the book `Map`. 
-(Again: we don't need that for our example, because we don't have naming mismatch)
+(Again: we don't need that for our example, because we don't have a naming mismatch)
 
 
 # Try out the API
@@ -378,5 +396,7 @@ The complete project with the full source code can be found here: https://github
 More information about GraphQL Java can be found in the [documentation](https://www.graphql-java.com/documentation/). 
 
 We also have [spectrum chat](https://spectrum.chat/graphql-java) for any question or problems.
+
+For direct feedback you can also ping us on our [Twitter GraphQL Java account](https://twitter.com/graphql_java).
 
 
