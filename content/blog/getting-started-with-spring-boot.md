@@ -1,7 +1,7 @@
 +++
 title = "Getting started with GraphQL Java and Spring Boot"
 author = "Andreas Marek"
-tags = []
+tags = [spring, tutorial]
 categories = []
 date = 2019-01-23
 toc = "true"
@@ -196,7 +196,7 @@ public class GraphQLProvider {
 {{< / highlight >}}
 <p/>
 
-We use Guava `Resources` to read the file from our classpath, then create a `GraphQLSchema` and `GraphQL` instance. This `GraphQL` instance is exposed as a Spring Bean. The GraphQL Java Spring adapter will use that `GraphQL` instance to make our schema available via HTTP on the default url `/graphql`. 
+We use Guava `Resources` to read the file from our classpath, then create a `GraphQLSchema` and `GraphQL` instance. This `GraphQL` instance is exposed as a Spring Bean via the `graphQL()` method annotated with `@Bean`. The GraphQL Java Spring adapter will use that `GraphQL` instance to make our schema available via HTTP on the default url `/graphql`. 
 
 What we still need to do is to implement the `buildSchema` method which creates the `GraphQLSchema` instance and wires in code to fetch data:
 
@@ -248,7 +248,7 @@ public interface DataFetcher<T> {
 {{< / highlight >}}
 <p/>
 
-Important: **Every** field from the schema has a `DataFetcher` associated with. If you don't specify any `DataFetcher` for a specific field, then the default `PropertyDataFetcher` is used.
+Important: **Every** field from the schema has a `DataFetcher` associated with. If you don't specify any `DataFetcher` for a specific field, then the default `PropertyDataFetcher` is used. We will discuss this later in more detail.
 
 We are creating a new class `GraphQLDataFetchers` which contains a sample list of books and authors.
 
