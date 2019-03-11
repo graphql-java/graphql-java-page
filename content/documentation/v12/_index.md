@@ -1,6 +1,5 @@
 ---
 title: "Documentation"
-date: 2018-09-09T18:19:33+06:00
-aliases: [/documentation/latest/]
+date: 2019-03-11T18:19:33+06:00
 ---
 graphql-java documentation 
