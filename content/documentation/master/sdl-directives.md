@@ -44,6 +44,7 @@ Directives can help you declare this more easily.  Our declaration above would b
 
 
 {{< highlight graphql "linenos=table" >}}
+
     directive @auth(role : String!) on FIELD_DEFINITION
 
     type Employee
@@ -60,6 +61,7 @@ that needs manager role authorisation.
 
 
 {{< highlight graphql "linenos=table" >}}
+
     directive @auth(role : String!) on FIELD_DEFINITION
 
     type Employee
@@ -82,22 +84,23 @@ that needs manager role authorisation.
 We now need to wire in the code that can handle any field with this ``@auth`` directive.  We use ``graphql.schema.idl.SchemaDirectiveWiring`` to do this.
 
 
-
 {{< highlight java "linenos=table" >}}
+
     class AuthorisationDirective implements SchemaDirectiveWiring {
 
         @Override
-        public GraphQLFieldDefinition onField(SchemaDirectiveWiringEnvironment<GraphQLFieldDefinition> schemaDirectiveWiringEnv) {
-            String targetAuthRole = (String) schemaDirectiveWiringEnv.getDirective().getArgument("role").getValue();
+        public GraphQLFieldDefinition onField(SchemaDirectiveWiringEnvironment<GraphQLFieldDefinition> environment) {
+            String targetAuthRole = (String) environment.getDirective().getArgument("role").getValue();
 
-            GraphQLFieldDefinition field = schemaDirectiveWiringEnv.getElement();
+            GraphQLFieldDefinition field = environment.getElement();
+            GraphQLFieldsContainer parentType = environment.getFieldsContainer();
             //
             // build a data fetcher that first checks authorisation roles before then calling the original data fetcher
             //
-            DataFetcher originalDataFetcher = field.getDataFetcher();
+            DataFetcher originalDataFetcher = environment.getCodeRegistry().getDataFetcher(parentType, field);
             DataFetcher authDataFetcher = new DataFetcher() {
                 @Override
-                public Object get(DataFetchingEnvironment dataFetchingEnvironment) {
+                public Object get(DataFetchingEnvironment dataFetchingEnvironment) throws Exception {
                     Map<String, Object> contextMap = dataFetchingEnvironment.getContext();
                     AuthorisationCtx authContext = (AuthorisationCtx) contextMap.get("authContext");
 
@@ -110,7 +113,8 @@ We now need to wire in the code that can handle any field with this ``@auth`` di
             };
             //
             // now change the field definition to have the new authorising data fetcher
-            return field.transform(builder -> builder.dataFetcher(authDataFetcher));
+            environment.getCodeRegistry().dataFetcher(parentType, field, authDataFetcher);
+            return field;
         }
     }
 
@@ -131,6 +135,7 @@ You would provide this authorisation checker into the execution "context" object
 ``DataFetchingEnvironment``.
 
 {{< highlight java "linenos=table" >}}
+
     AuthorisationCtx authCtx = AuthorisationCtx.obtain();
 
     ExecutionInput executionInput = ExecutionInput.newExecutionInput()
@@ -164,6 +169,7 @@ The one exception to this is the ``@deprecated`` directive which is implicitly d
 
 
 {{< highlight graphql "linenos=table" >}}
+
         directive @deprecated(  reason: String = "No longer supported") on FIELD_DEFINITION | ENUM_VALUE
 
 {{< / highlight >}}
@@ -172,6 +178,7 @@ The one exception to this is the ``@deprecated`` directive which is implicitly d
 The valid SDL directive locations are as follows :
 
 {{< highlight graphql "linenos=table" >}}
+
         SCHEMA,
         SCALAR,
         OBJECT,
@@ -200,6 +207,7 @@ Whats great in this example is that it adds an extra ``format`` argument to each
 opt into what ever date formatting you provide per request.
 
 {{< highlight graphql "linenos=table" >}}
+
     directive @dateFormat on FIELD_DEFINITION
 
     type Query {
@@ -215,11 +223,13 @@ Then our runtime code could be :
         @Override
         public GraphQLFieldDefinition onField(SchemaDirectiveWiringEnvironment<GraphQLFieldDefinition> environment) {
             GraphQLFieldDefinition field = environment.getElement();
+            GraphQLFieldsContainer parentType = environment.getFieldsContainer();
             //
             // DataFetcherFactories.wrapDataFetcher is a helper to wrap data fetchers so that CompletionStage is handled correctly
             // along with POJOs
             //
-            DataFetcher dataFetcher = DataFetcherFactories.wrapDataFetcher(field.getDataFetcher(), ((dataFetchingEnvironment, value) -> {
+            DataFetcher originalFetcher = environment.getCodeRegistry().getDataFetcher(parentType, field);
+            DataFetcher dataFetcher = DataFetcherFactories.wrapDataFetcher(originalFetcher, ((dataFetchingEnvironment, value) -> {
                 DateTimeFormatter dateTimeFormatter = buildFormatter(dataFetchingEnvironment.getArgument("format"));
                 if (value instanceof LocalDateTime) {
                     return dateTimeFormatter.format((LocalDateTime) value);
@@ -232,6 +242,9 @@ Then our runtime code could be :
             // which allows clients to opt into that as well as wrapping the base data fetcher so it
             // performs the formatting over top of the base values.
             //
+            FieldCoordinates coordinates = FieldCoordinates.coordinates(parentType, field);
+            environment.getCodeRegistry().dataFetcher(coordinates, dataFetcher);
+
             return field.transform(builder -> builder
                     .argument(GraphQLArgument
                             .newArgument()
@@ -239,7 +252,6 @@ Then our runtime code could be :
                             .type(Scalars.GraphQLString)
                             .defaultValue("dd-MM-YYYY")
                     )
-                    .dataFetcher(dataFetcher)
             );
         }
 

@@ -16,6 +16,7 @@ description: GraphQL basics. Start here if you're new to GraphQL :-)
 Make sure ``mavenCentral`` is among your repos:
 
 {{< highlight groovy "linenos=table" >}}
+
     repositories {
         mavenCentral()
     }
@@ -25,6 +26,7 @@ Make sure ``mavenCentral`` is among your repos:
 Dependency:
 
 {{< highlight groovy "linenos=table" >}}
+
     dependencies {
       compile 'com.graphql-java:graphql-java:11.0'
     }
@@ -36,6 +38,7 @@ Dependency:
 Dependency:
 
 {{< highlight xml "linenos=table" >}}
+
     <dependency>
         <groupId>com.graphql-java</groupId>
         <artifactId>graphql-java</artifactId>
@@ -49,6 +52,7 @@ Dependency:
 This is the famous "hello world" in ``graphql-java``:
 
 {{< highlight java "linenos=table" >}}
+
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
@@ -98,6 +102,7 @@ latest version value.
 Add the repositories:
 
 {{< highlight groovy "linenos=table" >}}
+
     repositories {
         mavenCentral()
         maven { url  "http://dl.bintray.com/andimarek/graphql-java" }
@@ -107,6 +112,7 @@ Add the repositories:
 Dependency:
 
 {{< highlight groovy "linenos=table" >}}
+
     dependencies {
       compile 'com.graphql-java:graphql-java:INSERT_LATEST_VERSION_HERE'
     }
@@ -120,6 +126,7 @@ Dependency:
 Add the repository:
 
 {{< highlight xml "linenos=table" >}}
+
     <repository>
         <snapshots>
             <enabled>false</enabled>
@@ -133,6 +140,7 @@ Add the repository:
 Dependency:
 
 {{< highlight xml "linenos=table" >}}
+
     <dependency>
         <groupId>com.graphql-java</groupId>
         <artifactId>graphql-java</artifactId>

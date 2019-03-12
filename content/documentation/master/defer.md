@@ -13,6 +13,7 @@ Often when executing a query you have two classes of data.  The data you need im
 For example imagine this query that gets data on a ``post`` and its ``comments`` and ``reviews``.
 
 {{< highlight graphql "linenos=table" >}}
+
         query {
            post {
                postText
@@ -35,6 +36,7 @@ A naive approach would be to make two queries to get the most important data fir
 There is ``experimental`` support for deferred execution in graphql-java.
 
 {{< highlight graphql "linenos=table" >}}
+
         query {
            post {
                postText
@@ -59,6 +61,7 @@ You execute your query as you would any other graphql query.  The deferred resul
 the ``extensions`` map
 
 {{< highlight java "linenos=table" >}}
+
         GraphQLSchema schema = buildSchemaWithDirective();
         GraphQL graphQL = GraphQL.newGraphQL(schema).build();
 

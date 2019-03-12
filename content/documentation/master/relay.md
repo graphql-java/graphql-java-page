@@ -11,15 +11,14 @@ description: graphql-java has support for Relay
 
 Very basic support for [Relay](https://github.com/facebook/relay) is included.
 
-**Note**: Relay refers here to "Relay Classic", there is no support for "Relay Modern".
-
-Please look at https://github.com/graphql-java/todomvc-relay-java for a full example project,
+Please look at [https://github.com/graphql-java/todomvc-relay-java](https://github.com/graphql-java/todomvc-relay-java) for a full example project,
 
 Relay send queries to the GraphQL server as JSON containing a ``query`` field and a ``variables`` field. The ``query`` field is a JSON string,
 and the ``variables`` field is a map of variable definitions. A relay-compatible server will need to parse this JSON and pass the ``query``
 string to this library as the query and the ``variables`` map as the third argument to ``execute`` as shown below.
 
 {{< highlight java "linenos=table" >}}
+
     @RequestMapping(value = "/graphql", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Object executeOperation(@RequestBody Map body) {
