@@ -60,6 +60,7 @@ We could specify data fetchers on the ``cost`` and ``tax`` fields that does thos
 We would be better to do all this work in the ``Query.products`` data fetcher and create a unified view of the data at that point.
 
 {{< highlight java "linenos=table" >}}
+
         DataFetcher productsDataFetcher = new DataFetcher() {
             @Override
             public Object get(DataFetchingEnvironment env) {
@@ -85,6 +86,7 @@ encapsulates this unified data.
 The ``Map`` technique could look like this.
 
 {{< highlight java "linenos=table" >}}
+
     private List<Map> mapDataTogetherViaMap(List<ProductInfo> productInfo, List<ProductCostInfo> productCostInfo, List<ProductTaxInfo> productTaxInfo) {
         List<Map> unifiedView = new ArrayList<>();
         for (int i = 0; i < productInfo.size(); i++) {

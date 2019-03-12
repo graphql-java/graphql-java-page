@@ -36,6 +36,7 @@ The result of this query is displayed below. You can see that Han, Leia, Luke an
 share many friends in common.
 
 {{< highlight json "linenos=table" >}}
+
         {
           "hero": {
             "name": "R2-D2",

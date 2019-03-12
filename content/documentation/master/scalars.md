@@ -43,6 +43,7 @@ Imagine we decide we need to have an email scalar type.  It will take email addr
 We would create a singleton ``graphql.schema.GraphQLScalarType`` instance for this like so.
 
 {{< highlight java "linenos=table" >}}
+
         public static final GraphQLScalarType EMAIL = new GraphQLScalarType("email", "A custom scalar that handles emails", new Coercing() {
             @Override
             public Object serialize(Object dataFetcherResult) {
@@ -77,6 +78,7 @@ So your custom scalar code has to handle 2 forms of input (parseValue / parseLit
 Imagine this query, which uses variables, AST literals and outputs our scalar type ``email``.
 
 {{< highlight graphql "linenos=table" >}}
+
     mutation Contact($mainContact: Email!) {
       makeContact(mainContactEmail: $mainContact, backupContactEmail: "backup@company.com") {
         id
@@ -122,6 +124,7 @@ The following is a really rough implementation of our imagined ``email`` scalar 
 such a scalar.
 
 {{< highlight java "linenos=table" >}}
+
     public static class EmailScalar {
 
         public static final GraphQLScalarType EMAIL = new GraphQLScalarType("email", "A custom scalar that handles emails", new Coercing() {
@@ -178,7 +181,6 @@ such a scalar.
             );
         }
     }
-
 
 {{< / highlight >}}
 

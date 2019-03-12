@@ -22,6 +22,7 @@ If you are unsure which option to use we recommend the SDL.
 SDL example:
 
 {{< highlight graphql "linenos=table" >}}
+
     type Foo {
         bar: String
     }
@@ -33,6 +34,7 @@ SDL example:
 Java code example:
 
 {{< highlight java "linenos=table" >}}
+
     GraphQLObjectType fooType = newObject()
         .name("Foo")
         .field(newFieldDefinition()
@@ -61,6 +63,7 @@ called *Wizard*, *Witch* and *Necromancer*.  The type resolver is responsible fo
 what ``GraphqlObjectType`` should be used to represent it, and hence what data fetchers and fields will be invoked.
 
 {{< highlight java "linenos=table" >}}
+
         new TypeResolver() {
             @Override
             public GraphQLObjectType getType(TypeResolutionEnvironment env) {
@@ -87,6 +90,7 @@ when the executable schema is created.
 Take for example the following static schema definition file called ``starWarsSchema.graphqls``:
 
 {{< highlight graphql "linenos=table" >}}
+
     schema {
         query: QueryType
     }
@@ -140,6 +144,7 @@ executable schema.
 You wire this together using this builder pattern:
 
 {{< highlight java "linenos=table" >}}
+
     RuntimeWiring buildRuntimeWiring() {
         return RuntimeWiring.newRuntimeWiring()
                 .scalar(CustomScalar)
@@ -168,11 +173,11 @@ You wire this together using this builder pattern:
 {{< / highlight >}}
 
 
-
 Finally, you can generate an executable schema by combining the static schema and the wiring together as shown in this
 example:
 
 {{< highlight java "linenos=table" >}}
+
         SchemaParser schemaParser = new SchemaParser();
         SchemaGenerator schemaGenerator = new SchemaGenerator();
 
@@ -191,6 +196,7 @@ order to decide what to wire in.  You could for example look at SDL directives, 
 definition to help you decide what runtime to create.
 
 {{< highlight java "linenos=table" >}}
+
     RuntimeWiring buildDynamicRuntimeWiring() {
         WiringFactory dynamicWiringFactory = new WiringFactory() {
             @Override
@@ -242,20 +248,30 @@ Example:
 {{< highlight java "linenos=table" >}}
 
 
-    DataFetcher<Foo> fooDataFetcher = environment -> {
-            // environment.getSource() is the value of the surrounding
-            // object. In this case described by objectType
-            Foo value = perhapsFromDatabase(); // Perhaps getting from a DB or whatever
-            return value;
-    }
+        DataFetcher<Foo> fooDataFetcher = new DataFetcher<Foo>() {
+            @Override
+            public Foo get(DataFetchingEnvironment environment) {
+                // environment.getSource() is the value of the surrounding
+                // object. In this case described by objectType
+                Foo value = perhapsFromDatabase(); // Perhaps getting from a DB or whatever
+                return value;
+            }
+        };
 
-    GraphQLObjectType objectType = newObject()
-            .name("ObjectType")
-            .field(newFieldDefinition()
-                    .name("foo")
-                    .type(GraphQLString)
-                    .dataFetcher(fooDataFetcher))
-            .build();
+        GraphQLObjectType objectType = newObject()
+                .name("ObjectType")
+                .field(newFieldDefinition()
+                        .name("foo")
+                        .type(GraphQLString)
+                )
+                .build();
+
+        GraphQLCodeRegistry codeRegistry = newCodeRegistry()
+                .dataFetcher(
+                        coordinates("ObjectType", "foo"),
+                        fooDataFetcher)
+                .build();
+
 {{< / highlight >}}
 
 
@@ -278,11 +294,15 @@ The GraphQL type system supports the following kind of types:
 ``graphql-java`` supports the following Scalars:
 
 
+Standard graphql scalars : 
 * ``GraphQLString``
 * ``GraphQLBoolean``
 * ``GraphQLInt``
 * ``GraphQLFloat``
 * ``GraphQLID``
+
+Extended graphql-java scalars
+
 * ``GraphQLLong``
 * ``GraphQLShort``
 * ``GraphQLByte``
@@ -290,6 +310,8 @@ The GraphQL type system supports the following kind of types:
 * ``GraphQLBigDecimal``
 * ``GraphQLBigInteger``
 
+Note that the semantics around the extended scalars might not be understood by your clients.  For example mapping a Java Long (max value 26^3-1) into a JavaScript Number ( max value 2^53 - 1)
+may be problematic for you.
 
 
 ## Object
@@ -297,6 +319,7 @@ The GraphQL type system supports the following kind of types:
 SDL Example:
 
 {{< highlight graphql "linenos=table" >}}
+
     type SimpsonCharacter {
         name: String
         mainCharacter: Boolean
@@ -309,6 +332,7 @@ SDL Example:
 Java Example:
 
 {{< highlight java "linenos=table" >}}
+
     GraphQLObjectType simpsonCharacter = newObject()
     .name("SimpsonCharacter")
     .description("A Simpson character")
@@ -331,6 +355,7 @@ Interfaces are abstract definitions of types.
 SDL Example:
 
 {{< highlight graphql "linenos=table" >}}
+
     interface ComicCharacter {
         name: String;
     }
@@ -340,6 +365,7 @@ SDL Example:
 Java Example:
 
 {{< highlight java "linenos=table" >}}
+
     GraphQLInterfaceType comicCharacter = newInterface()
         .name("ComicCharacter")
         .description("An abstract comic character.")
@@ -356,6 +382,7 @@ Java Example:
 SDL Example:
 
 {{< highlight graphql "linenos=table" >}}
+
     type Cat {
         name: String;
         lives: Int;
@@ -374,11 +401,8 @@ SDL Example:
 Java Example:
 
 {{< highlight java "linenos=table" >}}
-    GraphQLUnionType PetType = newUnionType()
-        .name("Pet")
-        .possibleType(CatType)
-        .possibleType(DogType)
-        .typeResolver(new TypeResolver() {
+
+        TypeResolver typeResolver = new TypeResolver() {
             @Override
             public GraphQLObjectType getType(TypeResolutionEnvironment env) {
                 if (env.getObject() instanceof Cat) {
@@ -389,8 +413,17 @@ Java Example:
                 }
                 return null;
             }
-        })
-        .build();
+        };
+        GraphQLUnionType PetType = newUnionType()
+                .name("Pet")
+                .possibleType(CatType)
+                .possibleType(DogType)
+                .build();
+
+        GraphQLCodeRegistry codeRegistry = newCodeRegistry()
+                .typeResolver("Pet", typeResolver)
+                .build();
+
 {{< / highlight >}}
 
 
@@ -399,6 +432,7 @@ Java Example:
 SDL Example:
 
 {{< highlight graphql "linenos=table" >}}
+
     enum Color {
         RED
         GREEN
@@ -411,6 +445,7 @@ SDL Example:
 Java Example:
 
 {{< highlight java "linenos=table" >}}
+
     GraphQLEnumType colorEnum = newEnum()
         .name("Color")
         .description("Supported colors.")
@@ -426,6 +461,7 @@ Java Example:
 SDL Example:
 
 {{< highlight graphql "linenos=table" >}}
+
     input Character {
         name: String
     }
@@ -435,6 +471,7 @@ SDL Example:
 Java Example:
 
 {{< highlight java "linenos=table" >}}
+
     GraphQLInputObjectType inputObjectType = newInputObject()
         .name("inputObjectType")
         .field(newInputObjectField()
@@ -454,6 +491,7 @@ When the schema is created, the ``GraphQLTypeReference`` is replaced with the ac
 For example:
 
 {{< highlight java "linenos=table" >}}
+
     GraphQLObjectType person = newObject()
             .name("Person")
             .field(newFieldDefinition()
@@ -464,7 +502,7 @@ For example:
 {{< / highlight >}}
 
 
-When the schema is declared via SDL, no special handling of recursive types is needed.
+When the schema is declared via SDL, no special handling of recursive types is needed as it is detected and done for you.
 
 ## Modularising the Schema SDL
 
@@ -509,6 +547,7 @@ Imagine you start with a type like this in one schema file.
 Another part of your system can extend this type to add more shape to it.
 
 {{< highlight graphql "linenos=table" >}}
+
     extend type Human implements Character {
         id: ID!
         name: String!
@@ -523,6 +562,7 @@ in which they are encountered.  Duplicate fields will be merged as one (however 
 into new types are not allowed).
 
 {{< highlight graphql "linenos=table" >}}
+
     extend type Human {
         homePlanet: String
     }
@@ -535,6 +575,7 @@ With all these type extensions in place the `Human` type now looks like this at 
 
 
 {{< highlight graphql "linenos=table" >}}
+
     type Human implements Character {
         id: ID!
         name: String!
@@ -551,6 +592,7 @@ graphql query.
 
 
 {{< highlight graphql "linenos=table" >}}
+
     schema {
       query: CombinedQueryFromMultipleTeams
     }
@@ -578,14 +620,15 @@ graphql query.
 {{< / highlight >}}
 
 
-
 ## Subscription Support
 
-Subscriptions are not officially specified yet: ``graphql-java`` supports currently a very basic implementation where you can define a subscription in the schema
-with ``GraphQLSchema.Builder.subscription(...)``. This enables you to handle a subscription request:
+Subscriptions allow you to perform a query and whenever a backing object for that query changes an updated will be sent.
 
 {{< highlight graphql "linenos=table" >}}
+
     subscription foo {
         # normal graphql query
     }
 {{< / highlight >}}
+
+See the page on [subscriptions](../subscriptions) for more details

@@ -14,6 +14,7 @@ from that type.
 For example given the following query :
 
 {{< highlight graphql "linenos=table" >}}
+
     query {
         user(userId : "xyz")  {
             name
@@ -38,6 +39,7 @@ of the fields and their ``graphql.schema.GraphQLFieldDefinition``s and argument 
 
 
 {{< highlight java "linenos=table" >}}
+
         DataFetcher smartUserDF = new DataFetcher() {
             @Override
             public Object get(DataFetchingEnvironment env) {
@@ -68,6 +70,7 @@ been request in the ``Connection`` section of the query.
 So given a query like:
 
 {{< highlight graphql "linenos=table" >}}
+
     query {
         users(first:10)  {
             edges {
@@ -90,6 +93,7 @@ you can write code that gets the details of each specific field that matches a g
 
 
 {{< highlight java "linenos=table" >}}
+
         DataFetchingFieldSelectionSet selectionSet = env.getSelectionSet();
         List<SelectedField> nodeFields = selectionSet.getFields("edges/nodes/*");
         nodeFields.forEach(selectedField -> {

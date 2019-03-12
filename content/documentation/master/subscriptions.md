@@ -45,6 +45,7 @@ need to use to get the future values.
 You need to use ``SubscriptionExecutionStrategy`` as your execution strategy as it has the support for the reactive-streams APIs.
 
 {{< highlight java "linenos=table" >}}
+
         GraphQL graphQL = GraphQL
                 .newGraphQL(schema)
                 .subscriptionExecutionStrategy(new SubscriptionExecutionStrategy())
@@ -61,6 +62,7 @@ The ``Publisher<ExecutionResult>`` here is the publisher of a stream of events. 
 code which will look something like the following
 
 {{< highlight java "linenos=table" >}}
+
         GraphQL graphQL = GraphQL
                 .newGraphQL(schema)
                 .subscriptionExecutionStrategy(new SubscriptionExecutionStrategy())
@@ -125,8 +127,10 @@ code which will look something like the following
 You are now writing reactive-streams code to consume a series of ``ExecutionResults``.  You can see
 more details on reactive-streams code here http://www.reactive-streams.org/
 
-``RxJava`` is a popular implementation of reactive-streams.  Check out http://reactivex.io/intro.html to find out more
+``RxJava`` is a popular implementation of reactive-streams.  Check out [http://reactivex.io/intro.html](http://reactivex.io/intro.html) to find out more
 about creating Publishers of data and Subscriptions to that data.
+
+``Project Reactor`` is another popular implementation of reactive-streams.  Check out [https://projectreactor.io/](https://projectreactor.io/) as well.
 
 graphql-java only produces a stream of results.  It does not concern itself with sending these over the network on things
 like web sockets and so on.  That is important but not a concern of the base graphql-java library.
@@ -147,6 +151,7 @@ You data fetcher is going to look something like this.
 
 
 {{< highlight java "linenos=table" >}}
+
         DataFetcher<Publisher<StockInfo>> publisherDataFetcher = new DataFetcher<Publisher<StockInfo>>() {
             @Override
             public Publisher<StockInfo> get(DataFetchingEnvironment environment) {

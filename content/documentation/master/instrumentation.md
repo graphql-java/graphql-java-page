@@ -18,6 +18,7 @@ The primary use case for this is to allow say performance monitoring and custom 
 When you build the ``Graphql`` object you can specify what ``Instrumentation`` to use (if any).
 
 {{< highlight java "linenos=table" >}}
+
         GraphQL.newGraphQL(schema)
                 .instrumentation(new TracingInstrumentation())
                 .build();
@@ -35,6 +36,7 @@ when the step completes, and will be told that it succeeded or failed with a Thr
 The following is a basic custom ``Instrumentation`` that measures overall execution time and puts it into a stateful object.
 
 {{< highlight java "linenos=table" >}}
+
     class CustomInstrumentationState implements InstrumentationState {
         private Map<String, Object> anyStateYouLike = new HashMap<>();
 
@@ -93,6 +95,7 @@ You can combine multiple ``Instrumentation`` objects together using the ``graphq
 accepts a list of ``Instrumentation`` objects and calls them in that defined order.
 
 {{< highlight java "linenos=table" >}}
+
         List<Instrumentation> chainedList = new ArrayList<>();
         chainedList.add(new FooInstrumentation());
         chainedList.add(new BarInstrumentation());
@@ -119,6 +122,7 @@ A detailed tracing map will be created and placed in the ``extensions`` section 
 So given a query like
 
 {{< highlight graphql "linenos=table" >}}
+
     query {
       hero {
         name
@@ -133,7 +137,6 @@ So given a query like
 It would return a result like
 
 {{< highlight json "linenos=table" >}}
-
 
     {
       "data": {
@@ -249,6 +252,7 @@ You can make you own custom implementation of ``FieldValidation`` or you can use
 to add simple per field checks rules.
 
 {{< highlight java "linenos=table" >}}
+
         ExecutionPath fieldPath = ExecutionPath.parse("/user");
         FieldValidation fieldValidation = new SimpleFieldValidation()
                 .addRule(fieldPath, new BiFunction<FieldAndArguments, FieldValidationEnvironment, Optional<GraphQLError>>() {

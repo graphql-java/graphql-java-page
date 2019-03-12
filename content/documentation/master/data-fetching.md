@@ -142,10 +142,16 @@ This will tell the ``graphql.schema.PropertyDataFetcher`` to use the property na
 If you are hand coding your schema then you can just specify it directly by wiring in a field data fetcher.
 
 {{< highlight java "linenos=table" >}}
+
         GraphQLFieldDefinition descriptionField = GraphQLFieldDefinition.newFieldDefinition()
                 .name("description")
                 .type(Scalars.GraphQLString)
-                .dataFetcher(PropertyDataFetcher.fetching("desc"))
+                .build();
+
+        GraphQLCodeRegistry codeRegistry = GraphQLCodeRegistry.newCodeRegistry()
+                .dataFetcher(
+                        coordinates("ObjectType", "description"),
+                        PropertyDataFetcher.fetching("desc"))
                 .build();
 
 

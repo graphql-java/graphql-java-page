@@ -16,6 +16,7 @@ call ``execute()``.
 The result of a query is an ``ExecutionResult`` which is the query data and/or a list of errors.
 
 {{< highlight java "linenos=table" >}}
+
         GraphQLSchema schema = GraphQLSchema.newSchema()
                 .query(queryType)
                 .build();
@@ -53,6 +54,7 @@ opinionated on user authorisation to that data.  You should push all that logic 
 A data fetcher might look like this:
 
 {{< highlight java "linenos=table" >}}
+
         DataFetcher userDataFetcher = new DataFetcher() {
             @Override
             public Object get(DataFetchingEnvironment environment) {
@@ -78,6 +80,7 @@ partial results with errors.
 Here is the code for the standard behaviour.
 
 {{< highlight java "linenos=table" >}}
+
     public class SimpleDataFetcherExceptionHandler implements DataFetcherExceptionHandler {
         private static final Logger log = LoggerFactory.getLogger(SimpleDataFetcherExceptionHandler.class);
 
@@ -102,6 +105,7 @@ For example imagine your data fetcher threw this exception.  The `foo` and `fizz
 graphql error.
 
 {{< highlight java "linenos=table" >}}
+
     class CustomRuntimeException extends RuntimeException implements GraphQLError {
         @Override
         public Map<String, Object> getExtensions() {
@@ -133,6 +137,7 @@ may prefer not to see that in the output error list.  So you can use this mechan
 behaviour.
 
 {{< highlight java "linenos=table" >}}
+
         DataFetcherExceptionHandler handler = new DataFetcherExceptionHandler() {
             @Override
             public void accept(DataFetcherExceptionHandlerParameters handlerParameters) {
@@ -155,13 +160,14 @@ GraphQL resource.
 In this example, the ``DataFetcher`` retrieves a user from another GraphQL resource and returns its data and errors.
 
 {{< highlight java "linenos=table" >}}
+
         DataFetcher userDataFetcher = new DataFetcher() {
             @Override
             public Object get(DataFetchingEnvironment environment) {
                 Map response = fetchUserFromRemoteGraphQLResource(environment.getArgument("userId"));
-                List<GraphQLError> errors = ((List)response.get("errors")).stream()
+                List<GraphQLError> errors = response.get("errors")).stream()
                     .map(MyMapGraphQLError::new)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList();
                 return new DataFetcherResult(response.get("data"), errors);
             }
         };
@@ -206,6 +212,7 @@ via the data fetcher invoked.
 The mutation is invoked via a query like :
 
 {{< highlight graphql "linenos=table" >}}
+
     mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
       createReview(episode: $ep, review: $review) {
         stars
@@ -221,55 +228,62 @@ You would create types like this to handle this mutation :
 
 {{< highlight java "linenos=table" >}}
 
+        GraphQLInputObjectType episodeType = newInputObject()
+                .name("Episode")
+                .field(newInputObjectField()
+                        .name("episodeNumber")
+                        .type(Scalars.GraphQLInt))
+                .build();
 
-    GraphQLInputObjectType episodeType = GraphQLInputObjectType.newInputObject()
-            .name("Episode")
-            .field(newInputObjectField()
-                    .name("episodeNumber")
-                    .type(Scalars.GraphQLInt))
-            .build();
+        GraphQLInputObjectType reviewInputType = newInputObject()
+                .name("ReviewInput")
+                .field(newInputObjectField()
+                        .name("stars")
+                        .type(Scalars.GraphQLString)
+                        .name("commentary")
+                        .type(Scalars.GraphQLString))
+                .build();
 
-    GraphQLInputObjectType reviewInputType = GraphQLInputObjectType.newInputObject()
-            .name("ReviewInput")
-            .field(newInputObjectField()
-                    .name("stars")
-                    .type(Scalars.GraphQLString))
-            .field(newInputObjectField()
-                    .name("commentary")
-                    .type(Scalars.GraphQLString))
-            .build();
+        GraphQLObjectType reviewType = newObject()
+                .name("Review")
+                .field(newFieldDefinition()
+                        .name("stars")
+                        .type(GraphQLString))
+                .field(newFieldDefinition()
+                        .name("commentary")
+                        .type(GraphQLString))
+                .build();
 
-    GraphQLObjectType reviewType = newObject()
-            .name("Review")
-            .field(newFieldDefinition()
-                    .name("stars")
-                    .type(GraphQLString))
-            .field(newFieldDefinition()
-                    .name("commentary")
-                    .type(GraphQLString))
-            .build();
+        GraphQLObjectType createReviewForEpisodeMutation = newObject()
+                .name("CreateReviewForEpisodeMutation")
+                .field(newFieldDefinition()
+                        .name("createReview")
+                        .type(reviewType)
+                        .argument(newArgument()
+                                .name("episode")
+                                .type(episodeType)
+                        )
+                        .argument(newArgument()
+                                .name("review")
+                                .type(reviewInputType)
+                        )
+                )
+                .build();
 
-    GraphQLObjectType createReviewForEpisodeMutation = newObject()
-            .name("CreateReviewForEpisodeMutation")
-            .field(newFieldDefinition()
-                    .name("createReview")
-                    .type(reviewType)
-                    .argument(newArgument()
-                            .name("episode")
-                            .type(episodeType)
-                    )
-                    .argument(newArgument()
-                            .name("review")
-                            .type(reviewInputType)
-                    )
-                    .dataFetcher(mutationDataFetcher())
-            )
-            .build();
+        GraphQLCodeRegistry codeRegistry = newCodeRegistry()
+                .dataFetcher(
+                        coordinates("CreateReviewForEpisodeMutation", "createReview"),
+                        mutationDataFetcher()
+                )
+                .build();
 
-    GraphQLSchema schema = GraphQLSchema.newSchema()
-            .query(queryType)
-            .mutation(createReviewForEpisodeMutation)
-            .build();
+
+        GraphQLSchema schema = GraphQLSchema.newSchema()
+                .query(queryType)
+                .mutation(createReviewForEpisodeMutation)
+                .codeRegistry(codeRegistry)
+                .build();
+
 {{< / highlight >}}
 
 
@@ -344,6 +358,7 @@ In fact under the covers, the graphql-java engine uses asynchronous execution an
 calling join for you.  So the following code is in fact the same.
 
 {{< highlight java "linenos=table" >}}
+
         ExecutionResult executionResult = graphQL.execute(executionInput);
 
         // the above is equivalent to the following code (in long hand)
@@ -363,6 +378,7 @@ The following code uses the standard Java ``java.util.concurrent.ForkJoinPool.co
 thread.
 
 {{< highlight java "linenos=table" >}}
+
         DataFetcher userDataFetcher = new DataFetcher() {
             @Override
             public Object get(DataFetchingEnvironment environment) {
@@ -379,8 +395,10 @@ thread.
 The code above is written in long form.  With Java 8 lambdas it can be written more succinctly as follows
 
 {{< highlight java "linenos=table" >}}
+
         DataFetcher userDataFetcher = environment -> CompletableFuture.supplyAsync(
                 () -> fetchUserViaHttp(environment.getArgument("userId")));
+
 {{< / highlight >}}
 
 The graphql-java engine ensures that all the ``CompletableFuture`` objects are composed together to provide an execution result
@@ -391,6 +409,7 @@ Use ``graphql.schema.AsyncDataFetcher.async(DataFetcher<T>)`` to wrap a
 ``DataFetcher``. This can be used with static imports to produce more readable code.
 
 {{< highlight java "linenos=table" >}}
+
         DataFetcher userDataFetcher = async(environment -> fetchUserViaHttp(environment.getArgument("userId")));
 
 {{< / highlight >}}
@@ -404,6 +423,7 @@ You can wire in what execution strategy to use when you create the ``GraphQL`` o
 
 
 {{< highlight java "linenos=table" >}}
+
         GraphQL.newGraphQL(schema)
                 .queryExecutionStrategy(new AsyncExecutionStrategy())
                 .mutationExecutionStrategy(new AsyncSerialExecutionStrategy())
@@ -425,6 +445,7 @@ fully asynchronous behaviour.
 So imagine a query as follows
 
 {{< highlight graphql "linenos=table" >}}
+
     query {
       hero {
         enemies {
@@ -461,30 +482,6 @@ field is completed before it processes the next one and so forth.  You can still
 in the mutation data fetchers, however they will be executed serially and will be completed before the next
 mutation field data fetcher is dispatched.
 
-## ExecutorServiceExecutionStrategy
-
-The ``graphql.execution.ExecutorServiceExecutionStrategy`` execution strategy will always dispatch each field
-fetch in an asynchronous manner, using the executor you give it.  It differs from ``AsyncExecutionStrategy`` in that
-it does not rely on the data fetchers to be asynchronous but rather makes the field fetch invocation asynchronous by
-submitting each field to the provided `java.util.concurrent.ExecutorService`.
-
-This behaviour makes it unsuitable to be used as a mutation execution strategy.
-
-{{< highlight java "linenos=table" >}}
-        ExecutorService  executorService = new ThreadPoolExecutor(
-                2, /* core pool size 2 thread */
-                2, /* max pool size 2 thread */
-                30, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<Runnable>(),
-                new ThreadPoolExecutor.CallerRunsPolicy());
-
-        GraphQL graphQL = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema)
-                .queryExecutionStrategy(new ExecutorServiceExecutionStrategy(executorService))
-                .mutationExecutionStrategy(new AsyncSerialExecutionStrategy())
-                .build();
-{{< / highlight >}}
-
-
 ## SubscriptionExecutionStrategy
 
 Graphql subscriptions allows you to create stateful subscriptions to graphql data.  You uses ``SubscriptionExecutionStrategy``
@@ -505,6 +502,7 @@ You can do this by using a `graphql.schema.visibility.GraphqlFieldVisibility` im
 A simple `graphql.schema.visibility.BlockedFields` implementation based on fully qualified field name is provided.
 
 {{< highlight java "linenos=table" >}}
+
         GraphqlFieldVisibility blockedFields = BlockedFields.newBlock()
                 .addPattern("Character.id")
                 .addPattern("Droid.appearsIn")
@@ -525,6 +523,7 @@ Note that this puts your server in contravention of the graphql specification an
 
 
 {{< highlight java "linenos=table" >}}
+
         GraphQLSchema schema = GraphQLSchema.newSchema()
                 .query(StarWarsSchema.queryType)
                 .fieldVisibility(NoIntrospectionGraphqlFieldVisibility.NO_INTROSPECTION_FIELD_VISIBILITY)
@@ -536,6 +535,7 @@ You can create your own derivation of `GraphqlFieldVisibility` to check what eve
 should be visible or not.
 
 {{< highlight java "linenos=table" >}}
+
     class CustomFieldVisibility implements GraphqlFieldVisibility {
 
         final YourUserAccessService userAccessService;
