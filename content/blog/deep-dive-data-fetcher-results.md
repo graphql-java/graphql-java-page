@@ -6,10 +6,6 @@ categories = []
 date = 2019-04-11T00:00:00+10:00
 +++
 
-# graphql-java - In Depth series 
-
-Welcome to the new series "graphql-java - In Depth" where we will explore more specific graphql-java topics.  
-
 # DataFetcherResult
 
 Today we are looking into the `graphql.execution.DataFetcherResult` object.
@@ -68,33 +64,34 @@ Imagine this is backed by an SQL system we might be able to use this field look 
 {{< / highlight >}}
 
 So we have looked ahead and returned different data depending on the field sub selection.  We have made our system more efficient by using look ahead
-to fetch data just the 1 time and not N+1 times.
+to fetch data just the `1` time and not `N+1` times.
 
 # Code Challenges
 
-The challenge with this is that the shapes of the returned data is now field sub selection specific.  We needed a `IssueAndCommentsDTO` for one sub selection
+The challenge with this code design is that the shapes of the returned data is now field sub selection specific.  We needed a `IssueAndCommentsDTO` for one sub selection
 path and a simpler `IssueDTO` for another path.
 
 With enough paths this becomes problematic as it adds new DTO classes per path and makes out child data fetchers more complex
 
-Also the standard graphql pattern is that the returned object becomes the `source` aka `graphql.schema.DataFetchingEnvironment#getSource` of the next child 
-data fetcher.  But we might have pre fetched data that is need 2 levels deep and this is challenging to do since each data fetcher would need to capture and copy 
-that down to the layers below.
+Also the standard graphql pattern is that the returned object becomes the `source` ie. `graphql.schema.DataFetchingEnvironment#getSource` of the next child 
+data fetcher.  But we might have pre fetched data that is needed 2 levels deep and this is challenging to do since each data fetcher would need to capture and copy 
+that data down to the layers below via new TDOs classes per level.  
 
 
 # Passing Data and Local Context
 
-graphql-java offers a capability that helps with this pattern.  We go beyond what the reference graphql-js system gives you where the object you 
-returned is automatically and only the `source` of the next child fetcher and that's it.
+GraphQL Java offers a capability that helps with this pattern.  GraphQL Java goes beyond what the reference graphql-js system gives you where the object you 
+returned is automatically the `source` of the next child fetcher and that's all it can be.
 
-In graphql-java you can use `graphql.execution.DataFetcherResult` to return three sets of values
+In GraphQL Java you can use well known `graphql.execution.DataFetcherResult` to return three sets of values
 
 * `data`  - which will be used as the source on the next set of sub fields
 * `errors` - allowing you to return data as well as errors
 * `localContext` - which allows you to pass down field specific context
 
-In our example case we will be use `data` and `localContext` to communicate between fields easily.
+When the engine sees the `graphql.execution.DataFetcherResult` object, it automatically unpacks it and handles it three classes of data in specific ways.
 
+In our example case we will be use `data` and `localContext` to communicate between fields easily.
 
 {{< highlight Java "linenos=table" >}}
 
@@ -120,13 +117,13 @@ DataFetcher issueDataFetcher = environment -> {
         };
 {{< / highlight >}}
 
-If you look now you will see that our data fetcher returns a compound `DataFetcherResult` object that contains data for the child data fetchers which is the 
-list of `issueDTO` objects as per usual.
+If you look now you will see that our data fetcher returns a `DataFetcherResult` object that contains `data` for the child data fetchers which is the 
+list of `issueDTO` objects as per usual.  It will be their `source` object when they run.
 
 It also passes down field specific `localContext` which is the pre-fetched comment data.
 
 Unlike the global context object, local context objects are passed down from a specific field to its children and are not shared across to peer fields.  This means
-a parent field has a "back channel" to talk to the child fields without having to "pollute" the DTO source objects with that information and it is local in the sense
+a parent field has a "back channel" to talk to the child fields without having to "pollute" the DTO source objects with that information and it is "local" in the sense
 that it given only to this field and its children and not any other field in the query.
 
 Now lets look at the `comments` data fetcher and how it consumes this back channel of data
@@ -149,7 +146,7 @@ Notice how it got the `issueDTO` as its source object as expected but it also go
 to pass on new local context OR if it passes nothing then the previous value will bubble down to the next lot of child fields.  So you can think of `localContext`
 as being inherited unless a fields data fetcher explicitly overrides it.  
 
-Our data fetcher is a smidge more complex because of the data pre-fetching but 'localContext' allows us a nice back channel to pass data without modifying our DTO objects
+Our data fetcher is a bit more complex because of the data pre-fetching but 'localContext' allows us a nice back channel to pass data without modifying our DTO objects
 that are being used in more simple data fetchers.
 
 
@@ -157,8 +154,7 @@ that are being used in more simple data fetchers.
 
 For completeness we will show you that you can also pass down errors or data or local context or all of them at once.
 
-It is perfectly valid to fetch data in graphql and to ALSO send back errors.  Its not common but its valid.  For example you might be able to select issues data but 
-not the associated comment data.  Some data is better than no data.
+It is perfectly valid to fetch data in graphql and to ALSO send back errors.  Its not common but its valid. Some data is better than no data.
 
 {{< highlight Java "linenos=table" >}}
 
