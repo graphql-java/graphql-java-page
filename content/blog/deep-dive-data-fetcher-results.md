@@ -1,14 +1,15 @@
 +++
-title = "graphql-java - In Depth - Part 1: DataFetcherResult"
+title = "Building efficient data fetchers by looking ahead"
 author = "Brad Baker"
 tags = []
 categories = []
 date = 2019-04-11T00:00:00+10:00
 +++
 
-# DataFetcherResult
+# Efficient data fetchers
 
-Today we are looking into the `graphql.execution.DataFetcherResult` object.
+Today we are looking into the `graphql.schema.DataFetchingFieldSelectionSet` and `graphql.execution.DataFetcherResult` objects as means
+to build efficient data fetchers.
 
 # The scenario
 
@@ -31,16 +32,16 @@ But first lets set the scene. Imagine we have a system that can return `issues` 
 Nominally we would have a `graphql.schema.DataFetcher` on `issues` that returns a list of issues and one on the field `comments` that returns the list of comments
 for each issue `source` object.
 
-As you can see this naively creates an N+1 problem where we need to fetch data multiple times, one for each `issue` object in isolation.
+As you can see this naively creates an *N+1 problem* where we need to fetch data multiple times, one for each `issue` object in isolation.
 
 We could attack this using the `org.dataloader.DataLoader` pattern but there is another way which will discuss in this article.
 
-# Look ahead
+# Look ahead via DataFetchingFieldSelectionSet
 
 The data fetcher behind the `issues` field is able to look ahead and see what sub fields are being asked for.  In this case it knows that `comments` are being asked 
 for and hence it could prefetch them at the same time.
 
-`graphql.schema.DataFetchingEnvironment#getSelectionSet` can be used by data fetcher code to get the selection set of fields for a given parent field.
+`graphql.schema.DataFetchingEnvironment#getSelectionSet` (aka `graphql.schema.DataFetchingFieldSelectionSet`) can be used by data fetcher code to get the selection set of fields for a given parent field.
 
 {{< highlight Java "linenos=table" >}}
         DataFetcher issueDataFetcher = environment -> {
