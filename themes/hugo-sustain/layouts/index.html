@@ -9,16 +9,19 @@
         <h3 class="home-section-about">This is the home page of the <a target="_blank" href="https://github.com/graphql-java/graphql-java">GraphQL
             Java implementation</a></h3>
         <div class="version-info">
-            <strong>Latest releases</strong>            
+            <strong>Latest releases</strong>
             {{ range .Site.Params.latestReleases }}
               <div>
-                <a 
-                  href="https://github.com/graphql-java/graphql-java/releases/tag/{{ . }}" 
+                <a
+                  href="https://github.com/graphql-java/graphql-java/releases/tag/{{ . }}"
                   target="_blank">
                   {{ . }}
                 </a>
               </div>
             {{ end }}
+        </div>
+        <div class="version-info">
+            The JavaDoc for all versions can be found here <a href="https://javadoc.io/doc/com.graphql-java/graphql-java/">https://javadoc.io/doc/com.graphql-java/graphql-java/</a>
         </div>
       </section>
       <section class="home-section blog">
