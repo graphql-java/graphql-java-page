@@ -28,7 +28,7 @@ Dependency:
 {{< highlight groovy "linenos=table" >}}
 
     dependencies {
-      compile 'com.graphql-java:graphql-java:11.0'
+      compile 'com.graphql-java:graphql-java:13.0'
     }
 {{< / highlight >}}
 
@@ -42,7 +42,7 @@ Dependency:
     <dependency>
         <groupId>com.graphql-java</groupId>
         <artifactId>graphql-java</artifactId>
-        <version>11.0</version>
+        <version>113.0</version>
     </dependency>
 {{< / highlight >}}
 
