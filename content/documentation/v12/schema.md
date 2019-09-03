@@ -294,7 +294,8 @@ The GraphQL type system supports the following kind of types:
 ``graphql-java`` supports the following Scalars:
 
 
-Standard graphql scalars : 
+Standard graphql scalars:
+
 * ``GraphQLString``
 * ``GraphQLBoolean``
 * ``GraphQLInt``
