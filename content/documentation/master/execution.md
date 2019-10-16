@@ -187,7 +187,7 @@ to include them.
 To ensure you get a JSON result that conforms 100% to the graphql spec, you should call `toSpecification` on the result and then
 send that back as JSON.
 
-This will ensure that the result follows the specification outlined in http://facebook.github.io/graphql/#sec-Response
+This will ensure that the result follows the specification outlined in https://graphql.github.io/graphql-spec/draft/#sec-Response
 
 
 {{< highlight java "linenos=table" >}}
@@ -304,7 +304,7 @@ The data fetcher here is responsible for executing the mutation and returning so
                 // be maps.  You can convert them to POJOs inside the data fetcher if that
                 // suits your code better
                 //
-                // See http://facebook.github.io/graphql/October2016/#sec-Input-Objects
+                // See https://graphql.github.io/graphql-spec/draft/#sec-Input-Objects
                 //
                 Map<String, Object> episodeInputMap = environment.getArgument("episode");
                 Map<String, Object> reviewInputMap = environment.getArgument("review");
@@ -466,10 +466,10 @@ have to do *enemies* first followed by *friends*, which would be less efficient.
 It will however assemble the results in order.  The query result will follow the graphql specification and return object values
 assembled in query field order.  Only the execution of data fetching is free to be in any order.
 
-This behaviour is allowed in the graphql specification and in fact is actively encouraged http://facebook.github.io/graphql/#sec-Query
+This behaviour is allowed in the graphql specification and in fact is actively encouraged https://graphql.github.io/graphql-spec/draft/#sec-Query
 for read only queries.
 
-See `specification <http://facebook.github.io/graphql/#sec-Normal-evaluation>`_ for details.
+See `specification <https://graphql.github.io/graphql-spec/draft/#sec-Normal-and-Serial-Execution>` for details.
 
 
 ## AsyncSerialExecutionStrategy
