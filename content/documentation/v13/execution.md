@@ -503,14 +503,14 @@ Please note that this does not cache the result of the query, only the parsed ``
 {{< highlight java "linenos=table" >}}
     Cache<String, PreparsedDocumentEntry> cache = Caffeine.newBuilder().maximumSize(10_000).build(); (1)
     GraphQL graphQL = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema)
-            .preparsedDocumentProvider(cache::get) (2)
+            .preparsedDocumentProvider((executionInput, computeFunction) -> cache.get(executionInput.getQuery(), val -> computeFunction.apply(executionInput))) (2)
             .build();
 
 {{< / highlight >}}
 
 
 1. Create an instance of preferred cache instance, here is `Caffeine <https://github.com/ben-manes/caffeine>`_  used as it is a high quality caching solution. The cache instance should be thread safe and shared.
-2. The ``PreparsedDocumentProvider`` is a functional interface with only a get method and we can therefore pass a method reference that matches the signature into the builder.
+2. By using the ``ExecutionInput`` and the ``Function<ExecutionInput, PreparsedDocumentEntry>`` passed to the ``PreparsedDocumentProvider`` the cache can be searched and populated. 
 
 
 In order to achieve high cache hit ration it is recommended that field arguments are passed in as variables instead of directly in the query.
