@@ -15,7 +15,7 @@ GraphQL is a query language to retrieve data from a server. It is an alternative
 
 Let's suppose we want to query the details for a specific book from a online store backend.
 
-With GraphQL you send the following query to server to get the details for the book with the id "123":
+With GraphQL you send the following query to server to get the details for the book with the id "book-1":
 
 {{< highlight scala "linenos=table" >}}
 {
