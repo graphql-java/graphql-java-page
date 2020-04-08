@@ -263,10 +263,10 @@ Then our runtime code could be :
 
     static GraphQLSchema buildSchema() {
 
-        String sdlSpec = "" +
-                "type Query {\n" +
-                "    dateField : String @dateFormat \n" +
-                "}";
+        String sdlSpec = "directive @dateFormat on FIELD_DEFINITION\n" +
+                      "type Query {\n" +
+                      "    dateField : String @dateFormat \n" +
+                      "}";
 
         TypeDefinitionRegistry registry = new SchemaParser().parse(sdlSpec);
 
