@@ -80,19 +80,20 @@ partial results with errors.
 Here is the code for the standard behaviour.
 
 {{< highlight java "linenos=table" >}}
-
     public class SimpleDataFetcherExceptionHandler implements DataFetcherExceptionHandler {
-        private static final Logger log = LoggerFactory.getLogger(SimpleDataFetcherExceptionHandler.class);
+
+        private static final Logger logNotSafe = LogKit.getNotPrivacySafeLogger(SimpleDataFetcherExceptionHandler.class);
 
         @Override
-        public void accept(DataFetcherExceptionHandlerParameters handlerParameters) {
+        public DataFetcherExceptionHandlerResult onException(DataFetcherExceptionHandlerParameters handlerParameters) {
             Throwable exception = handlerParameters.getException();
-            SourceLocation sourceLocation = handlerParameters.getField().getSourceLocation();
+            SourceLocation sourceLocation = handlerParameters.getSourceLocation();
             ExecutionPath path = handlerParameters.getPath();
 
             ExceptionWhileDataFetching error = new ExceptionWhileDataFetching(path, exception, sourceLocation);
-            handlerParameters.getExecutionContext().addError(error);
-            log.warn(error.getMessage(), exception);
+            logNotSafe.warn(error.getMessage(), exception);
+
+            return DataFetcherExceptionHandlerResult.newResult().error(error).build();
         }
     }
 {{< / highlight >}}
