@@ -102,7 +102,7 @@ Here is how you might put this in place:
             @Override
             public CompletionStage<List<Object>> load(List<String> keys) {
                 //
-                // we use supplyAsync() of values here for maximum parellisation
+                // we use supplyAsync() of values here for maximum parallelisation
                 //
                 return CompletableFuture.supplyAsync(() -> getCharacterDataViaBatchHTTPApi(keys));
             }

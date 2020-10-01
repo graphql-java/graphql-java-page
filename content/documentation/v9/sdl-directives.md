@@ -124,7 +124,7 @@ We now need to wire in the code that can handle any field with this ``@auth`` di
 {{< / highlight >}}
 
 This has modified the ``GraphQLFieldDefinition`` so that its original data fetcher will ONLY be called if the current authorisation context
-has the ``manager`` role.  Exactly what mechanisms you use for authorisation is up to you.  You could use Spring Security for example say, graphql-java doesnt
+has the ``manager`` role.  Exactly what mechanisms you use for authorisation is up to you.  You could use Spring Security for example say, graphql-java doesn't
 really care.
 
 You would provide this authorisation checker into the execution "context" object of the graphql input so it can then be accessed later in the
