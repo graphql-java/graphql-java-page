@@ -274,7 +274,7 @@ You would create types like this to handle this mutation :
 
 
 Notice that the input arguments are of type ``GraphQLInputObjectType``.  This is important.  Input arguments can ONLY be of that type
-and you cannot use output types such as ``GraphQLObjectType``.  Scalars types are consider both input and output types.
+and you cannot use output types such as ``GraphQLObjectType``.  Scalars types are considered both input and output types.
 
 The data fetcher here is responsible for executing the mutation and returning some sensible output values.
 
