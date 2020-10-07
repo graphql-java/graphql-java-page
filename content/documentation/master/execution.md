@@ -330,7 +330,7 @@ to the caller.
 
 ## Asynchronous Execution
 
-graphql-java uses fully asynchronous execution techniques when it executes queries.  You can get the ``CompleteableFuture`` to results by calling
+graphql-java uses fully asynchronous execution techniques when it executes queries.  You can get the ``CompletableFuture`` to results by calling
 ``executeAsync()`` like this
 
 {{< highlight java "linenos=table" >}}
@@ -436,7 +436,7 @@ strategies for most cases.
 ## AsyncExecutionStrategy
 
 By default the "query" execution strategy is ``graphql.execution.AsyncExecutionStrategy`` which will dispatch
-each field as ``CompleteableFuture`` objects and not care which ones complete first.  This strategy allows for the most
+each field as ``CompletableFuture`` objects and not care which ones complete first.  This strategy allows for the most
 performant execution.
 
 The data fetchers invoked can themselves return ``CompletionStage`` values and this will create
