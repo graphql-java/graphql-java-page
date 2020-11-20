@@ -306,7 +306,6 @@ Extended graphql-java scalars
 * ``GraphQLLong``
 * ``GraphQLShort``
 * ``GraphQLByte``
-* ``GraphQLFloat``
 * ``GraphQLBigDecimal``
 * ``GraphQLBigInteger``
 
