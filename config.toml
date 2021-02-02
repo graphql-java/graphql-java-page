@@ -10,6 +10,11 @@ pygmentsUseClasses=true
 
 ## Main Menu
 [[menu.main]]
+  name = "workshops"
+  weight = 50
+  identifier = "workshops"
+  url = "/workshops/"
+[[menu.main]]
   name = "blog"
   weight = 100
   identifier = "blog"
@@ -24,11 +29,6 @@ pygmentsUseClasses=true
   identifier = "documentation"
   weight = 200
   url = "/documentation/latest/"
-[[menu.main]]
-  name = "contact"
-  identifier = "contact"
-  weight = 300
-  url = "/contact/"
 [[menu.main]]
   name = "about"
   identifier = "about"
