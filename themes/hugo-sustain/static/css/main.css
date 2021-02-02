@@ -219,6 +219,19 @@ div.footer {
   font-size: 18px;
 }
 
+.news {
+  font-size: 24px;
+  margin-top: 32px;
+}
+
+#news-link {
+  color: #333;
+}
+
+.home-new {
+  color: #eb0195;
+}
+
 .workshops-announcement {
   color: #eb0195;
   font-weight: bold;
