@@ -99,7 +99,7 @@ Notice the `.handleAsync` which doesn't do anything except forwarding the result
 different pool (`graphqlJavaPool`).
 
 This way you have different pools for different kind of work (one for CPU bound GraphQL Java work and one
-for multiple ones for IO bound work), which can be configured and monitored indepently.
+for multiple ones for IO bound work), which can be configured and monitored independently.
 
 # In a fully reactive system
 If your system is fully reactive your `DataFetcher` will more look like this
@@ -119,7 +119,7 @@ Because the code is non blocking there is no need to offload anything on a dedic
 GraphQL Java.
 
 But you still might want to consider using a dedicated GraphQL Java pool as you otherwise use 
-threads which are dedicated to IO. 
+threads which are dedicated to IO and the same benefits as in the blocking case apply.
 
 # Feedback or questions
 We use [GitHub Discussions](https://github.com/graphql-java/graphql-java/discussions) for general feedback and questions.
