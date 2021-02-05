@@ -224,6 +224,12 @@ div.footer {
   margin-top: 32px;
 }
 
+.workshops-header {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
 #news-link {
   color: #333;
 }
