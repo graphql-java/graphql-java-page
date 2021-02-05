@@ -83,7 +83,7 @@ Because the code is non blocking there is no need to offload anything on a dedic
 GraphQL Java "automatically" works as efficiently as possible.
 
 # Feedback or questions
-We use [GitHub discussions](https://github.com/graphql-java/graphql-java/discussions) for general feedback and questions.
+We use [GitHub Discussions](https://github.com/graphql-java/graphql-java/discussions) for general feedback and questions.
 
 You can also checkout our [Workshops](/workshops) for more possibilities to learn GraphQL Java.
 
