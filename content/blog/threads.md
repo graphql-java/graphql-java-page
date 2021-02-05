@@ -10,9 +10,9 @@ date = 2021-02-05T00:00:00+10:00
 
 We follow a fundamental rule in GraphQL Java regarding Threads: GraphQL Java never creates 
 Threads or interacts with Thread pools. We do this because we want to give the user the full control 
-and whatever GraphQL Java would do it would not be correct in general.
+and whatever GraphQL Java would do, it would not be correct for every use case.
 
-Additionally to being strictly unopinionated regarding Threads GraphQL Java is also fully reactive, 
+Additionally to being strictly unopinionated regarding Threads, GraphQL Java is also fully reactive, 
 implemented via `CompletableFuture` (`CF`).
 These two constrain together mean we rely on the `CF` returned by the user. 
 Specifically we piggyback on the `CF` returned by the `DataFetcher` 
@@ -34,7 +34,7 @@ as it is by far the most important).
 
 # Blocking DataFetcher
 
-Lets assume your accessing a DB in blocking way in your `DataFetcher`:
+Lets assume you are accessing a DB in a blocking way in your `DataFetcher`:
 
 {{< highlight Java "linenos=table" >}}
     String get(DataFetchingEnvironment env) {
@@ -61,7 +61,7 @@ If the `DataFetcher` for these `dbData` fields don't return a `CF`,
 but block the Thread until the data is read, GraphQL Java will not work with maximum efficiency.
 
 GraphQL Java can invoke the `DataFetcher` for all three fields in parallel. But if your `DataFetcher` for
-`dbData1` is blocking GraphQL Java will also be blocked and only invoke the next `DataFetcher` once `dbData1` 
+`dbData1` is blocking, GraphQL Java will also be blocked and only invoke the next `DataFetcher` once `dbData<n>` 
 is finished. 
 The recommend solution to this problem is offloading your blocking code onto a separate Thread pool 
 as shown here: 
@@ -119,12 +119,12 @@ Because the code is non blocking there is no need to offload anything on a dedic
 GraphQL Java.
 
 You still might want to consider using a dedicated GraphQL Java pool as you otherwise would use 
-threads which are dedicated to IO. How much this is really relevant depends highly on your use case.
+Threads which are dedicated to IO. How much this is really relevant depends highly on your use case.
 
-For example `Async Http Client` (`AHC`) uses by default 2 * #cores (this value comes actually from Netty) threads. If you 
-don't use a dedicated Thread Pool for GraphQL Java work you might encounter situations under load where all `AHC` 
-threads are either busy or blocked by GraphQL Java code and as a result your system is not as performant as it 
-could be.
+For example `Async Http Client` (`AHC`) uses by default 2 * #cores (this value comes actually from Netty) Threads. If you 
+don't use a dedicated Thread Pool for GraphQL Java you might encounter situations under load where all `AHC` 
+Threads are either busy or blocked by GraphQL Java code and as a result your system is not as performant as it 
+could be. Normally only load tests in production like environments can show the relevance of different Thread pools.
 
 
 # Feedback or questions
