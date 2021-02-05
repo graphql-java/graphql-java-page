@@ -34,36 +34,72 @@ as it is by far the most important).
 
 # Blocking DataFetcher
 
-So for example lets assume your `DataFetcher` access a DB (blocking, not reactive) and you decide 
-to offload this work to a dedicated Thread pool: 
+Lets assume your accessing a DB in blocking way in your `DataFetcher`:
 
 {{< highlight Java "linenos=table" >}}
-    CompletableFuture<String> get(DataFetchingEnvironment env) {
-        return dbAccess.supplyAsync( getValueFromDb(env), dbThreadPool ); 
+    String get(DataFetchingEnvironment env) {
+        return getValueFromDb(env); // blocking the Thread until the value is read from DB
     };
 {{< / highlight >}}
 <p/>
 
-The subsequent work done by GraphQL Java will be executed in the same `dbThreadPool` until it 
-encounters a new `DataFetcher` returned by the user code and this new `CF` dedicates the Thread 
-for the subsequent work.
+This is not completely wrong, but not recommend in general as the consequence of this kind of `DataFecher`
+is that GraphQL can't execute the query in the most efficient way.
 
-In general offloading your work to a dedicated Thread pool is recommend if your `DataFetcher` is blocking,
-because otherwise GraphQL will not execute with maximal efficiency. 
 For example for the following query: 
 
 {{< highlight Scala "linenos=table" >}}
 {
-    field1
-    field2
-    field3
+    dbData1
+    dbData2
+    dbData3
 }
 {{< / highlight >}}
 <p/>
- 
-GraphQL can invoke the `DataFetcher` for all three fields in parallel. But if your `DataFetcher` for
-`field1` is blocking GraphQL Java will also be blocked and only invoke the next `DataFetcher` once `field` 
-is finished. Offloading your blocking code onto a separate Thread pool a shown above solves this problem.
+
+If the `DataFetcher` for these `dbData` fields don't return a `CF`,
+but block the Thread until the data is read, GraphQL Java will not work with maximum efficiency.
+
+GraphQL Java can invoke the `DataFetcher` for all three fields in parallel. But if your `DataFetcher` for
+`dbData1` is blocking GraphQL Java will also be blocked and only invoke the next `DataFetcher` once `dbData1` 
+is finished. 
+The recommend solution to this problem is offloading your blocking code onto a separate Thread pool 
+as shown here: 
+
+{{< highlight Java "linenos=table" >}}
+    CompletableFuture<String> get(DataFetchingEnvironment env) {
+        return CompletableFuture.supplyAsync( getValueFromDb(env), dbThreadPool ); 
+    };
+{{< / highlight >}}
+<p/>
+This code will maximize the performance and will cause all three fields to be fetched in parallel.
+
+# Different pools for different work
+
+The subsequent work done by GraphQL Java will be executed in the same `dbThreadPool` until it 
+encounters a new `DataFetcher` returned by the user code and this new `CF` dedicates the Thread 
+for the subsequent work. 
+
+If you want to have separate pools for different kind of work, one for the actual `DataFetcher` which normally
+involve IO and one of the actual GraphQL Java work (which is pure CPU), you need to switch back from your offloaded
+pool to a dedicated GraphQL Java pool before returning the `CF`. You can achieve this with code like this:
+
+{{< highlight Java "linenos=table" >}}
+    CompletableFuture<String> get(DataFetchingEnvironment env) {
+        return CompletableFuture.supplyAsync( getValueFromDb(env), dbThreadPool )
+            .handleAsync((result,exception) -> {
+                if(exception !=null) throw exception;
+                return result;
+            }, graphqlJavaPool); 
+    };
+{{< / highlight >}}
+<p/>
+
+Notice the `.handleAsync` which doesn't do anything except forwarding the result, but on a 
+different pool (`graphqlJavaPool`).
+
+This way you have different pools for different kind of work (one for CPU bound GraphQL Java work and one
+for multiple ones for IO bound work), which can be configured and monitored indepently.
 
 # In a fully reactive system
 If your system is fully reactive your `DataFetcher` will more look like this
@@ -79,8 +115,11 @@ The code above could be implemented via [Async Http Client](https://github.com/A
 or [WebFlux WebClient](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html#webflux-client).
 Both provide fully reactive HTTP clients.
 
-Because the code is non blocking there is no need to offload anything on a dedicated Thread pool and
-GraphQL Java "automatically" works as efficiently as possible.
+Because the code is non blocking there is no need to offload anything on a dedicated Thread pool to avoid blocking
+GraphQL Java.
+
+But you still might want to consider using a dedicated GraphQL Java pool as you otherwise use 
+threads which are dedicated to IO. 
 
 # Feedback or questions
 We use [GitHub Discussions](https://github.com/graphql-java/graphql-java/discussions) for general feedback and questions.
