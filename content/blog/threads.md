@@ -118,9 +118,14 @@ Both provide fully reactive HTTP clients.
 Because the code is non blocking there is no need to offload anything on a dedicated Thread pool to avoid blocking
 GraphQL Java.
 
-But you still might want to consider using a dedicated GraphQL Java pool as you otherwise use 
-threads which are dedicated to IO and the same benefits as in the blocking case apply (purpose specific config, 
-better monitoring).
+You still might want to consider using a dedicated GraphQL Java pool as you otherwise would use 
+threads which are dedicated to IO. How much this is really relevant depends highly on your use case.
+
+For example `Async Http Client` (`AHC`) uses by default 2 * #cores (this value comes actually from Netty) threads. If you 
+don't use a dedicated Thread Pool for GraphQL Java work you might encounter situations under load where all `AHC` 
+threads are either busy or blocked by GraphQL Java code and as a result your system is not as performant as it 
+could be.
+
 
 # Feedback or questions
 We use [GitHub Discussions](https://github.com/graphql-java/graphql-java/discussions) for general feedback and questions.
