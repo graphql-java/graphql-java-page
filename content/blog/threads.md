@@ -119,7 +119,8 @@ Because the code is non blocking there is no need to offload anything on a dedic
 GraphQL Java.
 
 But you still might want to consider using a dedicated GraphQL Java pool as you otherwise use 
-threads which are dedicated to IO and the same benefits as in the blocking case apply.
+threads which are dedicated to IO and the same benefits as in the blocking case apply (purpose specific config, 
+better monitoring).
 
 # Feedback or questions
 We use [GitHub Discussions](https://github.com/graphql-java/graphql-java/discussions) for general feedback and questions.
