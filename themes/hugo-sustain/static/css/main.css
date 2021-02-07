@@ -78,6 +78,35 @@ body {
   color: #6b6b6b;
 }
 
+/* table */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table tr:nth-child(even){
+  background-color: #f2f2f2;
+}
+
+table tr:hover {
+  background-color: #ddd;
+}
+
+table td, table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+
+table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: #6b6b6b#;
+}
+
 /* Custom page CSS */
 .container {
   width: auto;
