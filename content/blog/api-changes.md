@@ -3,8 +3,9 @@ title = "A comprehensive guide to GraphQL API changes"
 author = "Andreas Marek"
 tags = []
 categories = []
-date = 2022-02-07T00:00:00+10:00
+date = 2021-02-07T00:00:00+10:00
 toc = "true"
+draft = "true"
 +++
 
 __Note: this guide aims to be an update document which will be updated if needed.__
@@ -124,7 +125,6 @@ what consequence each change have.
 
 Same naming conventions:
 
-
 - the type of a type is called kind. It can be Enum, 
 Scalar, Input Object, Object, Interface or Union.
 - Argument means arguments for fields and for Directives if
@@ -135,10 +135,15 @@ not explicitly mentioned otherwise.
 - Schema Directive is a Directive which is a valid for locations in a SDL
 - Input types are Scalar, Enum, Input Objects.
 - Output types are Scalar, Enum, Object, Interfaces and Union.
+- Composite types are Objects, Interface, Union and Input Objects 
+- Atomic types are Scalar and Enum
+
+In general we don't consider changes which results in invalid schemas.
+For example changing an Input object type to an Interface type results in an invalid schema. 
 
 List of changes:
 
-## 1. A type is removed.
+## 1. A type is removed
 When a type is removed every Query which directly uses the type by name becomes invalid.
 For input types this means a variable declaration becomes invalid:
 
@@ -159,14 +164,31 @@ For composite output types every query which uses the type as type condition bec
 When a Scalar or Enum which is used as output type is removed it means the field
 which returns this Scalar or Enum is either removed or changed in a breaking way.
 
-## 2. The kind of a type is changed.
+## 2. A type is replaced with another type of same name (The kind of a type is changed)
 
-Changing the kind of a type means fundamentally changing the guarantee about this type.
+### 2A: A composite output type is replaced with an atomic type or vice versa
 
-Open discussion: changing an Object (which was not used as type in an Union) 
-is maybe not breaking?
+This causes invalid queries as a composite type requires sub selection, while
+atomic types don't allow them. 
 
-## 3. A type of an Union is removed.
+### 2B: An Input Object is replaced with an atomic type or vice versa 
+
+This causes invalid queries as the values of an input object are not
+compatible with Enum or Scalar values. One exception is when an Input Object is replaced
+with a custom Scalar which allows the same values as the Input Object.
+
+### 2C: A Object or Interface is replaced with a Union 
+
+This causes invalid queries because Object and Interface allow direct sub selection
+(with using a Fragment), while Unions don't.
+
+### 2D: A Union is replaced with an Object or Interface 
+
+### 2E: An Object is replaced with an Interface
+
+### 2F: An Interface is replaced with an Object
+
+## 3. A member type of a Union is removed
 
 Every request which queried the type via Fragment becomes invalid.
 {{< highlight Scala "linenos=table" >}}
@@ -178,48 +200,79 @@ Every request which queried the type via Fragment becomes invalid.
 }
 {{< / highlight >}}
 
-## 4. A value is removed from an Enum which is used as input.
+## 4. A value is removed from an Enum which is used as input
 
 Every request which used the value becomes invalid.
 
-## 5. A required input field or argument is added which doesn't have a default value.
+## 5. A required input field or argument is added which doesn't have a default value
 
 Every request which queried the field becomes invalid because the required
 argument or input field is not provided.
 
-## 6. An Interface is removed from an Object or Interface.
+## 6. A field is removed 
+
+Every request which queried the failed becomes invalid.
+
+## 7. The type of a field is changed
+
+
+## 8. An Interface is removed from an Object or Interface
 
 Every request which queried the type via Fragment becomes invalid.
 
-## 7. An argument or input field is removed.
+## 9. An argument or input field is removed
 
 Every request which provided the argument or input field becomes invalid.
 
-## 8. An argument type or input field is changed in an incompatible way.
+## 10. An argument type or input field is changed in an incompatible way
 
 Any change which is not just removing non-nullable constraints is breaking.
 
 TODO: more explanation.
 
-## 9. A Query Directive was removed. 
+## 11. A Query Directive is removed 
 
 Every request which used the Directive becomes invalid.
 
-## 10. A Query Directive was changed from repeatable to not repeatable.
+## 12. A Query Directive is changed from repeatable to not repeatable
 
 Every request which provided multiple instances of the Directive on the same element 
 becomes invalid.
 
-## 11. A Query location for a Query Directive was removed. 
+## 13. A Query location for a Query Directive is removed 
 
 Every request which has the Directive on the now removed location becomes invalid.
 
-## 12. A value is added to an Enum.
+## 14. A value is added to an Enum
 
-If a client is not developed in defensive way which expects new Enum values
-it can cause problems.
+If a client doesn't expect new Enum values it can cause problems.
+For example a switch over all Enum values is not able to handle a
+new unknown value.
 
-## 13. Default value for argument or input field is changed 
+## 15. A type is added to a Union
+
+If a client doesn't expect that Union members can grow, it can cause problems.
+
+For example a query over all Union members:
+{{< highlight Scala "linenos=table" >}}
+{ unionField {
+    ... on Member1{
+      # more
+    }
+    ... on Member2{
+      # more
+    }
+    ... on Member3{
+      # more
+    }
+}
+{{< / highlight >}}
+
+When at development time the Union only consist of 3 member types,
+but is expanded later the query above will result in empty Objects for these
+new types. If a client might not be able to handle that. 
+
+## 16. A Default value for argument or input field is changed
 
 Every request which didn't provide any value for this argument
 or input field is now using the new default value. 
@@ -239,14 +292,17 @@ As discussed above there are different aspects to a change we should consider:
 | #3 Union type removed                | yes                    | no                           | na                            |
 | #4 Input Enum value removed          | yes                    | no                           | na                            |
 | #5 Required input added              | yes                    |                              |                               |
-| #6 Interface removed                 | yes                    |                              |                               |
-| #7 Argument/Input field removed      | yes                    |                              |                               |
-| #8 Argument/Input field type changed | yes                    |                              |                               |
-| #9 Query directive removed           | yes                    |                              |                               |
-| #10 Query directive non-repeatable   | yes                    |                              |                               |
-| #11 Query directive location removed | yes                    |                              |                               |
-| #12 Value added to Enum              | no                     | no                           | yes                           |
-| #13 Default value changed            | no                     | no                           | yes                           |
+| #6 Required input added              | yes                    |                              |                               |
+| #7 Required input added              | yes                    |                              |                               |
+| #8 Interface removed                 | yes                    |                              |                               |
+| #9 Argument/Input field removed      | yes                    |                              |                               |
+| #10 Argument/Input field type changed | yes                    |                              |                               |
+| #11 Query directive removed           | yes                    |                              |                               |
+| #12 Query directive non-repeatable   | yes                    |                              |                               |
+| #13 Query directive location removed | yes                    |                              |                               |
+| #14 Value added to Enum              | no                     | no                           | yes                           |
+| #15 Type added to Enum               | no                     | no                           | yes                           |
+| #16 Default value changed            | no                     | no                           | yes                           |
 
 
 # Feedback or questions
