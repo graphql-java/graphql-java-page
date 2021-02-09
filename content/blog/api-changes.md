@@ -118,7 +118,7 @@ For example removing a Directive is not always a breaking change if the Directiv
 is never used at a Query element or adding an argument which is required is not breaking
 if the argument has a default value.
 
-# Comprehensive list of changes with explanation
+# Comprehensive list of changes 
 
 This sections aims to provide a comprehensive list of changes and
 what consequence each change have.
@@ -130,18 +130,195 @@ Scalar, Input Object, Object, Interface or Union.
 - Argument means arguments for fields and for Directives if
 not explicitly mentioned otherwise.
 - Query location means a location for a Directive in a Query (eg. field)   
-- Schema location means a location for a Directive in SDL (eg.  field definition)
+- Schema location means a location for a Directive in a SDL (eg.  field definition)
 - Query Directive is a Directive which is a valid for locations in a Query
 - Schema Directive is a Directive which is a valid for locations in a SDL
 - Input types are Scalar, Enum, Input Objects.
 - Output types are Scalar, Enum, Object, Interfaces and Union.
-- Composite types are Objects, Interface, Union and Input Objects 
-- Atomic types are Scalar and Enum
+- Composite types are types of kind Object, Interface, Union or Input Object
+- Atomic types are types of kind Scalar and Enum
+- Wrapping types are Non-Null types and List types which wrap other types 
 
-In general we don't consider changes which results in invalid schemas.
-For example changing an Input object type to an Interface type results in an invalid schema. 
+This is the full list of schema changes we consider:
 
-List of changes:
+- 1 change Object
+    - 1.1 remove field
+    - 1.2 change field
+        - 1.2.1 change type
+        - 1.2.2 add argument 
+        - 1.2.3 remove argument
+        - 1.2.4 change argument
+            - 1.2.4.1 change argument type  
+            - 1.2.4.2 add default value
+            - 1.2.4.3 remove default value
+            - 1.2.4.4 change default value
+    - 1.3 add Interface
+    - 1.4 remove Interface
+- 2 change Interface
+    - 2.1 remove field
+    - 2.2 change field
+        - 2.2.1 change type 
+        - 2.2.2 add argument 
+        - 2.2.3 remove argument
+        - 2.2.4 change argument
+            - 2.2.4.1 change argument type  
+            - 2.2.4.2 add default value
+            - 2.2.4.3 remove default value
+            - 2.2.4.4 change default value
+    - 2.3 add Interface
+    - 2.4 remove Interface
+- 3 change Union
+    - 3.1 add member type
+    - 3.2 remove member type
+- 4 change Input Object 
+    - 4.1 add non-nullable field without default value
+    - 4.2 remove field 
+    - 4.3 change field
+        - 4.3.1 change type 
+        - 4.3.2 add default value
+        - 4.3.3 remove default value
+        - 4.3.4 change default value
+- 5 change Enum
+    - 5.1 add value
+    - 5.2 remove value
+- 6 change Scalar
+    - 6.1 change or remove specified-by value 
+- 7 change Query Directive
+    - 7.1 make it non repeatable  
+    - 7.2 remove Query location
+    - 7.3 add argument 
+    - 7.4 remove argument
+    - 7.5 change argument
+        - 7.5.1 change argument type  
+        - 7.5.2 add default value
+        - 7.5.3 remove default value
+        - 7.5.4 change default value
+        
+- 8 Add/remove not directly referenced Object/Interface hierarchies 
+
+As a general rule we do not consider changes which results in invalid schemas.
+An obvious example is changing an Input object type to an Interface type.
+Further more not every change is applicable to every schema: e.g. changing an argument
+requires an argument in the first place.
+
+We also don't discuss changes considered safe like adding a new field to an Object.
+
+
+## Type changes for output field types
+
+### A composite type changed to an atomic type or vice versa
+
+Every request querying this field becomes invalid because 
+composite types require sub selection and atomic types don't allow them.
+
+### One or more non-nullable guarantees removed 
+
+This doesn't change the shape of the type but weakens the guarantees 
+by the type system which elements can be null.
+
+For example: `String!` changed to `String` or `[[[String!]!]!` changed to
+`[String]!]`
+
+### One or more List wrapping types added or removed.
+
+### Union type changed to an Object or Interface 
+
+### Object type changed to an Interface
+
+### Interface type changed to an Object
+
+### Scalar replaced with Enum or vice versa
+
+## 1. Object changes
+
+| Change              | Invalid queries | Less/incompatible guarantees | Maybe problematic for existing clients |
+|----------------------|-------|---------|------------------|
+| 1.1 remove field | yes                                | - | - |
+| 1.2.1 change field type | maybe | maybe | yes |
+| 1.2.2 add argument| yes |- | - |
+| 1.2.3 remove argument | yes |- | - |
+| 1.2.4.1 change argument type | maybe | - | yes |
+| 1.2.4.2 add argument default value | no | no | yes |
+| 1.2.4.3 remove default value | maybe | - | - |
+| 1.2.4.4 change default value  | no | no | yes |
+| 1.3 add Interface  | no | no | yes |
+| 1.4 remove Interface  | yes | - | - |
+<p/>
+
+
+## 2. Interface changes
+
+| Change              | Invalid queries | Less/incompatible guarantees | Maybe problematic for existing clients |
+|----------------------|-------|---------|------------------|
+| 2.1 remove field | yes                                | - | - |
+| 2.2.1 change field type | likely | maybe | yes |
+| 2.2.2 add argument| yes |- | - |
+| 2.2.3 remove argument | yes |- | - |
+| 2.2.4.1 change argument type | maybe | - | yes |
+| 2.2.4.2 add argument default value | no | no | yes |
+| 2.2.4.3 remove default value | maybe | - | - |
+| 2.2.4.4 change default value  | no | no | yes |
+| 2.3 add Interface  | no | no | yes |
+| 2.4 remove Interface  | yes | - | - |
+<p/>
+
+## 3. Union changes
+
+| Change              | Invalid queries | Less/incompatible guarantees | Maybe problematic for existing clients |
+|----------------------|-------|---------|------------------|
+| 3.1 add member type| no | no |yes
+| 3.2 remove member type | yes | - | -
+<p/>
+
+## 4. Input Object changes
+
+| Change              | Invalid queries | Less/incompatible guarantees | Maybe problematic for existing clients |
+|----------------------|-------|---------|------------------|
+| 4.1 add field | maybe | no | - |
+| 4.2 remove field | yes | - | - |
+| 4.3.1 change field type | likely | - | yes |
+| 4.3.2 add field default type | likely | - | yes |
+| 4.3.3 add field default type | likely | - | yes |
+| 4.3.4 change field default type | no | no | yes |
+<p/>
+
+
+## 5. Enum changes
+
+| Change              | Invalid queries | Less/incompatible guarantees | Maybe problematic for existing clients |
+|----------------------|-------|---------|------------------|
+| 5.1 add value | maybe | no | - |
+| 5.2 remove value | maybe | no | - |
+<p/>
+
+## 6. Scalar changes
+
+| Change              | Invalid queries | Less/incompatible guarantees | Maybe problematic for existing clients |
+|----------------------|-------|---------|------------------|
+| 6.1 change or remove specified-by value | no | - | yes |
+<p/>
+
+## 7. Query Directive changes
+
+| Change              | Invalid queries | Less/incompatible guarantees | Maybe problematic for existing clients |
+|----------------------|-------|---------|------------------|
+| 7.1 make it non repeatable | yes | - | - |
+| 7.2 remove Query location | yes | - | - |
+| 7.3 add argument | maybe | - | - |
+| 7.4 remove argument | yes | - | - |
+| 7.5.1 change argument type | maybe | - | yes |
+| 7.5.2 add argument default value | no | no | yes |
+| 7.5.3 remove default value | maybe | - | - |
+| 7.5.4 change default value  | no | no | yes |
+<p/>
+
+
+## 8 Add/remove not directly referenced Object/Interface hierarchies 
+
+
+
+# Foo    
+### 1.1 remove field 
 
 ## 1. A type is removed
 When a type is removed every Query which directly uses the type by name becomes invalid.
@@ -206,8 +383,6 @@ Every request which used the value becomes invalid.
 
 ## 5. A required input field or argument is added which doesn't have a default value
 
-Every request which queried the field becomes invalid because the required
-argument or input field is not provided.
 
 ## 6. A field is removed 
 
@@ -215,6 +390,26 @@ Every request which queried the failed becomes invalid.
 
 ## 7. The type of a field is changed
 
+### 7A: A composite type is changed to an atomic type (and vice versa)
+
+Every request querying this field becomes invalid because 
+composite types require sub selection and atomic types don't allow them.
+
+### 7B: One or more non-nullable wrapping types are removed 
+
+This doens't change the shape of the type but weakens the guarantees 
+by the type system which elements can be null.
+
+For example: `String!` changed to `String` or `[[[String!]!]!` changed to
+`[String]!]`
+
+### 7C: One or more List wrapping types are added or removed.
+
+### 7D: A Union type is changed to an Object or Interface 
+
+### 7E: An Object type is changed to an Interface
+
+### 7F: An Interface type is changed to an Object
 
 ## 8. An Interface is removed from an Object or Interface
 
@@ -224,7 +419,14 @@ Every request which queried the type via Fragment becomes invalid.
 
 Every request which provided the argument or input field becomes invalid.
 
-## 10. An argument type or input field is changed in an incompatible way
+## 10. An argument type is changed
+
+### 10A: The type changed to non-nullable without default value 
+
+Every request which queried the field becomes invalid because the required
+argument or input field is not provided.
+
+### 10B:
 
 Any change which is not just removing non-nullable constraints is breaking.
 
@@ -306,9 +508,14 @@ As discussed above there are different aspects to a change we should consider:
 
 
 # Feedback or questions
+
+If you find something that is wrong or could be improved please consider opening a PR
+[here](https://github.com/graphql-java/graphql-java-page/blob/master/content/blog/api-changes.md). 
+
 We use [GitHub Discussions](https://github.com/graphql-java/graphql-java/discussions) for general feedback and questions.
 
-You can also checkout our [Workshops](/workshops) for more possibilities to learn GraphQL Java.
+You can also checkout our [Workshops](/workshops) for more possibilities to learn GraphQL and GraphQL Java.
+
 
 
 
