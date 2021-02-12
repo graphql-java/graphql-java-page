@@ -1,9 +1,13 @@
 {{ partial "head" . }}
+
 <body>
   <div id="wrap">
+    <!-- Header -->
     {{ partial "header" . }}
-    <div id="container">
+    <div class="container">
       {{ "<!-- Workshops Section Start -->" | safeHTML }}
+      <div class="panel panel-default">
+        <div class="panel-body">
       <section id="workshops-section">
         <div class="container">
           <div class="row">
@@ -24,8 +28,8 @@
                 <br/>
                 <div class="contact-message">
                   <p>
-                    Please enter your contact details below if you have questions or
-                    other feedback about the workshops and we will get back to you.
+                    Please enter your contact details below if you any question or
+                    feedback regarding workshops and we will get back to you.
                   </p>
                 </div>
                 <div class="contact-form">
@@ -122,9 +126,13 @@
           </div>
         </div>
       </section>
+      </div>
+    </div>
       {{ "<!-- Contact Section End -->" | safeHTML }}
     </div>
   </div>
+  
+  <!-- Footer -->
+  {{ partial "footer" . }}
 </body>
-
-{{ partial "footer" . }}
+</html>

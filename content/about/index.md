@@ -3,8 +3,8 @@ title: "About Us"
 date: 2018-09-12T18:19:33+06:00
 ---
 
-The GraphQL Java project is run by [Andreas Marek](https://twitter.com/andimarek) and [Brad Baker](https://github.com/bbakerman).
+The GraphQL Java project is run by <a href="https://twitter.com/andimarek" target="_blank">Andreas Marek</a> and <a href="https://github.com/bbakerman" target="_blank">Brad Baker</a>.
 
-Responsible for the content on this page is Andreas Marek.
+Andreas Marek is responsible for the content of this website.
 
-Also follow us on twitter: [Graphql Java](https://twitter.com/graphql_java)
+You can also follow us on <a href="https://twitter.com/graphql_java" target="_blank">Twitter</a>.

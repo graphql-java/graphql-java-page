@@ -1,4 +1,4 @@
-/* Main page with stikky-footer */
+/* Main page with sticky-footer */
 html,
 body {
   height: 100%;
@@ -104,7 +104,7 @@ table th {
   padding-bottom: 12px;
   text-align: left;
   background-color: #4CAF50;
-  color: #6b6b6b#;
+  color: #6b6b6b;
 }
 
 /* Custom page CSS */
@@ -279,16 +279,21 @@ div.footer {
   font-size: 20px;
 }
 
+.workshops-section {
+  margin-bottom: 10px;
+}
+
 .workshops-schedule {
   display: flex;
   flex-direction: row;
   gap: 24px;
   justify-content: center;
+  margin-top: 16px;
 }
 
 .workshops-schedule button {
-  padding: 10px;
-  border: 1px solid #eb0195;
+  padding: 12px;
+  border: 2px solid #eb0195;
   border-radius: 4px;
   background: white;
   font-size: 18px;
@@ -298,12 +303,14 @@ div.footer {
   color: #333333;
 }
 
-.workshops-schedule button a:hover {
+.workshops-schedule a button:hover {
   color: #333;
+  background: #eb0195;
+  color: white;
 }
 
-.workshops-schedule button:hover {
-  background: #e885c4;
+.workshops-schedule a button:focus{
+  outline: none;
 }
 
 .contact-message {
