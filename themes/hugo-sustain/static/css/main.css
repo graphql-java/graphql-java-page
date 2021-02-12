@@ -120,7 +120,8 @@ table th {
   color: #eb0195;
 }
 .container a:hover {
-  color: #b5fed9;
+  color: #1a01eb;
+  text-decoration: none;
 }
 .container p img,
 .img-responsive {
@@ -278,6 +279,33 @@ div.footer {
   font-size: 20px;
 }
 
+.workshops-schedule {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  justify-content: center;
+}
+
+.workshops-schedule button {
+  padding: 10px;
+  border: 1px solid #eb0195;
+  border-radius: 4px;
+  background: white;
+  font-size: 18px;
+}
+
+.workshops-schedule button a {
+  color: #333333;
+}
+
+.workshops-schedule button a:hover {
+  color: #333;
+}
+
+.workshops-schedule button:hover {
+  background: #e885c4;
+}
+
 .contact-message {
   font-size: 18px;
   margin-top: 24px;
@@ -287,10 +315,6 @@ div.footer {
 .contact-form {
   margin: 0 auto;
   width: 60%;
-}
-
-#contact-submit {
-  border: 2px solid #eb0195;
 }
 
 .highlight pre {
