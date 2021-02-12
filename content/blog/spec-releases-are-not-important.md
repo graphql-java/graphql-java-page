@@ -5,8 +5,8 @@ author: Andreas Marek
 draft: false
 ---
 
-Every once in a while somebody asks which version of the GraphQL spec GraphQL Java supports.
-The general answer is: the current draft.
+Every once in a while somebody asks which version of the [GraphQL spec](https://github.com/graphql/graphql-spec) 
+GraphQL Java supports. The general answer is: the current draft.
 
 The bigger question behind this is: what is the information you want get out of this question? 
 Why do you ask this question?
