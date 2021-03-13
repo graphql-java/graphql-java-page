@@ -42,7 +42,7 @@ Dependency:
     <dependency>
         <groupId>com.graphql-java</groupId>
         <artifactId>graphql-java</artifactId>
-        <version>16.2/version>
+        <version>16.2</version>
     </dependency>
 {{< / highlight >}}
 
