@@ -10,11 +10,6 @@ pygmentsUseClasses=true
 
 ## Main Menu
 [[menu.main]]
-  name = "workshops"
-  weight = 50
-  identifier = "workshops"
-  url = "/workshops/"
-[[menu.main]]
   name = "blog"
   weight = 100
   identifier = "blog"

@@ -397,4 +397,3 @@ More information about GraphQL Java can be found in the [documentation](https://
 
 We also use [GitHub Discussions](https://github.com/graphql-java/graphql-java/discussions) for any question or problems.
 
-You can also checkout our [Workshops](/workshops) for more possibilities to learn GraphQL Java.

@@ -130,7 +130,6 @@ could be. Normally only load tests in production like environments can show the 
 # Feedback or questions
 We use [GitHub Discussions](https://github.com/graphql-java/graphql-java/discussions) for general feedback and questions.
 
-You can also checkout our [Workshops](/workshops) for more possibilities to learn GraphQL Java.
 
 
 

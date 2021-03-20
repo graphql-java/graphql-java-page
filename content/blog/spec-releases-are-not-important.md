@@ -54,8 +54,6 @@ We use [GitHub Discussions](https://github.com/graphql-java/graphql-java/discuss
 
 You can also contact us on Twitter: [@graphql_java](https://twitter.com/graphql_java)
 
-You can also checkout our [Workshops](/workshops) for more possibilities to learn about GraphQL 
-and GraphQL Java.
 
 
 

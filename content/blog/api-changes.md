@@ -514,7 +514,6 @@ If you find something that is wrong or could be improved please consider opening
 
 We use [GitHub Discussions](https://github.com/graphql-java/graphql-java/discussions) for general feedback and questions.
 
-You can also checkout our [Workshops](/workshops) for more possibilities to learn GraphQL and GraphQL Java.
 
 
 
