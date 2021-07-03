@@ -10,7 +10,5 @@ Welcome to the new GraphQL Java Homepage: the central page about everything Grap
 
 It is still a work in progress and we will continue improving this page over time.
 
-If you have any specific questions, please [reach out to us](https://www.graphql-java.com/contact/).
-
 Cheers,<br>
 Andi

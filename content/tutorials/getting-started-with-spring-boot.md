@@ -395,8 +395,5 @@ The complete project with the full source code can be found here: https://github
 
 More information about GraphQL Java can be found in the [documentation](https://www.graphql-java.com/documentation/). 
 
-We also have [spectrum chat](https://spectrum.chat/graphql-java) for any question or problems.
-
-For direct feedback you can also ping us on our [GraphQL Java Twitter account](https://twitter.com/graphql_java).
-
+We also use [GitHub Discussions](https://github.com/graphql-java/graphql-java/discussions) for any question or problems.
 
