@@ -276,4 +276,110 @@ to add simple per field checks rules.
 
 {{< / highlight >}}
 
+## Query Complexity Instrumentation
 
+``graphql.analysis.MaxQueryComplexityInstrumentation`` in an ``Instumentation`` implementation than can be used to abort a query if the total number of data
+fields queried exceeds the defined limit.
+
+{{< highlight java "linenos=table >}}
+
+        GraphQL.newGraphQL(schema)
+                .instrumentation(new MaxQueryComplexityInstrumentation(10))
+                .build();
+
+{{< / highlight >}}
+
+With a query like:
+
+{{< highlight graphql "linenos=table" >}}
+
+    query {
+      hero {
+        name
+        friends {
+          name
+          homeWorld {
+            name
+            climate
+          }
+          species {
+            name
+          }
+        }
+        homeWorld {
+          name
+          climate
+        }
+      }
+    }
+
+{{< / highlight >}}
+
+Would return a result like:
+
+{{< highlight json "linenos=table" >}}
+
+    {
+      "errors": [
+        {
+          "message": "maximum query complexity exceeded 12 > 10",
+          "extensions": {
+            "classification": "ExecutionAborted"
+          }
+        }
+      ]
+    }
+
+{{< / highlight >}}
+
+
+## Query Depth Instrumentation
+
+``graphql.analysis.MaxQueryDepthInstrumentation`` in an ``Instumentation`` implementation than can be used to abort a query if the total depth of
+the query exceeds the defined limit.
+
+{{< highlight java "linenos=table >}}
+
+        GraphQL.newGraphQL(schema)
+                .instrumentation(new MaxQueryDepthInstrumentation(4))
+                .build();
+
+{{< / highlight >}}
+
+With a query like:
+
+{{< highlight graphql "linenos=table" >}}
+
+    query {
+      hero {
+        name
+        friends {
+          name
+          friends {
+            name
+            friends {
+              name
+            }
+          }
+        }
+      }
+    }
+
+{{< / highlight >}}
+
+Would return a result like:
+
+{{< highlight json "linenos=table" >}}
+
+    {
+      "errors": [
+        {
+          "message": "maximum query depth exceeded 4 > 3",
+          "extensions": {
+            "classification": "ExecutionAborted"
+          }
+        }
+      ]
+    }
+
+{{< / highlight >}}
