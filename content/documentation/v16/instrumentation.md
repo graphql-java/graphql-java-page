@@ -281,7 +281,7 @@ to add simple per field checks rules.
 ``graphql.analysis.MaxQueryComplexityInstrumentation`` in an ``Instumentation`` implementation than can be used to abort a query if the total number of data
 fields queried exceeds the defined limit.
 
-{{< highlight java "linenos=table >}}
+{{< highlight java "linenos=table" >}}
 
         GraphQL.newGraphQL(schema)
                 .instrumentation(new MaxQueryComplexityInstrumentation(10))
@@ -338,7 +338,7 @@ Would return a result like:
 ``graphql.analysis.MaxQueryDepthInstrumentation`` in an ``Instumentation`` implementation than can be used to abort a query if the total depth of
 the query exceeds the defined limit.
 
-{{< highlight java "linenos=table >}}
+{{< highlight java "linenos=table" >}}
 
         GraphQL.newGraphQL(schema)
                 .instrumentation(new MaxQueryDepthInstrumentation(4))
