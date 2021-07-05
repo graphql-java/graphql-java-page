@@ -611,7 +611,7 @@ See the page on [subscriptions](../subscriptions) for more details
 # Changing Schema
 
 The `GraphQLSchema` is an immutable object once its is built. To make things more complicated it is in fact an immutable
-directed acyclic graph (DAG).
+cyclic graph.
 
 If you need to change the schema after it has been built then you need to use special API to `transform` it into a new
 shape.
@@ -656,7 +656,7 @@ It uses a visitor pattern with "commands" that allow you to insert, update or de
 
 {{< / highlight >}}
 
-You return "command" methods in your visitor that causes the `SchemaTransformer` to modify the schema while maintain its DAG semantic
+You return "command" methods in your visitor that causes the `SchemaTransformer` to modify the schema while maintain its cyclic graph semantic
 correctness.
 
 You can update elements, insert new ones or delete elements.
