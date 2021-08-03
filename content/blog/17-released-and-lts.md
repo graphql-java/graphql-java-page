@@ -10,8 +10,8 @@ draft = "false"
 We are happy to announce the availability of GraphQL Java 17.0.
 See [17.0 release notes](https://github.com/graphql-java/graphql-java/releases/tag/v17.0) for all the details.
 
-At the same time we wanted to give an update regarding our LTS (Long term support) support.
-Previously we maintained an LTS version of 9.x and after quite some time we announced 14.x as the next LTS.
+At the same time we wanted to give an update regarding our LTS (Long Term Support) policy.
+Previously we maintained a LTS version of 9.x and after quite some time we announced 14.x as the next LTS.
 
 The reality is that we didn't maintain 14.x really as a LTS version (we only released one bugfix release).
 This was mainly caused by the minimal community feedback and our limited time and resources. 
