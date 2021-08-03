@@ -4,7 +4,8 @@ date: 2021-07-03T12:52:46+10:00
 draft: false
 tags: [documentation]
 weight: 101
-description: Your GraphQL API has a schema which defines each field that can be queried or mutated and what types those fields are.
+description: Your GraphQL API has a schema which defines each field that can be queried or
+             mutated and what types those fields are.
 
 ---
 
