@@ -16,7 +16,7 @@ Previously we maintained a LTS version of 9.x and after quite some time we annou
 The reality is that we didn't maintain 14.x really as a LTS version (we only released one bugfix release).
 This was mainly caused by the minimal community feedback and our limited time and resources. 
 
-Going forward we decided to no offer any LTS version anymore. We will only actively maintain and bugfix
+Going forward we decided to no offer any LTS versions anymore. We will only actively maintain and bugfix
 the latest version (currently 17). We may backport critical bugfixes, but we are not committed to it. 
 
 If this is a huge problem for you or your Company and you are willing to help us with maintaining a LTS 
