@@ -27,7 +27,7 @@ For example imagine you have a type like the following
 
 {{< highlight graphql "linenos=table" >}}
 
-    type Employee
+    type Employee {
         id : ID
         name : String!
         startDate : String!
@@ -47,7 +47,7 @@ Directives can help you declare this more easily.  Our declaration above would b
 
     directive @auth(role : String!) on FIELD_DEFINITION
 
-    type Employee
+    type Employee {
         id : ID
         name : String!
         startDate : String!
@@ -64,7 +64,7 @@ that needs manager role authorisation.
 
     directive @auth(role : String!) on FIELD_DEFINITION
 
-    type Employee
+    type Employee {
         id : ID
         name : String!
         startDate : String!
@@ -156,7 +156,7 @@ declared like so before use.
     # This is a directive declaration
     directive @auth(role : String!) on FIELD_DEFINITION
 
-    type Employee
+    type Employee {
         id : ID
 
         # and this is a usage of that declared directive
