@@ -5,7 +5,7 @@ theme = "hugo-sustain"
 pygmentsUseClasses=true
 
 [params]
-  latestReleases = ["v17.2", "v14.1"]
+  latestReleases = ["v17.3", "v14.1"]
   latestDocs = "v17"
 
 ## Main Menu
