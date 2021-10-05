@@ -250,7 +250,7 @@ Then our runtime code could be :
                             .newArgument()
                             .name("format")
                             .type(Scalars.GraphQLString)
-                            .defaultValue("dd-MM-YYYY")
+                            .defaultValueProgrammatic("dd-MM-YYYY")
                     )
             );
         }
