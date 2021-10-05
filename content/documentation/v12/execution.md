@@ -80,19 +80,20 @@ partial results with errors.
 Here is the code for the standard behaviour.
 
 {{< highlight java "linenos=table" >}}
-
     public class SimpleDataFetcherExceptionHandler implements DataFetcherExceptionHandler {
-        private static final Logger log = LoggerFactory.getLogger(SimpleDataFetcherExceptionHandler.class);
+
+        private static final Logger logNotSafe = LogKit.getNotPrivacySafeLogger(SimpleDataFetcherExceptionHandler.class);
 
         @Override
-        public void accept(DataFetcherExceptionHandlerParameters handlerParameters) {
+        public DataFetcherExceptionHandlerResult onException(DataFetcherExceptionHandlerParameters handlerParameters) {
             Throwable exception = handlerParameters.getException();
-            SourceLocation sourceLocation = handlerParameters.getField().getSourceLocation();
+            SourceLocation sourceLocation = handlerParameters.getSourceLocation();
             ExecutionPath path = handlerParameters.getPath();
 
             ExceptionWhileDataFetching error = new ExceptionWhileDataFetching(path, exception, sourceLocation);
-            handlerParameters.getExecutionContext().addError(error);
-            log.warn(error.getMessage(), exception);
+            logNotSafe.warn(error.getMessage(), exception);
+
+            return DataFetcherExceptionHandlerResult.newResult().error(error).build();
         }
     }
 {{< / highlight >}}
@@ -288,7 +289,7 @@ You would create types like this to handle this mutation :
 
 
 Notice that the input arguments are of type ``GraphQLInputObjectType``.  This is important.  Input arguments can ONLY be of that type
-and you cannot use output types such as ``GraphQLObjectType``.  Scalars types are consider both input and output types.
+and you cannot use output types such as ``GraphQLObjectType``.  Scalars types are considered both input and output types.
 
 The data fetcher here is responsible for executing the mutation and returning some sensible output values.
 
@@ -330,7 +331,7 @@ to the caller.
 
 ## Asynchronous Execution
 
-graphql-java uses fully asynchronous execution techniques when it executes queries.  You can get the ``CompleteableFuture`` to results by calling
+graphql-java uses fully asynchronous execution techniques when it executes queries.  You can get the ``CompletableFuture`` to results by calling
 ``executeAsync()`` like this
 
 {{< highlight java "linenos=table" >}}
@@ -436,7 +437,7 @@ strategies for most cases.
 ## AsyncExecutionStrategy
 
 By default the "query" execution strategy is ``graphql.execution.AsyncExecutionStrategy`` which will dispatch
-each field as ``CompleteableFuture`` objects and not care which ones complete first.  This strategy allows for the most
+each field as ``CompletableFuture`` objects and not care which ones complete first.  This strategy allows for the most
 performant execution.
 
 The data fetchers invoked can themselves return ``CompletionStage`` values and this will create

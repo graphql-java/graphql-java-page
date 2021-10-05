@@ -1,15 +1,16 @@
-/* Main page with stikky-footer */
-html, body {
+/* Main page with sticky-footer */
+html,
+body {
   height: 100%;
   background-color: #fff;
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: "Source Sans Pro", sans-serif;
   /* The html and body elements cannot have any padding or margin. */
-  border-top: 3px solid #EB0195;
+  border-top: 3px solid #eb0195;
 }
 
 /* Wrapper for page content to push down footer */
 #wrap {
-  padding-bottom: 50px;	
+  padding-bottom: 50px;
   min-height: 100%;
   height: auto;
   /* Negative indent footer by its height */
@@ -34,7 +35,8 @@ html, body {
   width: 100px;
   display: block;
 }
-.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
   color: #6b6b6b;
 }
 .navbar-default .navbar-text {
@@ -43,21 +45,27 @@ html, body {
 .navbar-default .navbar-nav > li > a {
   color: #6b6b6b;
 }
-.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
   color: #6b6b6b;
 }
-.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
   color: #6b6b6b;
   background-color: #ffffff;
 }
-.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus {
   color: #6b6b6b;
   background-color: #ffffff;
 }
 .navbar-default .navbar-toggle {
   border-color: #ffffff;
 }
-.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
   background-color: #ffffff;
 }
 .navbar-default .navbar-toggle .icon-bar {
@@ -67,6 +75,35 @@ html, body {
   color: #6b6b6b;
 }
 .navbar-default .navbar-link:hover {
+  color: #6b6b6b;
+}
+
+/* table */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table tr:nth-child(even){
+  background-color: #f2f2f2;
+}
+
+table tr:hover {
+  background-color: #ddd;
+}
+
+table td, table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+
+table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
   color: #6b6b6b;
 }
 
@@ -80,12 +117,14 @@ html, body {
   margin: 20px 0;
 }
 .container a {
-  color: #EB0195;
+  color: #eb0195;
 }
 .container a:hover {
-  color: #B5FED9;
+  color: #1a01eb;
+  text-decoration: none;
 }
-.container p img, .img-responsive {
+.container p img,
+.img-responsive {
   display: block;
   height: auto;
   margin: 2rem auto;
@@ -104,10 +143,11 @@ html, body {
 .panel-default h6 {
   font-size: 15px;
 }
-.panel-default h4 a, h5 a {
-  color: #EB0195;
+.panel-default h4 a,
+h5 a {
+  color: #eb0195;
 }
-.panel{
+.panel {
   border-style: none;
 }
 .panel-body {
@@ -134,7 +174,7 @@ html, body {
   color: #000;
   padding: 10px;
   padding-bottom: 4px;
-  transition: all .4s ease;
+  transition: all 0.4s ease;
 }
 .social-links li a:hover {
   color: #000;
@@ -142,10 +182,10 @@ html, body {
 .avatar {
   padding-top: 5%;
 }
-.blog-post{
+.blog-post {
   padding-top: 15px;
 }
-.blog-title{
+.blog-title {
   padding-top: 2px;
 }
 .label {
@@ -161,7 +201,7 @@ html, body {
 .disqus {
   padding-bottom: 15px;
 }
-.blogpost{
+.blogpost {
   text-align: left;
   line-height: 30px;
   font-size: 18px;
@@ -172,10 +212,10 @@ html, body {
   text-decoration: none !important;
 }
 .text-muted {
-	color: #6b6b6b;
+  color: #6b6b6b;
 }
-div.footer{
-  border-bottom: 5px solid #EB0195;
+div.footer {
+  border-bottom: 5px solid #eb0195;
 }
 /* Set the fixed height of the footer here */
 /*.footer {
@@ -205,17 +245,83 @@ div.footer{
 }
 
 .home-section-more {
-  color:#EB0195;
+  color: #eb0195;
   font-size: 18px;
+}
+
+.news {
+  font-size: 24px;
+  margin-top: 32px;
+}
+
+.workshops-header {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#news-link {
+  color: #333;
+}
+
+.home-new {
+  color: #eb0195;
+}
+
+.workshops-announcement {
+  color: #eb0195;
+  font-weight: bold;
+  font-size: 28px;
+  margin-bottom: 16px;
+}
+
+.workshops-content {
+  font-size: 20px;
+}
+
+.workshops-section {
+  margin-bottom: 10px;
+}
+
+.workshops-schedule {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.workshops-schedule button {
+  padding: 12px;
+  border: 2px solid #eb0195;
+  border-radius: 4px;
+  background: white;
+  font-size: 18px;
+}
+
+.workshops-schedule a {
+  color: #333333;
+}
+
+.workshops-schedule a button:hover {
+  color: #333;
+  background: #eb0195;
+  color: white;
+}
+
+.workshops-schedule a button:focus{
+  outline: none;
+}
+
+.contact-message {
+  font-size: 18px;
+  margin-top: 24px;
+  margin-bottom: 16px;
 }
 
 .contact-form {
   margin: 0 auto;
   width: 60%;
-}
-
-.contact-content {
-  font-size: 20px;
 }
 
 .highlight pre {
@@ -258,10 +364,13 @@ div.footer{
   .navbar-default .navbar-nav .open .dropdown-menu > li > a {
     color: #6b6b6b;
   }
-  .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
     color: #6b6b6b;
   }
-  .navbar-default .navbar-nav .open .dropdown-menu > .active > a, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+  .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+  .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+  .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
     color: #6b6b6b;
     background-color: #ffffff;
   }

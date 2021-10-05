@@ -294,7 +294,8 @@ The GraphQL type system supports the following kind of types:
 ``graphql-java`` supports the following Scalars:
 
 
-Standard graphql scalars : 
+Standard graphql scalars:
+
 * ``GraphQLString``
 * ``GraphQLBoolean``
 * ``GraphQLInt``
@@ -310,7 +311,7 @@ Extended graphql-java scalars
 * ``GraphQLBigDecimal``
 * ``GraphQLBigInteger``
 
-Note that the semantics around the extended scalars might not be understood by your clients.  For example mapping a Java Long (max value 26^3-1) into a JavaScript Number ( max value 2^53 - 1)
+Note that the semantics around the extended scalars might not be understood by your clients.  For example mapping a Java Long (max value 2^63-1) into a JavaScript Number ( max value 2^53 - 1)
 may be problematic for you.
 
 

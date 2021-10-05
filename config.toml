@@ -5,8 +5,8 @@ theme = "hugo-sustain"
 pygmentsUseClasses=true
 
 [params]
-  latestReleases = ["v9.6", "v13.0"]
-  latestDocs = "v13"
+  latestReleases = ["v17.0", "v14.1"]
+  latestDocs = "v17"
 
 ## Main Menu
 [[menu.main]]
@@ -24,11 +24,6 @@ pygmentsUseClasses=true
   identifier = "documentation"
   weight = 200
   url = "/documentation/latest/"
-[[menu.main]]
-  name = "contact"
-  identifier = "contact"
-  weight = 300
-  url = "/contact/"
 [[menu.main]]
   name = "about"
   identifier = "about"

@@ -15,7 +15,7 @@ GraphQL is a query language to retrieve data from a server. It is an alternative
 
 Let's suppose we want to query the details for a specific book from a online store backend.
 
-With GraphQL you send the following query to server to get the details for the book with the id "123":
+With GraphQL you send the following query to server to get the details for the book with the id "book-1":
 
 {{< highlight scala "linenos=table" >}}
 {
@@ -84,7 +84,7 @@ We've barely scratched the surface of what's possible with GraphQL. Further info
 # GraphQL Java Overview
 
 [GraphQL Java](https://www.graphql-java.com) is the Java (server) implementation for GraphQL. 
-The are several repositories in the GraphQL Java Github org. The most important one is the [GraphQL Java Engine](https://github.com/graphql-java/graphql-java) which is basis for everything else.
+The are several repositories in the GraphQL Java Github org. The most important one is the [GraphQL Java Engine](https://github.com/graphql-java/graphql-java) which is the basis for everything else.
 
 GraphQL Java Engine itself is only concerned with executing queries. It doesn't deal with any HTTP or JSON related topics. For these aspects, we will use the [GraphQL Java Spring Boot](https://github.com/graphql-java/graphql-java-spring) adapter which takes care of exposing our API via Spring Boot over HTTP.
  
@@ -225,7 +225,7 @@ What we still need to do is to implement the `buildSchema` method which creates 
 
 `TypeDefinitionRegistry` is the parsed version of our schema file. `SchemaGenerator` combines the `TypeDefinitionRegistry` with `RuntimeWiring` to actually make the `GraphQLSchema`.
 
-`buildRuntimeWiring` uses the `graphQLDataFetchers` bean to actually register two `DataFetcher`s:
+`buildWiring` uses the `graphQLDataFetchers` bean to actually register two `DataFetcher`s:
 
 - One to retrieve a book with a specific ID
 - One to get the author for a specific book. 
@@ -252,7 +252,7 @@ public interface DataFetcher<T> {
 {{< / highlight >}}
 <p/>
 
-Important: **Every** field from the schema has a `DataFetcher` associated with. If you don't specify any `DataFetcher` for a specific field, then the default `PropertyDataFetcher` is used. We will discuss this later in more detail.
+Important: **Every** field from the schema has a `DataFetcher` associated with it. If you don't specify any `DataFetcher` for a specific field, then the default `PropertyDataFetcher` is used. We will discuss this later in more detail.
 
 We are creating a new class `GraphQLDataFetchers` which contains a sample list of books and authors.
 
@@ -395,8 +395,5 @@ The complete project with the full source code can be found here: https://github
 
 More information about GraphQL Java can be found in the [documentation](https://www.graphql-java.com/documentation/). 
 
-We also have [spectrum chat](https://spectrum.chat/graphql-java) for any question or problems.
-
-For direct feedback you can also ping us on our [GraphQL Java Twitter account](https://twitter.com/graphql_java).
-
+We also use [GitHub Discussions](https://github.com/graphql-java/graphql-java/discussions) for any question or problems.
 

@@ -50,7 +50,7 @@ const indexBlog = async () =>
 
 const indexDocs = async () => {
     // TODO get active versions from global config
-    const ACTIVE_VERSIONS = ['v9', 'v12'];
+    const ACTIVE_VERSIONS = ['v9', 'v14'];
     const docContentDir = getContentDir('documentation');
 
     const docDirs = await readdir(docContentDir);

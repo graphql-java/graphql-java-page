@@ -42,7 +42,7 @@ Dependency:
     <dependency>
         <groupId>com.graphql-java</groupId>
         <artifactId>graphql-java</artifactId>
-        <version>113.0</version>
+        <version>13.0</version>
     </dependency>
 {{< / highlight >}}
 
@@ -105,7 +105,7 @@ Add the repositories:
 
     repositories {
         mavenCentral()
-        maven { url  "http://dl.bintray.com/andimarek/graphql-java" }
+        maven { url  "https://dl.bintray.com/andimarek/graphql-java" }
     }
 {{< / highlight >}}
 
@@ -133,7 +133,7 @@ Add the repository:
         </snapshots>
         <id>bintray-andimarek-graphql-java</id>
         <name>bintray</name>
-        <url>http://dl.bintray.com/andimarek/graphql-java</url>
+        <url>https://dl.bintray.com/andimarek/graphql-java</url>
     </repository>
 {{< / highlight >}}
 

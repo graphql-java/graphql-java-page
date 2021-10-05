@@ -1,6 +1,6 @@
 ---
 title: "Batching"
-date: 2018-09-09T12:52:46+10:00
+date: 2021-08-10T12:52:46+10:00
 draft: false
 tags: [documentation]
 weight: 105
@@ -8,13 +8,13 @@ description: How to avoid the dreaded N+1 calls for data and make your graphql s
 ---
 # Using Dataloader
 
-If you are using `graphql`, you are likely to making queries on a graph of data (surprise surprise).  But it's easy
+If you are using `graphql`, you are likely to making queries on a graph of data (no surprises there).  However, it's easy
 to implement inefficient code with naive loading of a graph of data.
 
 Using `java-dataloader` will help you to make this a more efficient process by both caching and batching requests for that graph of data items.  If `dataloader`
 has seen a data item before, it will have cached the value and will return it without having to ask for it again.
 
-Imagine we have the StarWars query outlined below.  It asks us to find a hero and their friend's names and their friend's friend's
+Imagine we have the StarWars query outlined below.  It asks us to find a hero, and their friend's names, and their friend's friend's
 names.  It is likely that many of these people will be friends in common.
 
 {{< highlight graphql "linenos=table" >}}
@@ -32,7 +32,7 @@ names.  It is likely that many of these people will be friends in common.
         }
 {{< / highlight >}}
 
-The result of this query is displayed below. You can see that Han, Leia, Luke and R2-D2 are a tight knit bunch of friends and
+The result of this query is displayed below. You can see that Han, Leia, Luke and R2-D2 are a tight-knit bunch of friends and
 share many friends in common.
 
 {{< highlight json "linenos=table" >}}
@@ -74,10 +74,10 @@ share many friends in common.
 
 A naive implementation would call a `DataFetcher` to retrieve a person object every time it was invoked.
 
-In this case it would be *15* calls over the network.  Even though the group of people have a lot of common friends.
+In this case it would be *15* calls over the network, even though the group of people have a lot of common friends.
 With `dataloader` you can make the `graphql` query much more efficient.
 
-As `graphql` descends each level of the query (e.g. as it processes `hero` and then `friends` and then for each their `friends`),
+As `graphql` descends each level of the query (e.g., as it processes `hero` and then `friends` and then for each of their `friends`),
 the data loader is called to "promise" to deliver a person object.  At each level `dataloader.dispatch()` will be
 called to fire off the batch requests for that part of the query. With caching turned on (the default) then
 any previously returned person will be returned as-is for no cost.
@@ -86,7 +86,7 @@ In the above example there are only *5* unique people mentioned but with caching
 *3* calls to the batch loader function.  *3* calls over the network or to a database is much better than *15* calls, you will agree.
 
 If you use capabilities like `java.util.concurrent.CompletableFuture.supplyAsync()` then you can make it even more efficient by making the
-the remote calls asynchronous to the rest of the query.  This will make it even more timely since multiple calls can happen at once
+remote calls asynchronous to the rest of the query.  This will make it even more timely since multiple calls can happen at once
 if need be.
 
 Here is how you might put this in place:
@@ -113,7 +113,7 @@ Here is how you might put this in place:
         // use this data loader in the data fetchers associated with characters and put them into
         // the graphql schema (not shown)
         //
-        DataFetcher heroDataFetcher = new DataFetcher() {
+        DataFetcher<?> heroDataFetcher = new DataFetcher<Object>() {
             @Override
             public Object get(DataFetchingEnvironment environment) {
                 DataLoader<String, Object> dataLoader = environment.getDataLoader("character");
@@ -121,7 +121,7 @@ Here is how you might put this in place:
             }
         };
 
-        DataFetcher friendsDataFetcher = new DataFetcher() {
+        DataFetcher<?> friendsDataFetcher = new DataFetcher<Object>() {
             @Override
             public Object get(DataFetchingEnvironment environment) {
                 StarWarsCharacter starWarsCharacter = environment.getSource();
@@ -159,7 +159,7 @@ Here is how you might put this in place:
         //
         // Since data loaders are stateful, they are created per execution request.
         //
-        DataLoader<String, Object> characterDataLoader = DataLoader.newDataLoader(characterBatchLoader);
+        DataLoader<String, Object> characterDataLoader = DataLoaderFactory.newDataLoader(characterBatchLoader);
 
         //
         // DataLoaderRegistry is a place to register all data loaders in that needs to be dispatched together
@@ -180,8 +180,12 @@ Here is how you might put this in place:
 
 {{< / highlight >}}
 
-In this example we explicitly added the `DataLoaderDispatcherInstrumentation` because we wanted to tweak its options.  However
+In this example we explicitly added the `DataLoaderDispatcherInstrumentation` because we wanted to tweak its options.  However,
 it will be automatically added for you if you don't add it manually.
+
+You can read a lot more about the `java-dataloader` API in detail over
+at [https://github.com/graphql-java/java-dataloader](https://github.com/graphql-java/java-dataloader#readme).
+
 
 ## Data Loader only works with AsyncExecutionStrategy
 
@@ -189,9 +193,9 @@ The only execution that works with DataLoader is `graphql.execution.AsyncExecuti
 then the most optimal time to dispatch() your load calls is.  It does this by deeply tracking how many fields are outstanding and whether they
 are list values and so on.
 
-Other execution strategies such as `ExecutorServiceExecutionStrategy` cant do this and hence if the data loader code detects
-you are not using `AsyncExecutionStrategy` then it will simple dispatch the data loader as each field is encountered.  You
-may get `caching` of values but you will not get `batching` of them.
+Other execution strategies such as `ExecutorServiceExecutionStrategy` can't do this and hence if the data loader code detects
+you are not using `AsyncExecutionStrategy` then it will simply dispatch the data loader as each field is encountered.  You
+may get `caching` of values, but you will not get `batching` of them.
 
 
 ## Per Request Data Loaders
@@ -204,49 +208,41 @@ ensure data is only cached within that web request and no more. It also ensures 
 only affects that graphql execution and no other.
 
 DataLoaders by default act as caches.  If they have seen a value before for a key then they will automatically return
-it in order to be efficient.
+it in order to be efficient.  They cache promises to a value and optionally the value itself.
 
-If your data can be shared across web requests then you might want to change the caching implementation of your data loaders so they share
-data via a caching layer say like memcached or redis.
+If your data can be shared across web requests then you might want to change the `ValueCache` implementation of your data loaders, so they share
+data via caching systems like memcached or redis.
 
 You still create data loaders per request, however the caching layer will allow data sharing (if that's suitable).
 
 
 {{< highlight java "linenos=table" >}}
 
-        CacheMap<String, Object> crossRequestCacheMap = new CacheMap<String, Object>() {
+        ValueCache<String, Object> crossRequestValueCache = new ValueCache<String, Object>() {
             @Override
-            public boolean containsKey(String key) {
-                return redisIntegration.containsKey(key);
-            }
-
-            @Override
-            public Object get(String key) {
+            public CompletableFuture<Object> get(String key) {
                 return redisIntegration.getValue(key);
             }
 
             @Override
-            public CacheMap<String, Object> set(String key, Object value) {
-                redisIntegration.setValue(key, value);
-                return this;
+            public CompletableFuture<Object> set(String key, Object value) {
+                return redisIntegration.setValue(key, value);
             }
 
             @Override
-            public CacheMap<String, Object> delete(String key) {
-                redisIntegration.clearKey(key);
-                return this;
+            public CompletableFuture<Void> delete(String key) {
+                return redisIntegration.clearKey(key);
             }
 
             @Override
-            public CacheMap<String, Object> clear() {
-                redisIntegration.clearAll();
-                return this;
+            public CompletableFuture<Void> clear() {
+                return redisIntegration.clearAll();
             }
         };
 
-        DataLoaderOptions options = DataLoaderOptions.newOptions().setCacheMap(crossRequestCacheMap);
+        DataLoaderOptions options = DataLoaderOptions.newOptions().setValueCache(crossRequestValueCache);
 
-        DataLoader<String, Object> dataLoader = DataLoader.newDataLoader(batchLoader, options);
+        DataLoader<String, Object> dataLoader = DataLoaderFactory.newDataLoader(batchLoader, options);
 
 {{< / highlight >}}
 
@@ -254,28 +250,28 @@ You still create data loaders per request, however the caching layer will allow 
 
 The data loader code pattern works by combining all the outstanding data loader calls into more efficient batch loading calls.
 
-graphql-java tracks what outstanding data loader calls have been made and it is its responsibility to call `dispatch`
+graphql-java tracks what outstanding data loader calls have been made, and it is its responsibility to call `dispatch`
 in the background at the most optimal time, which is when all graphql fields have been examined and dispatched.
 
-However there is a code pattern that will cause your data loader calls to never complete and these *MUST* be avoided.  This bad
-pattern consists of making a an asynchronous off thread call to a `DataLoader` in your data fetcher.
+However, there is a code pattern that will cause your data loader calls to never complete, and these *MUST* be avoided.  This bad
+pattern consists of making an asynchronous off thread call to a `DataLoader` in your data fetcher.
 
 The following will not work (it will never complete).
 
 {{< highlight java "linenos=table" >}}
 
-        BatchLoader<String, Object> batchLoader = new BatchLoader<String, Object>() {
+       BatchLoader<String, Object> batchLoader = new BatchLoader<String, Object>() {
             @Override
             public CompletionStage<List<Object>> load(List<String> keys) {
                 return CompletableFuture.completedFuture(getTheseCharacters(keys));
             }
         };
 
-        DataLoader<String, Object> characterDataLoader = DataLoader.newDataLoader(batchLoader);
+        DataLoader<String, Object> characterDataLoader = DataLoaderFactory.newDataLoader(batchLoader);
 
         // .... later in your data fetcher
 
-        DataFetcher dataFetcherThatCallsTheDataLoader = new DataFetcher() {
+        DataFetcher<?> dataFetcherThatCallsTheDataLoader = new DataFetcher<Object>() {
             @Override
             public Object get(DataFetchingEnvironment environment) {
                 //
@@ -295,7 +291,7 @@ In the example above, the call to `characterDataLoader.load(argId)` can happen s
 engine has no way of knowing when it's good time to dispatch outstanding `DataLoader` calls and hence the data loader call might never complete
 as expected and no results will be returned.
 
-Remember a data loader call is just a promise to actually get a value later when its an optimal time for all outstanding calls to be batched
+Remember a data loader call is just a promise to actually get a value later when it's an optimal time for all outstanding calls to be batched
 together.  The most optimal time is when the graphql field tree has been examined and all field values are currently dispatched.
 
 The following is how you can still have asynchronous code, by placing it into the `BatchLoader` itself.
@@ -309,11 +305,11 @@ The following is how you can still have asynchronous code, by placing it into th
             }
         };
 
-        DataLoader<String, Object> characterDataLoader = DataLoader.newDataLoader(batchLoader);
+        DataLoader<String, Object> characterDataLoader = DataLoaderFactory.newDataLoader(batchLoader);
 
         // .... later in your data fetcher
 
-        DataFetcher dataFetcherThatCallsTheDataLoader = new DataFetcher() {
+        DataFetcher<?> dataFetcherThatCallsTheDataLoader = new DataFetcher<Object>() {
             @Override
             public Object get(DataFetchingEnvironment environment) {
                 //
@@ -337,12 +333,12 @@ method in another thread.
 # Passing context to your data loader
 
 The data loader library supports two types of context being passed to the batch loader. The first is
-an overall context object per dataloader and the second is a map of per loaded key context objects.
+an overall context object per dataloader, and the second is a map of per loaded key context objects.
 
 This allows you to pass in the extra details you may need to make downstream calls.  The dataloader key is used
-in the caching of results but the context objects can be made available to help with the call.
+in the caching of results, but the context objects can be made available to help with the call.
 
-So in the example below we have an overall security context object that gives out a call token and we also pass the graphql source
+So in the example below we have an overall security context object that gives out a call token, and we also pass the graphql source
 object to each ``dataLoader.load()`` call.
 
 {{< highlight java "linenos=table" >}}
@@ -376,11 +372,11 @@ object to each ``dataLoader.load()`` call.
         // this creates an overall context for the dataloader
         //
         DataLoaderOptions loaderOptions = DataLoaderOptions.newOptions().setBatchLoaderContextProvider(contextProvider);
-        DataLoader<String, Object> characterDataLoader = DataLoader.newDataLoader(batchLoaderWithCtx, loaderOptions);
+        DataLoader<String, Object> characterDataLoader = DataLoaderFactory.newDataLoader(batchLoaderWithCtx, loaderOptions);
 
         // .... later in your data fetcher
 
-        DataFetcher dataFetcherThatCallsTheDataLoader = new DataFetcher() {
+        DataFetcher<?> dataFetcherThatCallsTheDataLoader = new DataFetcher<Object>() {
             @Override
             public Object get(DataFetchingEnvironment environment) {
                 String argId = environment.getArgument("id");

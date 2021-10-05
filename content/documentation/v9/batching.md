@@ -99,7 +99,7 @@ Here is how you might put this in place:
             @Override
             public CompletionStage<List<Object>> load(List<String> keys) {
                 //
-                // we use supplyAsync() of values here for maximum parellisation
+                // we use supplyAsync() of values here for maximum parallelisation
                 //
                 return CompletableFuture.supplyAsync(() -> getCharacterDataViaBatchHTTPApi(keys));
             }
@@ -137,7 +137,7 @@ Here is how you might put this in place:
 
         //
         // this instrumentation implementation will dispatch all the dataloaders
-        // as each level fo the graphql query is executed and hence make batched objects
+        // as each level for the graphql query is executed and hence make batched objects
         // available to the query and the associated DataFetchers
         //
         DataLoaderDispatcherInstrumentation dispatcherInstrumentation
@@ -155,7 +155,7 @@ Here is how you might put this in place:
 {{< / highlight >}}
 
 One thing to note is the above only works if you use `DataLoaderDispatcherInstrumentation` which makes sure `dataLoader.dispatch()`
-is called.  If this was not in place, then all the promises to data will never be dispatched ot the batch loader function
+is called.  If this was not in place, then all the promises to data will never be dispatched to the batch loader function
 and hence nothing would ever resolve.
 
 ## Data Loader only works with AsyncExecutionStrategy
