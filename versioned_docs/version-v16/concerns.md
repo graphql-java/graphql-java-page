@@ -36,33 +36,31 @@ graphql execution to perform authorisation.
 This made up example shows how you can pass yourself information to help execute your queries.
 
 ```java
+//
+// this could be code that authorises the user in some way and sets up enough context
+// that can be used later inside data fetchers allowing them
+// to do their job
+//
+UserContext contextForUser = YourGraphqlContextBuilder.getContextForUser(getCurrentUser());
 
-        //
-        // this could be code that authorises the user in some way and sets up enough context
-        // that can be used later inside data fetchers allowing them
-        // to do their job
-        //
-        UserContext contextForUser = YourGraphqlContextBuilder.getContextForUser(getCurrentUser());
+ExecutionInput executionInput = ExecutionInput.newExecutionInput()
+        .context(contextForUser)
+        .build();
 
-        ExecutionInput executionInput = ExecutionInput.newExecutionInput()
-                .context(contextForUser)
-                .build();
+ExecutionResult executionResult = graphQL.execute(executionInput);
 
-        ExecutionResult executionResult = graphQL.execute(executionInput);
+// ...
+//
+// later you are able to use this context object when a data fetcher is invoked
+//
 
-        // ...
-        //
-        // later you are able to use this context object when a data fetcher is invoked
-        //
+DataFetcher dataFetcher = new DataFetcher() {
+    @Override
+    public Object get(DataFetchingEnvironment environment) {
+        UserContext userCtx = environment.getContext();
+        Long businessObjId = environment.getArgument("businessObjId");
 
-        DataFetcher dataFetcher = new DataFetcher() {
-            @Override
-            public Object get(DataFetchingEnvironment environment) {
-                UserContext userCtx = environment.getContext();
-                Long businessObjId = environment.getArgument("businessObjId");
-
-                return invokeBusinessLayerMethod(userCtx, businessObjId);
-            }
-        };
-
+        return invokeBusinessLayerMethod(userCtx, businessObjId);
+    }
+};
 ```

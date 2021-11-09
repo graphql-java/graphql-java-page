@@ -11,18 +11,16 @@ from that type.
 For example given the following query :
 
 ```graphql
-
-    query {
-        user(userId : "xyz")  {
+query {
+    user(userId : "xyz")  {
+        name
+        age
+        weight
+        friends {
             name
-            age
-            weight
-            friends {
-                name
-            }
         }
     }
-
+}
 ```
 
 The field selection set of the ``user`` field is ``name``, ``age``, ``weight``, ``friends`` and ``friends/name``
@@ -36,21 +34,19 @@ of the fields and their ``graphql.schema.GraphQLFieldDefinition``s and argument 
 
 
 ```java
+DataFetcher smartUserDF = new DataFetcher() {
+    @Override
+    public Object get(DataFetchingEnvironment env) {
+        String userId = env.getArgument("userId");
 
-        DataFetcher smartUserDF = new DataFetcher() {
-            @Override
-            public Object get(DataFetchingEnvironment env) {
-                String userId = env.getArgument("userId");
-
-                DataFetchingFieldSelectionSet selectionSet = env.getSelectionSet();
-                if (selectionSet.contains("user/*")) {
-                    return getUserAndTheirFriends(userId);
-                } else {
-                    return getUser(userId);
-                }
-            }
-        };
-
+        DataFetchingFieldSelectionSet selectionSet = env.getSelectionSet();
+        if (selectionSet.contains("user/*")) {
+            return getUserAndTheirFriends(userId);
+        } else {
+            return getUser(userId);
+        }
+    }
+};
 ```
 
 A glob path matching system is used for addressing fields in the selection.  Its based on ``java.nio.file.FileSystem#getPathMatcher``
@@ -67,22 +63,20 @@ been request in the ``Connection`` section of the query.
 So given a query like:
 
 ```graphql
-
-    query {
-        users(first:10)  {
-            edges {
-                node {
+query {
+    users(first:10)  {
+        edges {
+            node {
+                name
+                age
+                weight
+                friends {
                     name
-                    age
-                    weight
-                    friends {
-                        name
-                    }
                 }
             }
         }
     }
-
+}
 ```
 
 
@@ -90,18 +84,15 @@ you can write code that gets the details of each specific field that matches a g
 
 
 ```java
+DataFetchingFieldSelectionSet selectionSet = env.getSelectionSet();
+List<SelectedField> nodeFields = selectionSet.getFields("edges/nodes/*");
+nodeFields.forEach(selectedField -> {
+    System.out.println(selectedField.getName());
+    System.out.println(selectedField.getFieldDefinition().getType());
 
-        DataFetchingFieldSelectionSet selectionSet = env.getSelectionSet();
-        List<SelectedField> nodeFields = selectionSet.getFields("edges/nodes/*");
-        nodeFields.forEach(selectedField -> {
-            System.out.println(selectedField.getName());
-            System.out.println(selectedField.getFieldDefinition().getType());
-
-            DataFetchingFieldSelectionSet innerSelectionSet = selectedField.getSelectionSet();
-            // this forms a tree of selection and you can get very fancy with it
-        }
-
-
+    DataFetchingFieldSelectionSet innerSelectionSet = selectedField.getSelectionSet();
+    // this forms a tree of selection and you can get very fancy with it
+}
 ```
 
 
@@ -117,29 +108,25 @@ This is represented a list of possible fields and having two addressing mechanis
 For example imagine a `Pet` interface type that has `Cat` and `Dog` object type implementations. The query might be:
     
 ```graphql
-
-  {
-      pet {
-          name
-      }
+{
+  pet {
+      name
   }
-
+}
 ```
  
    
 In the example above you have a `Cat.name`and `Dog.name` as possible sub selections of the `pet` field. They are can be addressed by either `name` or `Dog.name` or `Cat.name`
     
 ```java
+selectionSet.contains("name") == true
+selectionSet.contains("Dog.name", "Cat.name") == true
 
-  selectionSet.contains("name") == true
-  selectionSet.contains("Dog.name", "Cat.name") == true
+List<SelectedField> petNames = selectionSet.getFields("name")
+petNames.size() == 2
 
-  List<SelectedField> petNames = selectionSet.getFields("name")
-  petNames.size() == 2
-
-  List<SelectedField> dogNames = selectionSet.getFields("Dog.name")
-  dogNames.size() == 1
-  
+List<SelectedField> dogNames = selectionSet.getFields("Dog.name")
+dogNames.size() == 1
 ```
 
    
@@ -150,14 +137,14 @@ The simple naming is easier to work with but the type prefixed naming is more pr
 Another complication is any field aliasing that a client can specify.
     
 ```graphql
-  {
-      pet {
-          name(arg : "foo")
-          ... on Dog {
-             aliasedName : name(arg : "bar")
-          }
-     }
-  }
+{
+  pet {
+      name(arg : "foo")
+      ... on Dog {
+         aliasedName : name(arg : "bar")
+      }
+ }
+}
 ```
  
    

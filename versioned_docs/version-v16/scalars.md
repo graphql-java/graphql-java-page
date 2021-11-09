@@ -40,24 +40,22 @@ Imagine we decide we need to have an email scalar type.  It will take email addr
 We would create a singleton ``graphql.schema.GraphQLScalarType`` instance for this like so.
 
 ```java
+public static final GraphQLScalarType EMAIL = new GraphQLScalarType("email", "A custom scalar that handles emails", new Coercing() {
+    @Override
+    public Object serialize(Object dataFetcherResult) {
+        return serializeEmail(dataFetcherResult);
+    }
 
-        public static final GraphQLScalarType EMAIL = new GraphQLScalarType("email", "A custom scalar that handles emails", new Coercing() {
-            @Override
-            public Object serialize(Object dataFetcherResult) {
-                return serializeEmail(dataFetcherResult);
-            }
+    @Override
+    public Object parseValue(Object input) {
+        return parseEmailFromVariable(input);
+    }
 
-            @Override
-            public Object parseValue(Object input) {
-                return parseEmailFromVariable(input);
-            }
-
-            @Override
-            public Object parseLiteral(Object input) {
-                return parseEmailFromAstLiteral(input);
-            }
-        });
-
+    @Override
+    public Object parseLiteral(Object input) {
+        return parseEmailFromAstLiteral(input);
+    }
+});
 ```
 
 

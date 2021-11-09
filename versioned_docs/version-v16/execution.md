@@ -13,23 +13,20 @@ call ``execute()``.
 The result of a query is an ``ExecutionResult`` which is the query data and/or a list of errors.
 
 ```java
+GraphQLSchema schema = GraphQLSchema.newSchema()
+        .query(queryType)
+        .build();
 
-        GraphQLSchema schema = GraphQLSchema.newSchema()
-                .query(queryType)
-                .build();
+GraphQL graphQL = GraphQL.newGraphQL(schema)
+        .build();
 
-        GraphQL graphQL = GraphQL.newGraphQL(schema)
-                .build();
+ExecutionInput executionInput = ExecutionInput.newExecutionInput().query("query { hero { name } }")
+        .build();
 
-        ExecutionInput executionInput = ExecutionInput.newExecutionInput().query("query { hero { name } }")
-                .build();
+ExecutionResult executionResult = graphQL.execute(executionInput);
 
-        ExecutionResult executionResult = graphQL.execute(executionInput);
-
-        Object data = executionResult.getData();
-        List<GraphQLError> errors = executionResult.getErrors();
-
-
+Object data = executionResult.getData();
+List<GraphQLError> errors = executionResult.getErrors();
 ```
 
 More complex query examples can be found in the [StarWars query tests](https://github.com/graphql-java/graphql-java/blob/master/src/test/groovy/graphql/StarWarsQueryTest.groovy)
@@ -51,14 +48,12 @@ opinionated on user authorisation to that data.  You should push all that logic 
 A data fetcher might look like this:
 
 ```java
-
-        DataFetcher userDataFetcher = new DataFetcher() {
-            @Override
-            public Object get(DataFetchingEnvironment environment) {
-                return fetchUserFromDatabase(environment.getArgument("userId"));
-            }
-        };
-
+DataFetcher userDataFetcher = new DataFetcher() {
+    @Override
+    public Object get(DataFetchingEnvironment environment) {
+        return fetchUserFromDatabase(environment.getArgument("userId"));
+    }
+};
 ```
 
 Each ``DataFetcher`` is passed a ``graphql.schema.DataFetchingEnvironment`` object which contains what field is being fetched, what
@@ -77,21 +72,20 @@ partial results with errors.
 Here is the code for the standard behaviour.
 
 ```java
+public class SimpleDataFetcherExceptionHandler implements DataFetcherExceptionHandler {
+    private static final Logger log = LoggerFactory.getLogger(SimpleDataFetcherExceptionHandler.class);
 
-    public class SimpleDataFetcherExceptionHandler implements DataFetcherExceptionHandler {
-        private static final Logger log = LoggerFactory.getLogger(SimpleDataFetcherExceptionHandler.class);
+    @Override
+    public void accept(DataFetcherExceptionHandlerParameters handlerParameters) {
+        Throwable exception = handlerParameters.getException();
+        SourceLocation sourceLocation = handlerParameters.getField().getSourceLocation();
+        ExecutionPath path = handlerParameters.getPath();
 
-        @Override
-        public void accept(DataFetcherExceptionHandlerParameters handlerParameters) {
-            Throwable exception = handlerParameters.getException();
-            SourceLocation sourceLocation = handlerParameters.getField().getSourceLocation();
-            ExecutionPath path = handlerParameters.getPath();
-
-            ExceptionWhileDataFetching error = new ExceptionWhileDataFetching(path, exception, sourceLocation);
-            handlerParameters.getExecutionContext().addError(error);
-            log.warn(error.getMessage(), exception);
-        }
+        ExceptionWhileDataFetching error = new ExceptionWhileDataFetching(path, exception, sourceLocation);
+        handlerParameters.getExecutionContext().addError(error);
+        log.warn(error.getMessage(), exception);
     }
+}
 ```
 
 If the exception you throw is itself a `GraphqlError` then it will transfer the message and custom extensions attributes from that exception
@@ -102,27 +96,25 @@ For example imagine your data fetcher threw this exception.  The `foo` and `fizz
 graphql error.
 
 ```java
-
-    class CustomRuntimeException extends RuntimeException implements GraphQLError {
-        @Override
-        public Map<String, Object> getExtensions() {
-            Map<String, Object> customAttributes = new LinkedHashMap<>();
-            customAttributes.put("foo", "bar");
-            customAttributes.put("fizz", "whizz");
-            return customAttributes;
-        }
-
-        @Override
-        public List<SourceLocation> getLocations() {
-            return null;
-        }
-
-        @Override
-        public ErrorType getErrorType() {
-            return ErrorType.DataFetchingException;
-        }
+class CustomRuntimeException extends RuntimeException implements GraphQLError {
+    @Override
+    public Map<String, Object> getExtensions() {
+        Map<String, Object> customAttributes = new LinkedHashMap<>();
+        customAttributes.put("foo", "bar");
+        customAttributes.put("fizz", "whizz");
+        return customAttributes;
     }
 
+    @Override
+    public List<SourceLocation> getLocations() {
+        return null;
+    }
+
+    @Override
+    public ErrorType getErrorType() {
+        return ErrorType.DataFetchingException;
+    }
+}
 ```
 
 
@@ -134,16 +126,14 @@ may prefer not to see that in the output error list.  So you can use this mechan
 behaviour.
 
 ```java
-
-        DataFetcherExceptionHandler handler = new DataFetcherExceptionHandler() {
-            @Override
-            public void accept(DataFetcherExceptionHandlerParameters handlerParameters) {
-                //
-                // do your custom handling here.  The parameters have all you need
-            }
-        };
-        ExecutionStrategy executionStrategy = new AsyncExecutionStrategy(handler);
-
+DataFetcherExceptionHandler handler = new DataFetcherExceptionHandler() {
+    @Override
+    public void accept(DataFetcherExceptionHandlerParameters handlerParameters) {
+        //
+        // do your custom handling here.  The parameters have all you need
+    }
+};
+ExecutionStrategy executionStrategy = new AsyncExecutionStrategy(handler);
 ```
 
 
@@ -157,18 +147,16 @@ GraphQL resource.
 In this example, the ``DataFetcher`` retrieves a user from another GraphQL resource and returns its data and errors.
 
 ```java
-
-        DataFetcher userDataFetcher = new DataFetcher() {
-            @Override
-            public Object get(DataFetchingEnvironment environment) {
-                Map response = fetchUserFromRemoteGraphQLResource(environment.getArgument("userId"));
-                List<GraphQLError> errors = response.get("errors")).stream()
-                    .map(MyMapGraphQLError::new)
-                    .collect(Collectors.toList();
-                return new DataFetcherResult(response.get("data"), errors);
-            }
-        };
-
+DataFetcher userDataFetcher = new DataFetcher() {
+    @Override
+    public Object get(DataFetchingEnvironment environment) {
+        Map response = fetchUserFromRemoteGraphQLResource(environment.getArgument("userId"));
+        List<GraphQLError> errors = response.get("errors")).stream()
+            .map(MyMapGraphQLError::new)
+            .collect(Collectors.toList();
+        return new DataFetcherResult(response.get("data"), errors);
+    }
+};
 ```
 
 
@@ -188,12 +176,11 @@ This will ensure that the result follows the specification outlined in http://fa
 
 
 ```java
-        ExecutionResult executionResult = graphQL.execute(executionInput);
+ExecutionResult executionResult = graphQL.execute(executionInput);
 
-        Map<String, Object> toSpecificationResult = executionResult.toSpecification();
+Map<String, Object> toSpecificationResult = executionResult.toSpecification();
 
-        sendAsJson(toSpecificationResult);
-
+sendAsJson(toSpecificationResult);
 ```
 
 
@@ -209,14 +196,12 @@ via the data fetcher invoked.
 The mutation is invoked via a query like :
 
 ```graphql
-
-    mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
-      createReview(episode: $ep, review: $review) {
-        stars
-        commentary
-      }
-    }
-
+mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
+  createReview(episode: $ep, review: $review) {
+    stars
+    commentary
+  }
+}
 ```
 
 You need to send in arguments during that mutation operation, in this case for the variables for ``$ep`` and ``$review``
@@ -224,63 +209,61 @@ You need to send in arguments during that mutation operation, in this case for t
 You would create types like this to handle this mutation :
 
 ```java
+GraphQLInputObjectType episodeType = newInputObject()
+        .name("Episode")
+        .field(newInputObjectField()
+                .name("episodeNumber")
+                .type(Scalars.GraphQLInt))
+        .build();
 
-        GraphQLInputObjectType episodeType = newInputObject()
-                .name("Episode")
-                .field(newInputObjectField()
-                        .name("episodeNumber")
-                        .type(Scalars.GraphQLInt))
-                .build();
+GraphQLInputObjectType reviewInputType = newInputObject()
+        .name("ReviewInput")
+        .field(newInputObjectField()
+                .name("stars")
+                .type(Scalars.GraphQLString)
+                .name("commentary")
+                .type(Scalars.GraphQLString))
+        .build();
 
-        GraphQLInputObjectType reviewInputType = newInputObject()
-                .name("ReviewInput")
-                .field(newInputObjectField()
-                        .name("stars")
-                        .type(Scalars.GraphQLString)
-                        .name("commentary")
-                        .type(Scalars.GraphQLString))
-                .build();
+GraphQLObjectType reviewType = newObject()
+        .name("Review")
+        .field(newFieldDefinition()
+                .name("stars")
+                .type(GraphQLString))
+        .field(newFieldDefinition()
+                .name("commentary")
+                .type(GraphQLString))
+        .build();
 
-        GraphQLObjectType reviewType = newObject()
-                .name("Review")
-                .field(newFieldDefinition()
-                        .name("stars")
-                        .type(GraphQLString))
-                .field(newFieldDefinition()
-                        .name("commentary")
-                        .type(GraphQLString))
-                .build();
-
-        GraphQLObjectType createReviewForEpisodeMutation = newObject()
-                .name("CreateReviewForEpisodeMutation")
-                .field(newFieldDefinition()
-                        .name("createReview")
-                        .type(reviewType)
-                        .argument(newArgument()
-                                .name("episode")
-                                .type(episodeType)
-                        )
-                        .argument(newArgument()
-                                .name("review")
-                                .type(reviewInputType)
-                        )
+GraphQLObjectType createReviewForEpisodeMutation = newObject()
+        .name("CreateReviewForEpisodeMutation")
+        .field(newFieldDefinition()
+                .name("createReview")
+                .type(reviewType)
+                .argument(newArgument()
+                        .name("episode")
+                        .type(episodeType)
                 )
-                .build();
-
-        GraphQLCodeRegistry codeRegistry = newCodeRegistry()
-                .dataFetcher(
-                        coordinates("CreateReviewForEpisodeMutation", "createReview"),
-                        mutationDataFetcher()
+                .argument(newArgument()
+                        .name("review")
+                        .type(reviewInputType)
                 )
-                .build();
+        )
+        .build();
+
+GraphQLCodeRegistry codeRegistry = newCodeRegistry()
+        .dataFetcher(
+                coordinates("CreateReviewForEpisodeMutation", "createReview"),
+                mutationDataFetcher()
+        )
+        .build();
 
 
-        GraphQLSchema schema = GraphQLSchema.newSchema()
-                .query(queryType)
-                .mutation(createReviewForEpisodeMutation)
-                .codeRegistry(codeRegistry)
-                .build();
-
+GraphQLSchema schema = GraphQLSchema.newSchema()
+        .query(queryType)
+        .mutation(createReviewForEpisodeMutation)
+        .codeRegistry(codeRegistry)
+        .build();
 ```
 
 
@@ -290,36 +273,34 @@ and you cannot use output types such as ``GraphQLObjectType``.  Scalars types ar
 The data fetcher here is responsible for executing the mutation and returning some sensible output values.
 
 ```java
+private DataFetcher mutationDataFetcher() {
+    return new DataFetcher() {
+        @Override
+        public Review get(DataFetchingEnvironment environment) {
+            //
+            // The graphql specification dictates that input object arguments MUST
+            // be maps.  You can convert them to POJOs inside the data fetcher if that
+            // suits your code better
+            //
+            // See http://facebook.github.io/graphql/October2016/#sec-Input-Objects
+            //
+            Map<String, Object> episodeInputMap = environment.getArgument("episode");
+            Map<String, Object> reviewInputMap = environment.getArgument("review");
 
+            //
+            // in this case we have type safe Java objects to call our backing code with
+            //
+            EpisodeInput episodeInput = EpisodeInput.fromMap(episodeInputMap);
+            ReviewInput reviewInput = ReviewInput.fromMap(reviewInputMap);
 
-    private DataFetcher mutationDataFetcher() {
-        return new DataFetcher() {
-            @Override
-            public Review get(DataFetchingEnvironment environment) {
-                //
-                // The graphql specification dictates that input object arguments MUST
-                // be maps.  You can convert them to POJOs inside the data fetcher if that
-                // suits your code better
-                //
-                // See http://facebook.github.io/graphql/October2016/#sec-Input-Objects
-                //
-                Map<String, Object> episodeInputMap = environment.getArgument("episode");
-                Map<String, Object> reviewInputMap = environment.getArgument("review");
+            // make a call to your store to mutate your database
+            Review updatedReview = reviewStore().update(episodeInput, reviewInput);
 
-                //
-                // in this case we have type safe Java objects to call our backing code with
-                //
-                EpisodeInput episodeInput = EpisodeInput.fromMap(episodeInputMap);
-                ReviewInput reviewInput = ReviewInput.fromMap(reviewInputMap);
-
-                // make a call to your store to mutate your database
-                Review updatedReview = reviewStore().update(episodeInput, reviewInput);
-
-                // this returns a new view of the data
-                return updatedReview;
-            }
-        };
-    }
+            // this returns a new view of the data
+            return updatedReview;
+        }
+    };
+}
 ```
 
 Notice how it calls a data store to mutate the backing database and then returns a ``Review`` object that can be used as the output values
@@ -331,20 +312,19 @@ graphql-java uses fully asynchronous execution techniques when it executes queri
 ``executeAsync()`` like this
 
 ```java
-        GraphQL graphQL = buildSchema();
+GraphQL graphQL = buildSchema();
 
-        ExecutionInput executionInput = ExecutionInput.newExecutionInput().query("query { hero { name } }")
-                .build();
+ExecutionInput executionInput = ExecutionInput.newExecutionInput().query("query { hero { name } }")
+        .build();
 
-        CompletableFuture<ExecutionResult> promise = graphQL.executeAsync(executionInput);
+CompletableFuture<ExecutionResult> promise = graphQL.executeAsync(executionInput);
 
-        promise.thenAccept(executionResult -> {
-            // here you might send back the results as JSON over HTTP
-            encodeResultToJsonAndSendResponse(executionResult);
-        });
+promise.thenAccept(executionResult -> {
+    // here you might send back the results as JSON over HTTP
+    encodeResultToJsonAndSendResponse(executionResult);
+});
 
-        promise.join();
-
+promise.join();
 ```
 
 
@@ -355,14 +335,12 @@ In fact under the covers, the graphql-java engine uses asynchronous execution an
 calling join for you.  So the following code is in fact the same.
 
 ```java
+ExecutionResult executionResult = graphQL.execute(executionInput);
 
-        ExecutionResult executionResult = graphQL.execute(executionInput);
+// the above is equivalent to the following code (in long hand)
 
-        // the above is equivalent to the following code (in long hand)
-
-        CompletableFuture<ExecutionResult> promise = graphQL.executeAsync(executionInput);
-        ExecutionResult executionResult2 = promise.join();
-
+CompletableFuture<ExecutionResult> promise = graphQL.executeAsync(executionInput);
+ExecutionResult executionResult2 = promise.join();
 ```
 
 
@@ -375,27 +353,22 @@ The following code uses the standard Java ``java.util.concurrent.ForkJoinPool.co
 thread.
 
 ```java
-
-        DataFetcher userDataFetcher = new DataFetcher() {
-            @Override
-            public Object get(DataFetchingEnvironment environment) {
-                CompletableFuture<User> userPromise = CompletableFuture.supplyAsync(() -> {
-                    return fetchUserViaHttp(environment.getArgument("userId"));
-                });
-                return userPromise;
-            }
-        };
-
-
+DataFetcher userDataFetcher = new DataFetcher() {
+    @Override
+    public Object get(DataFetchingEnvironment environment) {
+        CompletableFuture<User> userPromise = CompletableFuture.supplyAsync(() -> {
+            return fetchUserViaHttp(environment.getArgument("userId"));
+        });
+        return userPromise;
+    }
+};
 ```
 
 The code above is written in long form.  With Java 8 lambdas it can be written more succinctly as follows
 
 ```java
-
-        DataFetcher userDataFetcher = environment -> CompletableFuture.supplyAsync(
-                () -> fetchUserViaHttp(environment.getArgument("userId")));
-
+DataFetcher userDataFetcher = environment -> CompletableFuture.supplyAsync(
+        () -> fetchUserViaHttp(environment.getArgument("userId")));
 ```
 
 The graphql-java engine ensures that all the ``CompletableFuture`` objects are composed together to provide an execution result
@@ -406,9 +379,7 @@ Use ``graphql.schema.AsyncDataFetcher.async(DataFetcher<T>)`` to wrap a
 ``DataFetcher``. This can be used with static imports to produce more readable code.
 
 ```java
-
-        DataFetcher userDataFetcher = async(environment -> fetchUserViaHttp(environment.getArgument("userId")));
-
+DataFetcher userDataFetcher = async(environment -> fetchUserViaHttp(environment.getArgument("userId")));
 ```
 
 ## Execution Strategies
@@ -420,11 +391,10 @@ You can wire in what execution strategy to use when you create the ``GraphQL`` o
 
 
 ```java
-
-        GraphQL.newGraphQL(schema)
-                .queryExecutionStrategy(new AsyncExecutionStrategy())
-                .mutationExecutionStrategy(new AsyncSerialExecutionStrategy())
-                .build();
+GraphQL.newGraphQL(schema)
+        .queryExecutionStrategy(new AsyncExecutionStrategy())
+        .mutationExecutionStrategy(new AsyncSerialExecutionStrategy())
+        .build();
 ```
 
 In fact the code above is equivalent to the default settings and is a very sensible choice of execution
@@ -442,17 +412,16 @@ fully asynchronous behaviour.
 So imagine a query as follows
 
 ```graphql
-
-    query {
-      hero {
-        enemies {
-          name
-        }
-        friends {
-          name
-        }
-      }
+query {
+  hero {
+    enemies {
+      name
     }
+    friends {
+      name
+    }
+  }
+}
 ```
 
 
@@ -498,21 +467,19 @@ To avoid the need for re-parse/validate the ``GraphQL.Builder`` allows an instan
 Please note that this does not cache the result of the query, only the parsed ``Document``.
 
 ```java
+Cache<String, PreparsedDocumentEntry> cache = Caffeine.newBuilder().maximumSize(10_000).build(); (1)
 
-    Cache<String, PreparsedDocumentEntry> cache = Caffeine.newBuilder().maximumSize(10_000).build(); (1)
+PreparsedDocumentProvider preparsedCache = PreparsedDocumentProvider {
+    @Override
+    public PreparsedDocumentEntry getDocument(ExecutionInput executionInput, Function<ExecutionInput, PreparsedDocumentEntry> computeFunction) {
+            Function<String, PreparsedDocumentEntry> mapCompute = key -> computeFunction.apply(executionInput);
+            return cache.get(executionInput.getQuery(), mapCompute);
+    }
+}    
 
-    PreparsedDocumentProvider preparsedCache = PreparsedDocumentProvider {
-        @Override
-        public PreparsedDocumentEntry getDocument(ExecutionInput executionInput, Function<ExecutionInput, PreparsedDocumentEntry> computeFunction) {
-                Function<String, PreparsedDocumentEntry> mapCompute = key -> computeFunction.apply(executionInput);
-                return cache.get(executionInput.getQuery(), mapCompute);
-        }
-    }    
-
-    GraphQL graphQL = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema)
-            .preparsedDocumentProvider(preparsedCache) (2)
-            .build();
-
+GraphQL graphQL = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema)
+        .preparsedDocumentProvider(preparsedCache) (2)
+        .build();
 ```
 
 1. Create an instance of preferred cache instance, here is `Caffeine <https://github.com/ben-manes/caffeine>`_  used as it is a high quality caching solution. The cache instance should be 
@@ -525,34 +492,30 @@ In order to achieve high cache hit ration it is recommended that field arguments
 The following query:
 
 ```graphql
-    query HelloTo {
-         sayHello(to: "Me") {
-            greeting
-         }
-    }
-
-
+query HelloTo {
+     sayHello(to: "Me") {
+        greeting
+     }
+}
 ```
 
 Should be rewritten as:
 
 ```graphql
-    query HelloTo($to: String!) {
-         sayHello(to: $to) {
-            greeting
-         }
-    }
-
+query HelloTo($to: String!) {
+     sayHello(to: $to) {
+        greeting
+     }
+}
 ```
 
 
 with variables:
 
 ```json
-    {
-       "to": "Me"
-    }
-
+{
+   "to": "Me"
+}
 ```
 
 

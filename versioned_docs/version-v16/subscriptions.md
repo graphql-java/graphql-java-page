@@ -19,17 +19,14 @@ graphql subscriptions.
 Imagine you have an stock market pricing service and you make a graphql subscription to it like this
 
 ```graphql
-
-    subscription StockCodeSubscription {
-        stockQuotes(stockCode:"IBM") {
-            dateTime
-            stockCode
-            stockPrice
-            stockPriceChange
-        }
+subscription StockCodeSubscription {
+    stockQuotes(stockCode:"IBM") {
+        dateTime
+        stockCode
+        stockPrice
+        stockPriceChange
     }
-
-
+}
 ```
 
 graphql subscriptions allow a stream of ``ExecutionResult`` objects to be sent down each time the stock price
@@ -42,16 +39,14 @@ need to use to get the future values.
 You need to use ``SubscriptionExecutionStrategy`` as your execution strategy as it has the support for the reactive-streams APIs.
 
 ```java
+GraphQL graphQL = GraphQL
+        .newGraphQL(schema)
+        .subscriptionExecutionStrategy(new SubscriptionExecutionStrategy())
+        .build();
 
-        GraphQL graphQL = GraphQL
-                .newGraphQL(schema)
-                .subscriptionExecutionStrategy(new SubscriptionExecutionStrategy())
-                .build();
+ExecutionResult executionResult = graphQL.execute(query);
 
-        ExecutionResult executionResult = graphQL.execute(query);
-
-        Publisher<ExecutionResult> stockPriceStream = executionResult.getData();
-
+Publisher<ExecutionResult> stockPriceStream = executionResult.getData();
 ```
 
 
@@ -59,65 +54,63 @@ The ``Publisher<ExecutionResult>`` here is the publisher of a stream of events. 
 code which will look something like the following
 
 ```java
+GraphQL graphQL = GraphQL
+        .newGraphQL(schema)
+        .subscriptionExecutionStrategy(new SubscriptionExecutionStrategy())
+        .build();
 
-        GraphQL graphQL = GraphQL
-                .newGraphQL(schema)
-                .subscriptionExecutionStrategy(new SubscriptionExecutionStrategy())
-                .build();
+String query = "" +
+        "    subscription StockCodeSubscription {\n" +
+        "        stockQuotes(stockCode:\"IBM') {\n" +
+        "            dateTime\n" +
+        "            stockCode\n" +
+        "            stockPrice\n" +
+        "            stockPriceChange\n" +
+        "        }\n" +
+        "    }\n";
 
-        String query = "" +
-                "    subscription StockCodeSubscription {\n" +
-                "        stockQuotes(stockCode:\"IBM') {\n" +
-                "            dateTime\n" +
-                "            stockCode\n" +
-                "            stockPrice\n" +
-                "            stockPriceChange\n" +
-                "        }\n" +
-                "    }\n";
+ExecutionResult executionResult = graphQL.execute(query);
 
-        ExecutionResult executionResult = graphQL.execute(query);
+Publisher<ExecutionResult> stockPriceStream = executionResult.getData();
 
-        Publisher<ExecutionResult> stockPriceStream = executionResult.getData();
+AtomicReference<Subscription> subscriptionRef = new AtomicReference<>();
+stockPriceStream.subscribe(new Subscriber<ExecutionResult>() {
 
-        AtomicReference<Subscription> subscriptionRef = new AtomicReference<>();
-        stockPriceStream.subscribe(new Subscriber<ExecutionResult>() {
+    @Override
+    public void onSubscribe(Subscription s) {
+        subscriptionRef.set(s);
+        s.request(1);
+    }
 
-            @Override
-            public void onSubscribe(Subscription s) {
-                subscriptionRef.set(s);
-                s.request(1);
-            }
+    @Override
+    public void onNext(ExecutionResult er) {
+        //
+        // process the next stock price
+        //
+        processStockPriceChange(er.getData());
 
-            @Override
-            public void onNext(ExecutionResult er) {
-                //
-                // process the next stock price
-                //
-                processStockPriceChange(er.getData());
+        //
+        // ask the publisher for one more item please
+        //
+        subscriptionRef.get().request(1);
+    }
 
-                //
-                // ask the publisher for one more item please
-                //
-                subscriptionRef.get().request(1);
-            }
+    @Override
+    public void onError(Throwable t) {
+        //
+        // The upstream publishing data source has encountered an error
+        // and the subscription is now terminated.  Real production code needs
+        // to decide on a error handling strategy.
+        //
+    }
 
-            @Override
-            public void onError(Throwable t) {
-                //
-                // The upstream publishing data source has encountered an error
-                // and the subscription is now terminated.  Real production code needs
-                // to decide on a error handling strategy.
-                //
-            }
-
-            @Override
-            public void onComplete() {
-                //
-                // the subscription has completed.  There is not more data
-                //
-            }
-        });
-
+    @Override
+    public void onComplete() {
+        //
+        // the subscription has completed.  There is not more data
+        //
+    }
+});
 ```
 
 
@@ -148,14 +141,13 @@ You data fetcher is going to look something like this.
 
 
 ```java
-
-        DataFetcher<Publisher<StockInfo>> publisherDataFetcher = new DataFetcher<Publisher<StockInfo>>() {
-            @Override
-            public Publisher<StockInfo> get(DataFetchingEnvironment environment) {
-                String stockCodeArg = environment.getArgument("stockCode");
-                return buildPublisherForStockCode(stockCodeArg);
-            }
-        };
+DataFetcher<Publisher<StockInfo>> publisherDataFetcher = new DataFetcher<Publisher<StockInfo>>() {
+    @Override
+    public Publisher<StockInfo> get(DataFetchingEnvironment environment) {
+        String stockCodeArg = environment.getArgument("stockCode");
+        return buildPublisherForStockCode(stockCodeArg);
+    }
+};
 ```
 
 

@@ -15,30 +15,28 @@ For example imagine we want to have a graphql type schema as follows:
 
 
 ```graphql
-    type Query {
-        products(match : String) : [Product]   # a list of products
-    }
+type Query {
+    products(match : String) : [Product]   # a list of products
+}
 
-    type Product {
-        id : ID
-        name : String
-        description : String
-        cost : Float
-        tax : Float
-    }
-
+type Product {
+    id : ID
+    name : String
+    description : String
+    cost : Float
+    tax : Float
+}
 ```
 
 We could then run queries over this simple schema via a something like the following:
 
 ```graphql
-    query ProductQuery {
-        products(match : "Paper*")
-        {
-            id, name, cost, tax
-        }
+query ProductQuery {
+    products(match : "Paper*")
+    {
+        id, name, cost, tax
     }
-
+}
 ```
 
 We will have a ``DataFetcher`` on the ``Query.products`` field that is responsible for finding a list of products that match
@@ -57,21 +55,20 @@ We could specify data fetchers on the ``cost`` and ``tax`` fields that does thos
 We would be better to do all this work in the ``Query.products`` data fetcher and create a unified view of the data at that point.
 
 ```java
+DataFetcher productsDataFetcher = new DataFetcher() {
+    @Override
+    public Object get(DataFetchingEnvironment env) {
+        String matchArg = env.getArgument("match");
 
-        DataFetcher productsDataFetcher = new DataFetcher() {
-            @Override
-            public Object get(DataFetchingEnvironment env) {
-                String matchArg = env.getArgument("match");
+        List<ProductInfo> productInfo = getMatchingProducts(matchArg);
 
-                List<ProductInfo> productInfo = getMatchingProducts(matchArg);
+        List<ProductCostInfo> productCostInfo = getProductCosts(productInfo);
 
-                List<ProductCostInfo> productCostInfo = getProductCosts(productInfo);
+        List<ProductTaxInfo> productTaxInfo = getProductTax(productInfo);
 
-                List<ProductTaxInfo> productTaxInfo = getProductTax(productInfo);
-
-                return mapDataTogether(productInfo, productCostInfo, productTaxInfo);
-            }
-        };
+        return mapDataTogether(productInfo, productCostInfo, productTaxInfo);
+    }
+};
 ```
 
 So looking at the code above we have 3 types of information that need to be combined in a way such that a graphql query above can get access to
@@ -83,86 +80,83 @@ encapsulates this unified data.
 The ``Map`` technique could look like this.
 
 ```java
+private List<Map> mapDataTogetherViaMap(List<ProductInfo> productInfo, List<ProductCostInfo> productCostInfo, List<ProductTaxInfo> productTaxInfo) {
+    List<Map> unifiedView = new ArrayList<>();
+    for (int i = 0; i < productInfo.size(); i++) {
+        ProductInfo info = productInfo.get(i);
+        ProductCostInfo cost = productCostInfo.get(i);
+        ProductTaxInfo tax = productTaxInfo.get(i);
 
-    private List<Map> mapDataTogetherViaMap(List<ProductInfo> productInfo, List<ProductCostInfo> productCostInfo, List<ProductTaxInfo> productTaxInfo) {
-        List<Map> unifiedView = new ArrayList<>();
-        for (int i = 0; i < productInfo.size(); i++) {
-            ProductInfo info = productInfo.get(i);
-            ProductCostInfo cost = productCostInfo.get(i);
-            ProductTaxInfo tax = productTaxInfo.get(i);
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("id", info.getId());
+        objectMap.put("name", info.getName());
+        objectMap.put("description", info.getDescription());
+        objectMap.put("cost", cost.getCost());
+        objectMap.put("tax", tax.getTax());
 
-            Map<String, Object> objectMap = new HashMap<>();
-            objectMap.put("id", info.getId());
-            objectMap.put("name", info.getName());
-            objectMap.put("description", info.getDescription());
-            objectMap.put("cost", cost.getCost());
-            objectMap.put("tax", tax.getTax());
-
-            unifiedView.add(objectMap);
-        }
-        return unifiedView;
+        unifiedView.add(objectMap);
     }
-
+    return unifiedView;
+}
 ```
 
 The more type safe ``DTO`` technique could look like this.
 
 ```java
+class ProductDTO {
+    private final String id;
+    private final String name;
+    private final String description;
+    private final Float cost;
+    private final Float tax;
 
-    class ProductDTO {
-        private final String id;
-        private final String name;
-        private final String description;
-        private final Float cost;
-        private final Float tax;
-
-        public ProductDTO(String id, String name, String description, Float cost, Float tax) {
-            this.id = id;
-            this.name = name;
-            this.description = description;
-            this.cost = cost;
-            this.tax = tax;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public Float getCost() {
-            return cost;
-        }
-
-        public Float getTax() {
-            return tax;
-        }
+    public ProductDTO(String id, String name, String description, Float cost, Float tax) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.cost = cost;
+        this.tax = tax;
     }
 
-    private List<ProductDTO> mapDataTogetherViaDTO(List<ProductInfo> productInfo, List<ProductCostInfo> productCostInfo, List<ProductTaxInfo> productTaxInfo) {
-        List<ProductDTO> unifiedView = new ArrayList<>();
-        for (int i = 0; i < productInfo.size(); i++) {
-            ProductInfo info = productInfo.get(i);
-            ProductCostInfo cost = productCostInfo.get(i);
-            ProductTaxInfo tax = productTaxInfo.get(i);
-
-            ProductDTO productDTO = new ProductDTO(
-                    info.getId(),
-                    info.getName(),
-                    info.getDescription(),
-                    cost.getCost(),
-                    tax.getTax()
-            );
-            unifiedView.add(productDTO);
-        }
-        return unifiedView;
+    public String getId() {
+        return id;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Float getCost() {
+        return cost;
+    }
+
+    public Float getTax() {
+        return tax;
+    }
+}
+
+private List<ProductDTO> mapDataTogetherViaDTO(List<ProductInfo> productInfo, List<ProductCostInfo> productCostInfo, List<ProductTaxInfo> productTaxInfo) {
+    List<ProductDTO> unifiedView = new ArrayList<>();
+    for (int i = 0; i < productInfo.size(); i++) {
+        ProductInfo info = productInfo.get(i);
+        ProductCostInfo cost = productCostInfo.get(i);
+        ProductTaxInfo tax = productTaxInfo.get(i);
+
+        ProductDTO productDTO = new ProductDTO(
+                info.getId(),
+                info.getName(),
+                info.getDescription(),
+                cost.getCost(),
+                tax.getTax()
+        );
+        unifiedView.add(productDTO);
+    }
+    return unifiedView;
+}
 ```
 
 The graphql engine will now use that list of objects and run the query sub fields ``id, name, cost, tax`` over it.
