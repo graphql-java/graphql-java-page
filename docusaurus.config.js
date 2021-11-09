@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'GraphQL Java',
   tagline: 'The Java implementation of GraphQL',
-  url: 'https://hopeful-chandrasekhar-3ca166.netlify.app',
+  url: 'https://graphql-java.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -25,10 +25,10 @@ const config = {
           routeBasePath: 'documentation',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: 'https://github.com/graphql-java/graphql-java-page/edit/master/',
-          lastVersion: "current",
+          lastVersion: "master",
           versions: {
             current: {
-              label: "17"
+              label: "v17"
             }
           }
         },
