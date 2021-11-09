@@ -23,14 +23,12 @@ For example imagine you have a type like the following
 
 
 ```graphql
-
-    type Employee
-        id : ID
-        name : String!
-        startDate : String!
-        salary : Float
-    }
-
+type Employee
+    id : ID
+    name : String!
+    startDate : String!
+    salary : Float
+}
 ```
 
 
@@ -41,16 +39,14 @@ Directives can help you declare this more easily.  Our declaration above would b
 
 
 ```graphql
+directive @auth(role : String!) on FIELD_DEFINITION
 
-    directive @auth(role : String!) on FIELD_DEFINITION
-
-    type Employee
-        id : ID
-        name : String!
-        startDate : String!
-        salary : Float @auth(role : "manager")
-    }
-
+type Employee
+    id : ID
+    name : String!
+    startDate : String!
+    salary : Float @auth(role : "manager")
+}
 ```
 
 So we have said that only people who have the role ``manager`` are authorised to see this field.  We can now use this directive on ANY field
@@ -58,22 +54,21 @@ that needs manager role authorisation.
 
 
 ```graphql
+directive @auth(role : String!) on FIELD_DEFINITION
 
-    directive @auth(role : String!) on FIELD_DEFINITION
+type Employee
+    id : ID
+    name : String!
+    startDate : String!
+    salary : Float @auth(role : "manager")
+}
 
-    type Employee
-        id : ID
-        name : String!
-        startDate : String!
-        salary : Float @auth(role : "manager")
-    }
-
-    type Department {
-        id : ID
-        name : String
-        yearlyOperatingBudget : Float @auth(role : "manager")
-        monthlyMarketingBudget : Float @auth(role : "manager")
-    }
+type Department {
+    id : ID
+    name : String
+    yearlyOperatingBudget : Float @auth(role : "manager")
+    monthlyMarketingBudget : Float @auth(role : "manager")
+}
 ```
 
 
@@ -82,46 +77,44 @@ We now need to wire in the code that can handle any field with this ``@auth`` di
 
 
 ```java
+class AuthorisationDirective implements SchemaDirectiveWiring {
 
-    class AuthorisationDirective implements SchemaDirectiveWiring {
+    @Override
+    public GraphQLFieldDefinition onField(SchemaDirectiveWiringEnvironment<GraphQLFieldDefinition> environment) {
+        String targetAuthRole = (String) environment.getDirective().getArgument("role").getValue();
 
-        @Override
-        public GraphQLFieldDefinition onField(SchemaDirectiveWiringEnvironment<GraphQLFieldDefinition> environment) {
-            String targetAuthRole = (String) environment.getDirective().getArgument("role").getValue();
+        GraphQLFieldDefinition field = environment.getElement();
+        GraphQLFieldsContainer parentType = environment.getFieldsContainer();
+        //
+        // build a data fetcher that first checks authorisation roles before then calling the original data fetcher
+        //
+        DataFetcher originalDataFetcher = environment.getCodeRegistry().getDataFetcher(parentType, field);
+        DataFetcher authDataFetcher = new DataFetcher() {
+            @Override
+            public Object get(DataFetchingEnvironment dataFetchingEnvironment) throws Exception {
+                Map<String, Object> contextMap = dataFetchingEnvironment.getContext();
+                AuthorisationCtx authContext = (AuthorisationCtx) contextMap.get("authContext");
 
-            GraphQLFieldDefinition field = environment.getElement();
-            GraphQLFieldsContainer parentType = environment.getFieldsContainer();
-            //
-            // build a data fetcher that first checks authorisation roles before then calling the original data fetcher
-            //
-            DataFetcher originalDataFetcher = environment.getCodeRegistry().getDataFetcher(parentType, field);
-            DataFetcher authDataFetcher = new DataFetcher() {
-                @Override
-                public Object get(DataFetchingEnvironment dataFetchingEnvironment) throws Exception {
-                    Map<String, Object> contextMap = dataFetchingEnvironment.getContext();
-                    AuthorisationCtx authContext = (AuthorisationCtx) contextMap.get("authContext");
-
-                    if (authContext.hasRole(targetAuthRole)) {
-                        return originalDataFetcher.get(dataFetchingEnvironment);
-                    } else {
-                        return null;
-                    }
+                if (authContext.hasRole(targetAuthRole)) {
+                    return originalDataFetcher.get(dataFetchingEnvironment);
+                } else {
+                    return null;
                 }
-            };
-            //
-            // now change the field definition to have the new authorising data fetcher
-            environment.getCodeRegistry().dataFetcher(parentType, field, authDataFetcher);
-            return field;
-        }
+            }
+        };
+        //
+        // now change the field definition to have the new authorising data fetcher
+        environment.getCodeRegistry().dataFetcher(parentType, field, authDataFetcher);
+        return field;
     }
+}
 
-    //
-    // we wire this into the runtime by directive name
-    //
-    RuntimeWiring.newRuntimeWiring()
-            .directive("auth", new AuthorisationDirective())
-            .build();
-
+//
+// we wire this into the runtime by directive name
+//
+RuntimeWiring.newRuntimeWiring()
+        .directive("auth", new AuthorisationDirective())
+        .build();
 ```
 
 This has modified the ``GraphQLFieldDefinition`` so that its original data fetcher will ONLY be called if the current authorisation context
@@ -132,16 +125,12 @@ You would provide this authorisation checker into the execution "context" object
 ``DataFetchingEnvironment``.
 
 ```java
+AuthorisationCtx authCtx = AuthorisationCtx.obtain();
 
-    AuthorisationCtx authCtx = AuthorisationCtx.obtain();
-
-    ExecutionInput executionInput = ExecutionInput.newExecutionInput()
-            .query(query)
-            .context(authCtx)
-            .build();
-
-
-
+ExecutionInput executionInput = ExecutionInput.newExecutionInput()
+        .query(query)
+        .context(authCtx)
+        .build();
 ```
 
 ## Declaring Directives
@@ -150,15 +139,15 @@ In order to use a directive in SDL, the graphql specification requires that you 
 declared like so before use.
 
 ```graphql
-    # This is a directive declaration
-    directive @auth(role : String!) on FIELD_DEFINITION
+# This is a directive declaration
+directive @auth(role : String!) on FIELD_DEFINITION
 
-    type Employee
-        id : ID
+type Employee
+    id : ID
 
-        # and this is a usage of that declared directive
-        salary : Float @auth(role : "manager")
-    }
+    # and this is a usage of that declared directive
+    salary : Float @auth(role : "manager")
+}
 ```
 
 
@@ -166,27 +155,24 @@ The one exception to this is the ``@deprecated`` directive which is implicitly d
 
 
 ```graphql
-
-        directive @deprecated(  reason: String = "No longer supported") on FIELD_DEFINITION | ENUM_VALUE
-
+directive @deprecated(  reason: String = "No longer supported") on FIELD_DEFINITION | ENUM_VALUE
 ```
 
 
 The valid SDL directive locations are as follows :
 
 ```graphql
-
-        SCHEMA,
-        SCALAR,
-        OBJECT,
-        FIELD_DEFINITION,
-        ARGUMENT_DEFINITION,
-        INTERFACE,
-        UNION,
-        ENUM,
-        ENUM_VALUE,
-        INPUT_OBJECT,
-        INPUT_FIELD_DEFINITION
+SCHEMA,
+SCALAR,
+OBJECT,
+FIELD_DEFINITION,
+ARGUMENT_DEFINITION,
+INTERFACE,
+UNION,
+ENUM,
+ENUM_VALUE,
+INPUT_OBJECT,
+INPUT_FIELD_DEFINITION
 ```
 
 
@@ -204,101 +190,98 @@ Whats great in this example is that it adds an extra ``format`` argument to each
 opt into what ever date formatting you provide per request.
 
 ```graphql
+directive @dateFormat on FIELD_DEFINITION
 
-    directive @dateFormat on FIELD_DEFINITION
-
-    type Query {
-        dateField : String @dateFormat
-    }
+type Query {
+    dateField : String @dateFormat
+}
 ```
 
 Then our runtime code could be :
 
 ```java
+public static class DateFormatting implements SchemaDirectiveWiring {
+    @Override
+    public GraphQLFieldDefinition onField(SchemaDirectiveWiringEnvironment<GraphQLFieldDefinition> environment) {
+        GraphQLFieldDefinition field = environment.getElement();
+        GraphQLFieldsContainer parentType = environment.getFieldsContainer();
+        //
+        // DataFetcherFactories.wrapDataFetcher is a helper to wrap data fetchers so that CompletionStage is handled correctly
+        // along with POJOs
+        //
+        DataFetcher originalFetcher = environment.getCodeRegistry().getDataFetcher(parentType, field);
+        DataFetcher dataFetcher = DataFetcherFactories.wrapDataFetcher(originalFetcher, ((dataFetchingEnvironment, value) -> {
+            DateTimeFormatter dateTimeFormatter = buildFormatter(dataFetchingEnvironment.getArgument("format"));
+            if (value instanceof LocalDateTime) {
+                return dateTimeFormatter.format((LocalDateTime) value);
+            }
+            return value;
+        }));
 
-    public static class DateFormatting implements SchemaDirectiveWiring {
-        @Override
-        public GraphQLFieldDefinition onField(SchemaDirectiveWiringEnvironment<GraphQLFieldDefinition> environment) {
-            GraphQLFieldDefinition field = environment.getElement();
-            GraphQLFieldsContainer parentType = environment.getFieldsContainer();
-            //
-            // DataFetcherFactories.wrapDataFetcher is a helper to wrap data fetchers so that CompletionStage is handled correctly
-            // along with POJOs
-            //
-            DataFetcher originalFetcher = environment.getCodeRegistry().getDataFetcher(parentType, field);
-            DataFetcher dataFetcher = DataFetcherFactories.wrapDataFetcher(originalFetcher, ((dataFetchingEnvironment, value) -> {
-                DateTimeFormatter dateTimeFormatter = buildFormatter(dataFetchingEnvironment.getArgument("format"));
-                if (value instanceof LocalDateTime) {
-                    return dateTimeFormatter.format((LocalDateTime) value);
-                }
-                return value;
-            }));
+        //
+        // This will extend the field by adding a new "format" argument to it for the date formatting
+        // which allows clients to opt into that as well as wrapping the base data fetcher so it
+        // performs the formatting over top of the base values.
+        //
+        FieldCoordinates coordinates = FieldCoordinates.coordinates(parentType, field);
+        environment.getCodeRegistry().dataFetcher(coordinates, dataFetcher);
 
-            //
-            // This will extend the field by adding a new "format" argument to it for the date formatting
-            // which allows clients to opt into that as well as wrapping the base data fetcher so it
-            // performs the formatting over top of the base values.
-            //
-            FieldCoordinates coordinates = FieldCoordinates.coordinates(parentType, field);
-            environment.getCodeRegistry().dataFetcher(coordinates, dataFetcher);
-
-            return field.transform(builder -> builder
-                    .argument(GraphQLArgument
-                            .newArgument()
-                            .name("format")
-                            .type(Scalars.GraphQLString)
-                            .defaultValue("dd-MM-YYYY")
-                    )
-            );
-        }
-
-        private DateTimeFormatter buildFormatter(String format) {
-            String dtFormat = format != null ? format : "dd-MM-YYYY";
-            return DateTimeFormatter.ofPattern(dtFormat);
-        }
+        return field.transform(builder -> builder
+                .argument(GraphQLArgument
+                        .newArgument()
+                        .name("format")
+                        .type(Scalars.GraphQLString)
+                        .defaultValue("dd-MM-YYYY")
+                )
+        );
     }
 
-    static GraphQLSchema buildSchema() {
-
-        String sdlSpec = "directive @dateFormat on FIELD_DEFINITION\n" +
-                      "type Query {\n" +
-                      "    dateField : String @dateFormat \n" +
-                      "}";
-
-        TypeDefinitionRegistry registry = new SchemaParser().parse(sdlSpec);
-
-        RuntimeWiring runtimeWiring = RuntimeWiring.newRuntimeWiring()
-                .directive("dateFormat", new DateFormatting())
-                .build();
-
-        return new SchemaGenerator().makeExecutableSchema(registry, runtimeWiring);
+    private DateTimeFormatter buildFormatter(String format) {
+        String dtFormat = format != null ? format : "dd-MM-YYYY";
+        return DateTimeFormatter.ofPattern(dtFormat);
     }
+}
 
-    public static void main(String[] args) {
-        GraphQLSchema schema = buildSchema();
-        GraphQL graphql = GraphQL.newGraphQL(schema).build();
+static GraphQLSchema buildSchema() {
 
-        Map<String, Object> root = new HashMap<>();
-        root.put("dateField", LocalDateTime.of(1969, 10, 8, 0, 0));
+    String sdlSpec = "directive @dateFormat on FIELD_DEFINITION\n" +
+                  "type Query {\n" +
+                  "    dateField : String @dateFormat \n" +
+                  "}";
 
-        String query = "" +
-                "query {\n" +
-                "    default : dateField \n" +
-                "    usa : dateField(format : \"MM-dd-YYYY\") \n" +
-                "}";
+    TypeDefinitionRegistry registry = new SchemaParser().parse(sdlSpec);
 
-        ExecutionInput executionInput = ExecutionInput.newExecutionInput()
-                .root(root)
-                .query(query)
-                .build();
+    RuntimeWiring runtimeWiring = RuntimeWiring.newRuntimeWiring()
+            .directive("dateFormat", new DateFormatting())
+            .build();
 
-        ExecutionResult executionResult = graphql.execute(executionInput);
-        Map<String, Object> data = executionResult.getData();
+    return new SchemaGenerator().makeExecutableSchema(registry, runtimeWiring);
+}
 
-        // data['default'] == '08-10-1969'
-        // data['usa'] == '10-08-1969'
-    }
+public static void main(String[] args) {
+    GraphQLSchema schema = buildSchema();
+    GraphQL graphql = GraphQL.newGraphQL(schema).build();
 
+    Map<String, Object> root = new HashMap<>();
+    root.put("dateField", LocalDateTime.of(1969, 10, 8, 0, 0));
+
+    String query = "" +
+            "query {\n" +
+            "    default : dateField \n" +
+            "    usa : dateField(format : \"MM-dd-YYYY\") \n" +
+            "}";
+
+    ExecutionInput executionInput = ExecutionInput.newExecutionInput()
+            .root(root)
+            .query(query)
+            .build();
+
+    ExecutionResult executionResult = graphql.execute(executionInput);
+    Map<String, Object> data = executionResult.getData();
+
+    // data['default'] == '08-10-1969'
+    // data['usa'] == '10-08-1969'
+}
 ```
 
 Notice the SDL definition did not have a ``format`` argument yet once the directive wiring is applied, it is added
@@ -313,26 +296,23 @@ an example of what you could add yourself.
 The directives are applied in the order they are encountered.  For example imagine directives that changed the case of a field value.
 
 ```graphql
+directive @uppercase on FIELD_DEFINITION
+directive @lowercase on FIELD_DEFINITION
+directive @mixedcase on FIELD_DEFINITION
+directive @reversed on FIELD_DEFINITION
 
-            directive @uppercase on FIELD_DEFINITION
-            directive @lowercase on FIELD_DEFINITION
-            directive @mixedcase on FIELD_DEFINITION
-            directive @reversed on FIELD_DEFINITION
+type Query {
+    lowerCaseValue : String @uppercase
+    upperCaseValue : String @lowercase
+    mixedCaseValue : String @mixedcase
 
-            type Query {
-                lowerCaseValue : String @uppercase
-                upperCaseValue : String @lowercase
-                mixedCaseValue : String @mixedcase
-
-                #
-                # directives are applied in order hence this will be lower, then upper, then mixed then reversed
-                #
-                allTogetherNow : String @lowercase @uppercase @mixedcase @reversed
-            }
-
+    #
+    # directives are applied in order hence this will be lower, then upper, then mixed then reversed
+    #
+    allTogetherNow : String @lowercase @uppercase @mixedcase @reversed
+}
 ```
 
 When the above was executed each directive would be applied one on top of the other.  Each directive implementation should be careful
 to preserve the previous data fetcher to retain behaviour (unless of course you mean to throw it away)
-
 

@@ -14,11 +14,9 @@ The primary use case for this is to allow say performance monitoring and custom 
 When you build the ``Graphql`` object you can specify what ``Instrumentation`` to use (if any).
 
 ```java
-
-        GraphQL.newGraphQL(schema)
-                .instrumentation(new TracingInstrumentation())
-                .build();
-
+GraphQL.newGraphQL(schema)
+        .instrumentation(new TracingInstrumentation())
+        .build();
 ```
 
 
@@ -32,56 +30,54 @@ when the step completes, and will be told that it succeeded or failed with a Thr
 The following is a basic custom ``Instrumentation`` that measures overall execution time and puts it into a stateful object.
 
 ```java
+class CustomInstrumentationState implements InstrumentationState {
+    private Map<String, Object> anyStateYouLike = new HashMap<>();
 
-    class CustomInstrumentationState implements InstrumentationState {
-        private Map<String, Object> anyStateYouLike = new HashMap<>();
+    void recordTiming(String key, long time) {
+        anyStateYouLike.put(key, time);
+    }
+}
 
-        void recordTiming(String key, long time) {
-            anyStateYouLike.put(key, time);
-        }
+class CustomInstrumentation extends SimpleInstrumentation {
+    @Override
+    public InstrumentationState createState() {
+        //
+        // instrumentation state is passed during each invocation of an Instrumentation method
+        // and allows you to put stateful data away and reference it during the query execution
+        //
+        return new CustomInstrumentationState();
     }
 
-    class CustomInstrumentation extends SimpleInstrumentation {
-        @Override
-        public InstrumentationState createState() {
-            //
-            // instrumentation state is passed during each invocation of an Instrumentation method
-            // and allows you to put stateful data away and reference it during the query execution
-            //
-            return new CustomInstrumentationState();
-        }
-
-        @Override
-        public InstrumentationContext<ExecutionResult> beginExecution(InstrumentationExecutionParameters parameters) {
-            long startNanos = System.nanoTime();
-            return new SimpleInstrumentationContext<ExecutionResult>() {
-                @Override
-                public void onCompleted(ExecutionResult result, Throwable t) {
-                    CustomInstrumentationState state = parameters.getInstrumentationState();
-                    state.recordTiming(parameters.getQuery(), System.nanoTime() - startNanos);
-                }
-            };
-        }
-
-        @Override
-        public DataFetcher<?> instrumentDataFetcher(DataFetcher<?> dataFetcher, InstrumentationFieldFetchParameters parameters) {
-            //
-            // this allows you to intercept the data fetcher used to fetch a field and provide another one, perhaps
-            // that enforces certain behaviours or has certain side effects on the data
-            //
-            return dataFetcher;
-        }
-
-        @Override
-        public CompletableFuture<ExecutionResult> instrumentExecutionResult(ExecutionResult executionResult, InstrumentationExecutionParameters parameters) {
-            //
-            // this allows you to instrument the execution result some how.  For example the Tracing support uses this to put
-            // the `extensions` map of data in place
-            //
-            return CompletableFuture.completedFuture(executionResult);
-        }
+    @Override
+    public InstrumentationContext<ExecutionResult> beginExecution(InstrumentationExecutionParameters parameters) {
+        long startNanos = System.nanoTime();
+        return new SimpleInstrumentationContext<ExecutionResult>() {
+            @Override
+            public void onCompleted(ExecutionResult result, Throwable t) {
+                CustomInstrumentationState state = parameters.getInstrumentationState();
+                state.recordTiming(parameters.getQuery(), System.nanoTime() - startNanos);
+            }
+        };
     }
 
+    @Override
+    public DataFetcher<?> instrumentDataFetcher(DataFetcher<?> dataFetcher, InstrumentationFieldFetchParameters parameters) {
+        //
+        // this allows you to intercept the data fetcher used to fetch a field and provide another one, perhaps
+        // that enforces certain behaviours or has certain side effects on the data
+        //
+        return dataFetcher;
+    }
+
+    @Override
+    public CompletableFuture<ExecutionResult> instrumentExecutionResult(ExecutionResult executionResult, InstrumentationExecutionParameters parameters) {
+        //
+        // this allows you to instrument the execution result some how.  For example the Tracing support uses this to put
+        // the `extensions` map of data in place
+        //
+        return CompletableFuture.completedFuture(executionResult);
+    }
+}
 ```
 
 
@@ -91,17 +87,14 @@ You can combine multiple ``Instrumentation`` objects together using the ``graphq
 accepts a list of ``Instrumentation`` objects and calls them in that defined order.
 
 ```java
+List<Instrumentation> chainedList = new ArrayList<>();
+chainedList.add(new FooInstrumentation());
+chainedList.add(new BarInstrumentation());
+ChainedInstrumentation chainedInstrumentation = new ChainedInstrumentation(chainedList);
 
-        List<Instrumentation> chainedList = new ArrayList<>();
-        chainedList.add(new FooInstrumentation());
-        chainedList.add(new BarInstrumentation());
-        ChainedInstrumentation chainedInstrumentation = new ChainedInstrumentation(chainedList);
-
-        GraphQL.newGraphQL(schema)
-                .instrumentation(chainedInstrumentation)
-                .build();
-
-
+GraphQL.newGraphQL(schema)
+        .instrumentation(chainedInstrumentation)
+        .build();
 ```
 
 
@@ -118,124 +111,120 @@ A detailed tracing map will be created and placed in the ``extensions`` section 
 So given a query like
 
 ```graphql
-
-    query {
-      hero {
-        name
-        friends {
-          name
-        }
-      }
+query {
+  hero {
+    name
+    friends {
+      name
     }
-
+  }
+}
 ```
 
 It would return a result like
 
 ```json
-
-    {
-      "data": {
-        "hero": {
-          "name": "R2-D2",
-          "friends": [
-            {
-              "name": "Luke Skywalker"
-            },
-            {
-              "name": "Han Solo"
-            },
-            {
-              "name": "Leia Organa"
-            }
-          ]
+{
+  "data": {
+    "hero": {
+      "name": "R2-D2",
+      "friends": [
+        {
+          "name": "Luke Skywalker"
+        },
+        {
+          "name": "Han Solo"
+        },
+        {
+          "name": "Leia Organa"
         }
-      },
-      "extensions": {
-        "tracing": {
-          "version": 1,
-          "startTime": "2017-08-14T23:13:39.362Z",
-          "endTime": "2017-08-14T23:13:39.497Z",
-          "duration": 135589186,
-          "execution": {
-            "resolvers": [
-              {
-                "path": [
-                  "hero"
-                ],
-                "parentType": "Query",
-                "returnType": "Character",
-                "fieldName": "hero",
-                "startOffset": 105697585,
-                "duration": 79111240
-              },
-              {
-                "path": [
-                  "hero",
-                  "name"
-                ],
-                "parentType": "Droid",
-                "returnType": "String",
-                "fieldName": "name",
-                "startOffset": 125010028,
-                "duration": 20213
-              },
-              {
-                "path": [
-                  "hero",
-                  "friends"
-                ],
-                "parentType": "Droid",
-                "returnType": "[Character]",
-                "fieldName": "friends",
-                "startOffset": 133352819,
-                "duration": 7927560
-              },
-              {
-                "path": [
-                  "hero",
-                  "friends",
-                  0,
-                  "name"
-                ],
-                "parentType": "Human",
-                "returnType": "String",
-                "fieldName": "name",
-                "startOffset": 134105887,
-                "duration": 6783
-              },
-              {
-                "path": [
-                  "hero",
-                  "friends",
-                  1,
-                  "name"
-                ],
-                "parentType": "Human",
-                "returnType": "String",
-                "fieldName": "name",
-                "startOffset": 134725922,
-                "duration": 7016
-              },
-              {
-                "path": [
-                  "hero",
-                  "friends",
-                  2,
-                  "name"
-                ],
-                "parentType": "Human",
-                "returnType": "String",
-                "fieldName": "name",
-                "startOffset": 134875089,
-                "duration": 6342
-              }
-            ]
+      ]
+    }
+  },
+  "extensions": {
+    "tracing": {
+      "version": 1,
+      "startTime": "2017-08-14T23:13:39.362Z",
+      "endTime": "2017-08-14T23:13:39.497Z",
+      "duration": 135589186,
+      "execution": {
+        "resolvers": [
+          {
+            "path": [
+              "hero"
+            ],
+            "parentType": "Query",
+            "returnType": "Character",
+            "fieldName": "hero",
+            "startOffset": 105697585,
+            "duration": 79111240
+          },
+          {
+            "path": [
+              "hero",
+              "name"
+            ],
+            "parentType": "Droid",
+            "returnType": "String",
+            "fieldName": "name",
+            "startOffset": 125010028,
+            "duration": 20213
+          },
+          {
+            "path": [
+              "hero",
+              "friends"
+            ],
+            "parentType": "Droid",
+            "returnType": "[Character]",
+            "fieldName": "friends",
+            "startOffset": 133352819,
+            "duration": 7927560
+          },
+          {
+            "path": [
+              "hero",
+              "friends",
+              0,
+              "name"
+            ],
+            "parentType": "Human",
+            "returnType": "String",
+            "fieldName": "name",
+            "startOffset": 134105887,
+            "duration": 6783
+          },
+          {
+            "path": [
+              "hero",
+              "friends",
+              1,
+              "name"
+            ],
+            "parentType": "Human",
+            "returnType": "String",
+            "fieldName": "name",
+            "startOffset": 134725922,
+            "duration": 7016
+          },
+          {
+            "path": [
+              "hero",
+              "friends",
+              2,
+              "name"
+            ],
+            "parentType": "Human",
+            "returnType": "String",
+            "fieldName": "name",
+            "startOffset": 134875089,
+            "duration": 6342
           }
-        }
+        ]
       }
     }
-
+  }
+}
 ```
 
 ## Field Validation Instrumentation
@@ -248,28 +237,26 @@ You can make you own custom implementation of ``FieldValidation`` or you can use
 to add simple per field checks rules.
 
 ```java
+ExecutionPath fieldPath = ExecutionPath.parse("/user");
+FieldValidation fieldValidation = new SimpleFieldValidation()
+        .addRule(fieldPath, new BiFunction<FieldAndArguments, FieldValidationEnvironment, Optional<GraphQLError>>() {
+            @Override
+            public Optional<GraphQLError> apply(FieldAndArguments fieldAndArguments, FieldValidationEnvironment environment) {
+                String nameArg = fieldAndArguments.getFieldArgument("name");
+                if (nameArg.length() > 255) {
+                    return Optional.of(environment.mkError("Invalid user name", fieldAndArguments));
+                }
+                return Optional.empty();
+            }
+        });
 
-        ExecutionPath fieldPath = ExecutionPath.parse("/user");
-        FieldValidation fieldValidation = new SimpleFieldValidation()
-                .addRule(fieldPath, new BiFunction<FieldAndArguments, FieldValidationEnvironment, Optional<GraphQLError>>() {
-                    @Override
-                    public Optional<GraphQLError> apply(FieldAndArguments fieldAndArguments, FieldValidationEnvironment environment) {
-                        String nameArg = fieldAndArguments.getFieldArgument("name");
-                        if (nameArg.length() > 255) {
-                            return Optional.of(environment.mkError("Invalid user name", fieldAndArguments));
-                        }
-                        return Optional.empty();
-                    }
-                });
+FieldValidationInstrumentation instrumentation = new FieldValidationInstrumentation(
+        fieldValidation
+);
 
-        FieldValidationInstrumentation instrumentation = new FieldValidationInstrumentation(
-                fieldValidation
-        );
-
-        GraphQL.newGraphQL(schema)
-                .instrumentation(instrumentation)
-                .build();
-
+GraphQL.newGraphQL(schema)
+        .instrumentation(instrumentation)
+        .build();
 ```
 
 ## Query Complexity Instrumentation
@@ -278,54 +265,48 @@ to add simple per field checks rules.
 fields queried exceeds the defined limit.
 
 ```java
-
-        GraphQL.newGraphQL(schema)
-                .instrumentation(new MaxQueryComplexityInstrumentation(10))
-                .build();
-
+GraphQL.newGraphQL(schema)
+        .instrumentation(new MaxQueryComplexityInstrumentation(10))
+        .build();
 ```
 
 With a query like:
 
 ```graphql
-
-    query {
-      hero {
+query {
+  hero {
+    name
+    friends {
+      name
+      homeWorld {
         name
-        friends {
-          name
-          homeWorld {
-            name
-            climate
-          }
-          species {
-            name
-          }
-        }
-        homeWorld {
-          name
-          climate
-        }
+        climate
+      }
+      species {
+        name
       }
     }
-
+    homeWorld {
+      name
+      climate
+    }
+  }
+}
 ```
 
 Would return a result like:
 
 ```json
-
+{
+  "errors": [
     {
-      "errors": [
-        {
-          "message": "maximum query complexity exceeded 12 > 10",
-          "extensions": {
-            "classification": "ExecutionAborted"
-          }
-        }
-      ]
+      "message": "maximum query complexity exceeded 12 > 10",
+      "extensions": {
+        "classification": "ExecutionAborted"
+      }
     }
-
+  ]
+}
 ```
 
 
@@ -335,47 +316,41 @@ Would return a result like:
 the query exceeds the defined limit.
 
 ```java
-
-        GraphQL.newGraphQL(schema)
-                .instrumentation(new MaxQueryDepthInstrumentation(4))
-                .build();
-
+GraphQL.newGraphQL(schema)
+        .instrumentation(new MaxQueryDepthInstrumentation(4))
+        .build();
 ```
 
 With a query like:
 
 ```graphql
-
-    query {
-      hero {
+query {
+  hero {
+    name
+    friends {
+      name
+      friends {
         name
         friends {
           name
-          friends {
-            name
-            friends {
-              name
-            }
-          }
         }
       }
     }
-
+  }
+}
 ```
 
 Would return a result like:
 
 ```json
-
+{
+  "errors": [
     {
-      "errors": [
-        {
-          "message": "maximum query depth exceeded 4 > 3",
-          "extensions": {
-            "classification": "ExecutionAborted"
-          }
-        }
-      ]
+      "message": "maximum query depth exceeded 4 > 3",
+      "extensions": {
+        "classification": "ExecutionAborted"
+      }
     }
-
+  ]
+}
 ```

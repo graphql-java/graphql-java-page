@@ -27,8 +27,7 @@ In order to make this a pleasant as possible for everybody involved, here are so
 Just clone the repo and type
 
 ```bash
-
-    ./gradlew build
+./gradlew build
 ```
 <br/>
 In `build/libs` you will find the jar file.
@@ -36,13 +35,11 @@ In `build/libs` you will find the jar file.
 Running the tests:
 
 ```bash
-
-    ./gradlew test
+./gradlew test
 ```
 
 Installing in the local Maven repository:
 
 ```bash
-
-    ./gradlew install
+./gradlew install
 ```

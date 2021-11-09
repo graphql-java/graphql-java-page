@@ -14,18 +14,16 @@ You can do this by using a `graphql.schema.visibility.GraphqlFieldVisibility` im
 A simple `graphql.schema.visibility.BlockedFields` implementation based on fully qualified field name is provided.
 
 ```java
+GraphqlFieldVisibility blockedFields = BlockedFields.newBlock()
+        .addPattern("Character.id")
+        .addPattern("Droid.appearsIn")
+        .addPattern(".*\\.hero") // it uses regular expressions
+        .build();
 
-        GraphqlFieldVisibility blockedFields = BlockedFields.newBlock()
-                .addPattern("Character.id")
-                .addPattern("Droid.appearsIn")
-                .addPattern(".*\\.hero") // it uses regular expressions
-                .build();
-
-        GraphQLSchema schema = GraphQLSchema.newSchema()
-                .query(StarWarsSchema.queryType)
-                .fieldVisibility(blockedFields)
-                .build();
-
+GraphQLSchema schema = GraphQLSchema.newSchema()
+        .query(StarWarsSchema.queryType)
+        .fieldVisibility(blockedFields)
+        .build();
 ```
 
 
@@ -35,46 +33,42 @@ Note that this puts your server in contravention of the graphql specification an
 
 
 ```java
-
-        GraphQLSchema schema = GraphQLSchema.newSchema()
-                .query(StarWarsSchema.queryType)
-                .fieldVisibility(NoIntrospectionGraphqlFieldVisibility.NO_INTROSPECTION_FIELD_VISIBILITY)
-                .build();
-
+GraphQLSchema schema = GraphQLSchema.newSchema()
+        .query(StarWarsSchema.queryType)
+        .fieldVisibility(NoIntrospectionGraphqlFieldVisibility.NO_INTROSPECTION_FIELD_VISIBILITY)
+        .build();
 ```
 
 You can create your own derivation of `GraphqlFieldVisibility` to check what ever you need to do to work out what fields
 should be visible or not.
 
 ```java
+class CustomFieldVisibility implements GraphqlFieldVisibility {
 
-    class CustomFieldVisibility implements GraphqlFieldVisibility {
+    final YourUserAccessService userAccessService;
 
-        final YourUserAccessService userAccessService;
-
-        CustomFieldVisibility(YourUserAccessService userAccessService) {
-            this.userAccessService = userAccessService;
-        }
-
-        @Override
-        public List<GraphQLFieldDefinition> getFieldDefinitions(GraphQLFieldsContainer fieldsContainer) {
-            if ("AdminType".equals(fieldsContainer.getName())) {
-                if (!userAccessService.isAdminUser()) {
-                    return Collections.emptyList();
-                }
-            }
-            return fieldsContainer.getFieldDefinitions();
-        }
-
-        @Override
-        public GraphQLFieldDefinition getFieldDefinition(GraphQLFieldsContainer fieldsContainer, String fieldName) {
-            if ("AdminType".equals(fieldsContainer.getName())) {
-                if (!userAccessService.isAdminUser()) {
-                    return null;
-                }
-            }
-            return fieldsContainer.getFieldDefinition(fieldName);
-        }
+    CustomFieldVisibility(YourUserAccessService userAccessService) {
+        this.userAccessService = userAccessService;
     }
 
+    @Override
+    public List<GraphQLFieldDefinition> getFieldDefinitions(GraphQLFieldsContainer fieldsContainer) {
+        if ("AdminType".equals(fieldsContainer.getName())) {
+            if (!userAccessService.isAdminUser()) {
+                return Collections.emptyList();
+            }
+        }
+        return fieldsContainer.getFieldDefinitions();
+    }
+
+    @Override
+    public GraphQLFieldDefinition getFieldDefinition(GraphQLFieldsContainer fieldsContainer, String fieldName) {
+        if ("AdminType".equals(fieldsContainer.getName())) {
+            if (!userAccessService.isAdminUser()) {
+                return null;
+            }
+        }
+        return fieldsContainer.getFieldDefinition(fieldName);
+    }
+}
 ```

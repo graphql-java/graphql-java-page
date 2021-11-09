@@ -13,24 +13,24 @@ Some fields will use specialised data fetcher code that knows how to go to a dat
 most simply take data from the returned in memory objects using the field name and Plain Old Java Object (POJO) patterns
 to get the data.
 
-    `Note : Data fetchers are some times called "resolvers" in other graphql implementations.`
+Note : Data fetchers are some times called "resolvers" in other graphql implementations.
 
 So imagine a type declaration like the one below :
 
 
 ```graphql
-    type Query {
-        products(match : String) : [Product]   # a list of products
-    }
+type Query {
+    products(match : String) : [Product]   # a list of products
+}
 
-    type Product {
-        id : ID
-        name : String
-        description : String
-        cost : Float
-        tax : Float
-        launchDate(dateFormat : String = "dd, MMM, yyyy') : String
-    }
+type Product {
+    id : ID
+    name : String
+    description : String
+    cost : Float
+    tax : Float
+    launchDate(dateFormat : String = "dd, MMM, yyyy') : String
+}
 ```
 
 
@@ -43,21 +43,21 @@ product results if the client specified it.
 It might look like the following :
 
 ```java
-        DataFetcher productsDataFetcher = new DataFetcher<List<ProductDTO>>() {
-            @Override
-            public List<ProductDTO> get(DataFetchingEnvironment environment) {
-                DatabaseSecurityCtx ctx = environment.getContext();
+DataFetcher productsDataFetcher = new DataFetcher<List<ProductDTO>>() {
+    @Override
+    public List<ProductDTO> get(DataFetchingEnvironment environment) {
+        DatabaseSecurityCtx ctx = environment.getContext();
 
-                List<ProductDTO> products;
-                String match = environment.getArgument("match");
-                if (match != null) {
-                    products = fetchProductsFromDatabaseWithMatching(ctx, match);
-                } else {
-                    products = fetchAllProductsFromDatabase(ctx);
-                }
-                return products;
-            }
-        };
+        List<ProductDTO> products;
+        String match = environment.getArgument("match");
+        if (match != null) {
+            products = fetchProductsFromDatabaseWithMatching(ctx, match);
+        } else {
+            products = fetchAllProductsFromDatabase(ctx);
+        }
+        return products;
+    }
+};
 ```
 
 
@@ -82,29 +82,28 @@ argument.  We can have the ProductDTO have logic that applies this date formatti
 
 
 ```java
-    class ProductDTO {
+class ProductDTO {
 
-        private ID id;
-        private String name;
-        private String description;
-        private Double cost;
-        private Double tax;
-        private LocalDateTime launchDate;
+    private ID id;
+    private String name;
+    private String description;
+    private Double cost;
+    private Double tax;
+    private LocalDateTime launchDate;
 
-        // ...
+    // ...
 
-        public String getName() {
-            return name;
-        }
-
-        // ...
-
-        public String getLaunchDate(DataFetchingEnvironment environment) {
-            String dateFormat = environment.getArgument("dateFormat");
-            return yodaTimeFormatter(launchDate,dateFormat);
-        }
+    public String getName() {
+        return name;
     }
 
+    // ...
+
+    public String getLaunchDate(DataFetchingEnvironment environment) {
+        String dateFormat = environment.getArgument("dateFormat");
+        return yodaTimeFormatter(launchDate,dateFormat);
+    }
+}
 ```
 
 
@@ -122,16 +121,15 @@ represented as ``getDesc()`` in the runtime backing Java object.
 If you are using SDL to specify your schema then you can use the ``@fetch`` directive to indicate this remapping.
 
 ```graphql
-    directive @fetch(from : String!) on FIELD_DEFINITION
+directive @fetch(from : String!) on FIELD_DEFINITION
 
-    type Product {
-        id : ID
-        name : String
-        description : String @fetch(from:"desc")
-        cost : Float
-        tax : Float
-    }
-
+type Product {
+    id : ID
+    name : String
+    description : String @fetch(from:"desc")
+    cost : Float
+    tax : Float
+}
 ```
 
 This will tell the ``graphql.schema.PropertyDataFetcher`` to use the property name ``desc`` when fetching data for the graphql field named ``description``.
@@ -139,19 +137,16 @@ This will tell the ``graphql.schema.PropertyDataFetcher`` to use the property na
 If you are hand coding your schema then you can just specify it directly by wiring in a field data fetcher.
 
 ```java
+GraphQLFieldDefinition descriptionField = GraphQLFieldDefinition.newFieldDefinition()
+        .name("description")
+        .type(Scalars.GraphQLString)
+        .build();
 
-        GraphQLFieldDefinition descriptionField = GraphQLFieldDefinition.newFieldDefinition()
-                .name("description")
-                .type(Scalars.GraphQLString)
-                .build();
-
-        GraphQLCodeRegistry codeRegistry = GraphQLCodeRegistry.newCodeRegistry()
-                .dataFetcher(
-                        coordinates("ObjectType", "description"),
-                        PropertyDataFetcher.fetching("desc"))
-                .build();
-
-
+GraphQLCodeRegistry codeRegistry = GraphQLCodeRegistry.newCodeRegistry()
+        .dataFetcher(
+                coordinates("ObjectType", "description"),
+                PropertyDataFetcher.fetching("desc"))
+        .build();
 ```
 
 
@@ -209,16 +204,16 @@ Imagine a query such as the following
 
 
 ```graphql
-    query {
-        products {
-            # the fields below represent the selection set
-            name
-            description
-            sellingLocations {
-                state
-            }
+query {
+    products {
+        # the fields below represent the selection set
+        name
+        description
+        sellingLocations {
+            state
         }
     }
+}
 ```
 
 

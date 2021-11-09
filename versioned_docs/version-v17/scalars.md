@@ -40,24 +40,22 @@ Imagine we decide we need to have an email scalar type.  It will take email addr
 We would create a singleton ``graphql.schema.GraphQLScalarType`` instance for this like so.
 
 ```java
+public static final GraphQLScalarType EMAIL = new GraphQLScalarType("email", "A custom scalar that handles emails", new Coercing() {
+    @Override
+    public Object serialize(Object dataFetcherResult) {
+        return serializeEmail(dataFetcherResult);
+    }
 
-        public static final GraphQLScalarType EMAIL = new GraphQLScalarType("email", "A custom scalar that handles emails", new Coercing() {
-            @Override
-            public Object serialize(Object dataFetcherResult) {
-                return serializeEmail(dataFetcherResult);
-            }
+    @Override
+    public Object parseValue(Object input) {
+        return parseEmailFromVariable(input);
+    }
 
-            @Override
-            public Object parseValue(Object input) {
-                return parseEmailFromVariable(input);
-            }
-
-            @Override
-            public Object parseLiteral(Object input) {
-                return parseEmailFromAstLiteral(input);
-            }
-        });
-
+    @Override
+    public Object parseLiteral(Object input) {
+        return parseEmailFromAstLiteral(input);
+    }
+});
 ```
 
 
@@ -75,14 +73,12 @@ So your custom scalar code has to handle 2 forms of input (parseValue / parseLit
 Imagine this query, which uses variables, AST literals and outputs our scalar type ``email``.
 
 ```graphql
-
-    mutation Contact($mainContact: Email!) {
-      makeContact(mainContactEmail: $mainContact, backupContactEmail: "backup@company.com") {
-        id
-        mainContactEmail
-      }
-    }
-
+mutation Contact($mainContact: Email!) {
+  makeContact(mainContactEmail: $mainContact, backupContactEmail: "backup@company.com") {
+    id
+    mainContactEmail
+  }
+}
 ```
 
 
@@ -121,63 +117,61 @@ The following is a really rough implementation of our imagined ``email`` scalar 
 such a scalar.
 
 ```java
+public static class EmailScalar {
 
-    public static class EmailScalar {
-
-        public static final GraphQLScalarType EMAIL = new GraphQLScalarType("email", "A custom scalar that handles emails", new Coercing() {
-            @Override
-            public Object serialize(Object dataFetcherResult) {
-                return serializeEmail(dataFetcherResult);
-            }
-
-            @Override
-            public Object parseValue(Object input) {
-                return parseEmailFromVariable(input);
-            }
-
-            @Override
-            public Object parseLiteral(Object input) {
-                return parseEmailFromAstLiteral(input);
-            }
-        });
-
-
-        private static boolean looksLikeAnEmailAddress(String possibleEmailValue) {
-            // ps.  I am not trying to replicate RFC-3696 clearly
-            return Pattern.matches("[A-Za-z0-9]@[.*]", possibleEmailValue);
+    public static final GraphQLScalarType EMAIL = new GraphQLScalarType("email", "A custom scalar that handles emails", new Coercing() {
+        @Override
+        public Object serialize(Object dataFetcherResult) {
+            return serializeEmail(dataFetcherResult);
         }
 
-        private static Object serializeEmail(Object dataFetcherResult) {
-            String possibleEmailValue = String.valueOf(dataFetcherResult);
-            if (looksLikeAnEmailAddress(possibleEmailValue)) {
-                return possibleEmailValue;
-            } else {
-                throw new CoercingSerializeException("Unable to serialize " + possibleEmailValue + " as an email address");
-            }
+        @Override
+        public Object parseValue(Object input) {
+            return parseEmailFromVariable(input);
         }
 
-        private static Object parseEmailFromVariable(Object input) {
-            if (input instanceof String) {
-                String possibleEmailValue = input.toString();
-                if (looksLikeAnEmailAddress(possibleEmailValue)) {
-                    return possibleEmailValue;
-                }
-            }
-            throw new CoercingParseValueException("Unable to parse variable value " + input + " as an email address");
+        @Override
+        public Object parseLiteral(Object input) {
+            return parseEmailFromAstLiteral(input);
         }
+    });
 
-        private static Object parseEmailFromAstLiteral(Object input) {
-            if (input instanceof StringValue) {
-                String possibleEmailValue = ((StringValue) input).getValue();
-                if (looksLikeAnEmailAddress(possibleEmailValue)) {
-                    return possibleEmailValue;
-                }
-            }
-            throw new CoercingParseLiteralException(
-                    "Value is not any email address : '" + String.valueOf(input) + "'"
-            );
+
+    private static boolean looksLikeAnEmailAddress(String possibleEmailValue) {
+        // ps.  I am not trying to replicate RFC-3696 clearly
+        return Pattern.matches("[A-Za-z0-9]@[.*]", possibleEmailValue);
+    }
+
+    private static Object serializeEmail(Object dataFetcherResult) {
+        String possibleEmailValue = String.valueOf(dataFetcherResult);
+        if (looksLikeAnEmailAddress(possibleEmailValue)) {
+            return possibleEmailValue;
+        } else {
+            throw new CoercingSerializeException("Unable to serialize " + possibleEmailValue + " as an email address");
         }
     }
 
+    private static Object parseEmailFromVariable(Object input) {
+        if (input instanceof String) {
+            String possibleEmailValue = input.toString();
+            if (looksLikeAnEmailAddress(possibleEmailValue)) {
+                return possibleEmailValue;
+            }
+        }
+        throw new CoercingParseValueException("Unable to parse variable value " + input + " as an email address");
+    }
+
+    private static Object parseEmailFromAstLiteral(Object input) {
+        if (input instanceof StringValue) {
+            String possibleEmailValue = ((StringValue) input).getValue();
+            if (looksLikeAnEmailAddress(possibleEmailValue)) {
+                return possibleEmailValue;
+            }
+        }
+        throw new CoercingParseLiteralException(
+                "Value is not any email address : '" + String.valueOf(input) + "'"
+        );
+    }
+}
 ```
 

@@ -11,18 +11,16 @@ from that type.
 For example given the following query :
 
 ```graphql
-
-    query {
-        user(userId : "xyz")  {
+query {
+    user(userId : "xyz")  {
+        name
+        age
+        weight
+        friends {
             name
-            age
-            weight
-            friends {
-                name
-            }
         }
     }
-
+}
 ```
 
 The field selection set of the ``user`` field is ``name``, ``age``, ``weight``, ``friends`` and ``friends/name``
@@ -36,21 +34,19 @@ of the fields and their ``graphql.schema.GraphQLFieldDefinition``s and argument 
 
 
 ```java
+DataFetcher smartUserDF = new DataFetcher() {
+    @Override
+    public Object get(DataFetchingEnvironment env) {
+        String userId = env.getArgument("userId");
 
-        DataFetcher smartUserDF = new DataFetcher() {
-            @Override
-            public Object get(DataFetchingEnvironment env) {
-                String userId = env.getArgument("userId");
-
-                DataFetchingFieldSelectionSet selectionSet = env.getSelectionSet();
-                if (selectionSet.contains("user/*")) {
-                    return getUserAndTheirFriends(userId);
-                } else {
-                    return getUser(userId);
-                }
-            }
-        };
-
+        DataFetchingFieldSelectionSet selectionSet = env.getSelectionSet();
+        if (selectionSet.contains("user/*")) {
+            return getUserAndTheirFriends(userId);
+        } else {
+            return getUser(userId);
+        }
+    }
+};
 ```
 
 A glob path matching system is used for addressing fields in the selection.  Its based on ``java.nio.file.FileSystem#getPathMatcher``
@@ -67,22 +63,20 @@ been request in the ``Connection`` section of the query.
 So given a query like:
 
 ```graphql
-
-    query {
-        users(first:10)  {
-            edges {
-                node {
+query {
+    users(first:10)  {
+        edges {
+            node {
+                name
+                age
+                weight
+                friends {
                     name
-                    age
-                    weight
-                    friends {
-                        name
-                    }
                 }
             }
         }
     }
-
+}
 ```
 
 
@@ -90,17 +84,13 @@ you can write code that gets the details of each specific field that matches a g
 
 
 ```java
+DataFetchingFieldSelectionSet selectionSet = env.getSelectionSet();
+List<SelectedField> nodeFields = selectionSet.getFields("edges/nodes/*");
+nodeFields.forEach(selectedField -> {
+    System.out.println(selectedField.getName());
+    System.out.println(selectedField.getFieldDefinition().getType());
 
-        DataFetchingFieldSelectionSet selectionSet = env.getSelectionSet();
-        List<SelectedField> nodeFields = selectionSet.getFields("edges/nodes/*");
-        nodeFields.forEach(selectedField -> {
-            System.out.println(selectedField.getName());
-            System.out.println(selectedField.getFieldDefinition().getType());
-
-            DataFetchingFieldSelectionSet innerSelectionSet = selectedField.getSelectionSet();
-            // this forms a tree of selection and you can get very fancy with it
-        }
-
-
+    DataFetchingFieldSelectionSet innerSelectionSet = selectedField.getSelectionSet();
+    // this forms a tree of selection and you can get very fancy with it
+}
 ```
-
