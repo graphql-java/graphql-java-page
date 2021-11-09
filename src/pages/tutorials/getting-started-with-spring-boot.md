@@ -1,7 +1,7 @@
 ---
 title: Tutorial with Spring Boot
 sidebar_position: 1
-id: getting-started-tutorial
+id: tutorial-getting-started
 ---
 # Getting started with Spring Boot
 

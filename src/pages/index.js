@@ -16,7 +16,7 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/documentation/getting-started-tutorial">
+            to="/tutorials/getting-started-with-spring-boot">
             GraphQL Java Tutorial - 3 min ⏱️
           </Link>
         </div>

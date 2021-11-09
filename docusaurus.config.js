@@ -59,16 +59,11 @@ const config = {
         items: [
           {
             type: 'doc',
-            docId: 'getting-started-tutorial',
-            position: 'left',
-            label: 'Tutorial',
-          },
-          {
-            type: 'doc',
             docId: 'getting-started',
             position: 'left',
             label: 'Documentation',
           },
+          {to: '/tutorials/getting-started-with-spring-boot', label: 'Tutorial', position: 'left'},
           {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/about', label: 'About', position: 'left'},
           {type: 'docsVersionDropdown', position: 'right'},
@@ -91,7 +86,7 @@ const config = {
               },
               {
                 label: '3 Min Tutorial',
-                to: '/documentation/getting-started-tutorial',
+                to: '/tutorials/getting-started-with-spring-boot',
               },
               {
                 label: 'JavaDoc',
@@ -109,10 +104,6 @@ const config = {
               {
                 label: 'Twitter',
                 href: 'https://twitter.com/graphql_java',
-              },
-              {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/graphql-java',
               },
             ],
           },
