@@ -550,7 +550,7 @@ subscription foo {
 }
 ```
 
-See the page on [subscriptions](../documentation/subscriptions) for more details
+See the page on [subscriptions](subscriptions.md) for more details
 
 # Changing Schema
 
