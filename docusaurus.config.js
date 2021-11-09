@@ -129,6 +129,9 @@ const config = {
         darkTheme: darkCodeTheme,
         additionalLanguages: ['java', 'groovy'],
       },
+      googleAnalytics: {
+        trackingID: 'UA-126627606-1',
+      }
     }),
 };
 
