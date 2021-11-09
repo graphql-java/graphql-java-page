@@ -25,10 +25,11 @@ const config = {
           routeBasePath: 'documentation',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: 'https://github.com/graphql-java/graphql-java-page/edit/master/',
-          lastVersion: "master",
+          lastVersion: "v17",
           versions: {
             current: {
-              label: "v17"
+              label: "master",
+              path: "master"
             }
           }
         },
