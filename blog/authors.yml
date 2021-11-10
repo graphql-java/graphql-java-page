@@ -1,0 +1,12 @@
+# TODO: add authors
+andi:
+  name: Andreas Marek
+  title: Maintainer of GraphQL Java
+  url: https://github.com/andimarek
+  image_url: https://github.com/andimarek.png
+
+brad:
+  name: Brad Baker
+  title: Maintainer of GraphQL Java
+  url: https://github.com/bbakerman
+  image_url: https://github.com/bbakerman.png
