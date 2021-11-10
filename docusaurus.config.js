@@ -122,7 +122,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Andreas Marek. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Andreas Marek.`,
       },
       prism: {
         theme: lightCodeTheme,
