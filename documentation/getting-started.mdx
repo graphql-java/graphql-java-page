@@ -108,22 +108,42 @@ latest version value.
 
 ### How to use the latest build with Gradle
 
-Add the repositories:
+Add the required repository and dependency to your Gradle build file:
+
+<Tabs groupId="gradle-language">
+<TabItem value="groovy" label="Gradle">
 
 ```groovy
 repositories {
     mavenCentral()
-    maven { url  "https://dl.bintray.com/andimarek/graphql-java" }
+    maven {
+        url 'https://dl.bintray.com/andimarek/graphql-java'
+    }
 }
-```
 
-Dependency:
-
-```groovy
 dependencies {
-    compile 'com.graphql-java:graphql-java:INSERT_LATEST_VERSION_HERE'
+    implementation 'com.graphql-java:graphql-java:INSERT_LATEST_VERSION_HERE'
 }
 ```
+
+</TabItem>
+<TabItem value="kotlin" label="Gradle (Kotlin)">
+
+```kotlin
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("https://dl.bintray.com/andimarek/graphql-java")
+    }
+}
+
+dependencies {
+    implementation("com.graphql-java:graphql-java:INSERT_LATEST_VERSION_HERE")
+}
+```
+
+</TabItem>
+</Tabs>
 
 ### How to use the latest build with Maven
 
