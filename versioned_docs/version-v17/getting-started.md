@@ -24,7 +24,7 @@ Dependency:
 
 ```groovy
 dependencies {
-  compile 'com.graphql-java:graphql-java:16.2'
+  compile 'com.graphql-java:graphql-java:17.3'
 }
 ```
 
@@ -37,7 +37,7 @@ Dependency:
 <dependency>
     <groupId>com.graphql-java</groupId>
     <artifactId>graphql-java</artifactId>
-    <version>16.2</version>
+    <version>17.3</version>
 </dependency>
 ```
 
