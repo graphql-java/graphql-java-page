@@ -257,7 +257,7 @@ GraphQL.newGraphQL(schema)
 
 ## Query Complexity Instrumentation
 
-``graphql.analysis.MaxQueryComplexityInstrumentation`` in an ``Instumentation`` implementation than can be used to abort a query if the total number of data
+``graphql.analysis.MaxQueryComplexityInstrumentation`` in an ``Instrumentation`` implementation than can be used to abort a query if the total number of data
 fields queried exceeds the defined limit.
 
 ```java
@@ -307,7 +307,7 @@ Would return a result like:
 
 ## Query Depth Instrumentation
 
-``graphql.analysis.MaxQueryDepthInstrumentation`` in an ``Instumentation`` implementation than can be used to abort a query if the total depth of
+``graphql.analysis.MaxQueryDepthInstrumentation`` in an ``Instrumentation`` implementation than can be used to abort a query if the total depth of
 the query exceeds the defined limit.
 
 ```java
