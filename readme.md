@@ -33,3 +33,17 @@ Preview build files locally with
 ```
 $ yarn run serve
 ```
+
+## How to create a new release
+
+Create a new release with
+```
+$ yarn run docusaurus docs:version v18
+```
+
+Then update `lastVersion` inside `docusaurus.config.js`
+```
+lastVersion: "v18",
+```
+
+For more, see the [Docusaurus versioning documentation](https://docusaurus.io/docs/versioning).
