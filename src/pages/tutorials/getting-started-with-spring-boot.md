@@ -82,7 +82,7 @@ We've barely scratched the surface of what's possible with GraphQL. Further info
 # GraphQL Java Overview
 
 [GraphQL Java](https://www.graphql-java.com) is the Java (server) implementation for GraphQL.
-The are several repositories in the GraphQL Java Github org. The most important one is the [GraphQL Java Engine](https://github.com/graphql-java/graphql-java) which is the basis for everything else.
+There are several repositories in the GraphQL Java Github org. The most important one is the [GraphQL Java Engine](https://github.com/graphql-java/graphql-java) which is the basis for everything else.
 
 GraphQL Java Engine itself is only concerned with executing queries. It doesn't deal with any HTTP or JSON related topics. For these aspects, we will use the [GraphQL Java Spring Boot](https://github.com/graphql-java/graphql-java-spring) adapter which takes care of exposing our API via Spring Boot over HTTP.
 
