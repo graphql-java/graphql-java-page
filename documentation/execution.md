@@ -151,7 +151,7 @@ DataFetcher userDataFetcher = new DataFetcher() {
         Map response = fetchUserFromRemoteGraphQLResource(environment.getArgument("userId"));
         List<GraphQLError> errors = response.get("errors")).stream()
             .map(MyMapGraphQLError::new)
-            .collect(Collectors.toList();
+            .collect(Collectors.toList());
         return new DataFetcherResult(response.get("data"), errors);
     }
 };
