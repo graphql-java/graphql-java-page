@@ -24,7 +24,7 @@ Dependency:
 
 ```groovy
 dependencies {
-  compile 'com.graphql-java:graphql-java:16.2'
+  compile 'com.graphql-java:graphql-java:17.3'
 }
 ```
 
@@ -37,7 +37,7 @@ Dependency:
 <dependency>
     <groupId>com.graphql-java</groupId>
     <artifactId>graphql-java</artifactId>
-    <version>16.2</version>
+    <version>17.3</version>
 </dependency>
 ```
 
@@ -85,9 +85,9 @@ public class HelloWorld {
 ## Using the latest development build
 ----------------------------------
 
-The latest development build is available on Bintray.
+The latest development build is available on Maven Central.
 
-Please look at [Latest Build](https://bintray.com/andimarek/graphql-java/graphql-java/_latestVersion>) for the
+Please look at [Latest Build](https://search.maven.org/artifact/com.graphql-java/graphql-java) for the
 latest version value.
 
 
@@ -98,7 +98,6 @@ Add the repositories:
 ```groovy
 repositories {
     mavenCentral()
-    maven { url  "https://dl.bintray.com/andimarek/graphql-java" }
 }
 ```
 
@@ -113,20 +112,6 @@ dependencies {
 
 
 ### How to use the latest build with Maven
-
-
-Add the repository:
-
-```xml
-<repository>
-    <snapshots>
-        <enabled>false</enabled>
-    </snapshots>
-    <id>bintray-andimarek-graphql-java</id>
-    <name>bintray</name>
-    <url>https://dl.bintray.com/andimarek/graphql-java</url>
-</repository>
-```
 
 Dependency:
 

@@ -83,7 +83,7 @@ public class HelloWorld {
 
 The latest development build is available on Maven Central.
 
-Please look at [Latest Build](https://search.maven.org/artifact/com.graphql-java/graphql-java>) for the
+Please look at [Latest Build](https://search.maven.org/artifact/com.graphql-java/graphql-java) for the
 latest version value.
 
 ### How to use the latest build with Gradle
