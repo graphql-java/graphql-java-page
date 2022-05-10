@@ -15,9 +15,9 @@ function HomepageHeader() {
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
           <Link
-            className="button button--secondary button--lg"
-            to="/tutorials/getting-started-with-spring-boot">
-            GraphQL Java Tutorial - 3 min ⏱️
+              className="button button--secondary button--lg"
+              to="https://leanpub.com/graphql-java/">
+            Preorder the GraphQL Java Book now
           </Link>
         </div>
       </div>

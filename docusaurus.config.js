@@ -64,6 +64,7 @@ const config = {
             position: 'left',
             label: 'Documentation',
           },
+          {to: 'https://leanpub.com/graphql-java/', label: 'Book', position: 'left'},
           {to: '/tutorials/getting-started-with-spring-boot', label: 'Tutorial', position: 'left'},
           {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/about', label: 'About', position: 'left'},
