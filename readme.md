@@ -47,6 +47,6 @@ Then update `lastVersion` inside `docusaurus.config.js`
 lastVersion: "v18",
 ```
 
-Finally, change the Maven and Gradle sections in [documentation/getting-started.md](/documentation/getting-started.md) and the new version [v18/getting-standard](/versioned_docs/version-v18/getting-started.md)
+Finally, change the Maven and Gradle sections in [documentation/getting-started.mdx](/documentation/getting-started.mdx) and the new version [v18/getting-started](/versioned_docs/version-v18/getting-started.md)
 
 For more, see the [Docusaurus versioning documentation](https://docusaurus.io/docs/versioning).
