@@ -337,7 +337,28 @@ We only implement two `DataFetchers`. As mentioned above, if you don't specify o
 
 A `PropertyDataFetcher` tries to lookup a property on a Java object in multiple ways. In case of a `java.util.Map` it simply looks up the property by key. This works perfectly fine for us because the keys of the book and author Maps are the same as the fields specified in the schema. For example in the schema we define for the Book type the field `pageCount` and the book `DataFetcher` returns a `Map` with a key `pageCount`. Because the field name is the same as the key in the `Map`("pageCount") the `PropertyDateFetcher` works for us.
 
-Lets assume for a second we have a mismatch and the book `Map` has a key `totalPages` instead of `pageCount`. This would result in a `null` value for `pageCount` for every book, because the `PropertyDataFetcher` can't fetch the right value. In order to fix that you would have to register a new `DataFetcher` for `Book.pageCount` which looks like this:
+Lets assume for a second we have a mismatch and the book `Map` has a key `totalPages` instead of `pageCount`.
+
+```java
+// In the GraphQLDataFetchers class
+// Rename key from 'pageCount' to 'totalPages'
+private static List<Map<String, String>> books = Arrays.asList(
+        ImmutableMap.of("id", "book-1",
+                "name", "Harry Potter and the Philosopher's Stone",
+                "totalPages", "223",
+                "authorId", "author-1"),
+        ImmutableMap.of("id", "book-2",
+                "name", "Moby Dick",
+                "totalPages", "635",
+                "authorId", "author-2"),
+        ImmutableMap.of("id", "book-3",
+                "name", "Interview with the vampire",
+                "totalPages", "371",
+                "authorId", "author-3")
+);
+```
+
+This would result in a `null` value for `pageCount` for every book, because the `PropertyDataFetcher` can't fetch the right value. In order to fix that you would have to register a new `DataFetcher` for `Book.pageCount` which looks like this:
 
 ```java
 // In the GraphQLProvider class
