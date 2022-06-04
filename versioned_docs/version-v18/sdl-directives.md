@@ -219,7 +219,7 @@ public static class DateFormatting implements SchemaDirectiveWiring {
                         .newArgument()
                         .name("format")
                         .type(Scalars.GraphQLString)
-                        .defaultValue("dd-MM-YYYY")
+                        .defaultValueProgrammatic("dd-MM-YYYY")
                 )
         );
     }
