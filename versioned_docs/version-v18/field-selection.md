@@ -39,7 +39,7 @@ DataFetcher smartUserDF = new DataFetcher() {
         String userId = env.getArgument("userId");
 
         DataFetchingFieldSelectionSet selectionSet = env.getSelectionSet();
-        if (selectionSet.contains("user/*")) {
+        if (selectionSet.contains("friends/*")) {
             return getUserAndTheirFriends(userId);
         } else {
             return getUser(userId);
