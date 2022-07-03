@@ -5,7 +5,7 @@ id: tutorial-getting-started
 ---
 # Getting started with Spring Boot
 :::caution
-[Spring GraphQL](https://spring.io/projects/spring-graphql#overview) supercedes the `graphql-java-spring` integration used in this tutorial. A Spring GraphQL version of this tutorial is coming soon.
+[Spring GraphQL](https://spring.io/projects/spring-graphql#overview) replaces the `graphql-java-spring-boot-starter-webmvc` integration used in this tutorial. A Spring GraphQL version of this tutorial is coming soon.
 :::
 
 :::tip
