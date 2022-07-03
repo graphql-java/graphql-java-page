@@ -4,6 +4,14 @@ sidebar_position: 1
 id: tutorial-getting-started
 ---
 # Getting started with Spring Boot
+:::caution
+[Spring GraphQL](https://spring.io/projects/spring-graphql#overview) supercedes the `graphql-java-spring` integration used in this tutorial. A Spring GraphQL version of this tutorial is coming soon.
+:::
+
+:::tip
+See the Spring GraphQL [documentation](https://docs.spring.io/spring-graphql/docs/current/reference/html/), [examples](https://github.com/spring-projects/spring-graphql/tree/main/samples), and the [Spring Tips video series](https://www.youtube.com/watch?v=zltMcbnAxyA) while we update this tutorial.
+::: 
+
 
 This is a tutorial for people who want to create a GraphQL server in Java. It requires some Spring Boot and Java knowledge and while we give a brief introduction into GraphQL, the focus of this tutorial is on developing a GraphQL server in Java.
 
