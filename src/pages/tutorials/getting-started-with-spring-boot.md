@@ -433,9 +433,7 @@ We then use the previously fetched book to get the `authorId` and look for that 
 We only implement two `DataFetchers`. As mentioned above, if you don't specify one, the default `PropertyDataFetcher` is used. In our case it means `Book.id`, `Book.name`, `Book.pageCount`, `Author.id`, `Author.firstName` and `Author.lastName` all have a default `PropertyDataFetcher` associated with it.
 
 A `PropertyDataFetcher` tries to lookup a property on a Java object in multiple ways. 
-In case of a `java.util.Map` it simply looks up the property by key. 
-
-TODO a better POJO default datafetcher explanation
+In case of a `POJO` it assumes that for a GraphQL field `fieldX` it can find a POJO property called `fieldX`.
 
 ## Further reading
 ### Sample source code
