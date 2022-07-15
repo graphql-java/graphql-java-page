@@ -304,7 +304,13 @@ We have built a GraphQL server and run our first query.
 With the help of Spring for GraphQL features, we were able to achieve this with only a few lines of code.
 
 ## Initializing GraphQL Java
-Let's dive into further detail into the GraphQL Java code, without the Spring for GraphQL magic. Let's manually recreate the same steps.
+Let's dive into further detail into initializing GraphQL Java.
+
+`GraphQlSource` is the core Spring abstraction for access to the `graphql.GraphQL` instance to use for request execution.
+It provides a builder API to initialize GraphQL Java and build a `GraphQlSource`.
+See the [Spring for GraphQL documentation](https://docs.spring.io/spring-graphql/docs/current/reference/html/#execution-graphqlsource) for more detail on how to use the API to initialize GraphQL Java objects.
+
+To help explain the key concepts, the following examples illustrate how to initialize GraphQL Java *without* Spring for GraphQL features.
 
 To make life a little easier, add [Google Guava](https://github.com/google/guava) to dependencies in `build.gradle`.
 ```groovy
@@ -318,7 +324,7 @@ dependencies {
 }
 ```
 
-Create a new `GraphQLProvider` class in the package `com.graphql-java.tutorial.book-details` with an `init` method which will create a `GraphQL` instance:
+Create a new `GraphQLProvider` class with an `init` method which will create a `GraphQL` instance:
 
 ```java
 @Component
@@ -347,7 +353,7 @@ public class GraphQLProvider {
 
 We use Guava `Resources` to read the file from our classpath, then create a `GraphQLSchema` and `GraphQL` instance. 
 This `GraphQL` instance is exposed as a Spring Bean via the `graphQL()` method annotated with `@Bean`. 
-TODO The GraphQL Java Spring adapter will use that `GraphQL` instance to make our schema available via HTTP on the default url `/graphql`.
+Spring for GraphQL uses a `GraphQL` instance to make our schema available via HTTP.
 
 What we still need to do is to implement the `buildSchema` method which creates the `GraphQLSchema` instance and wires in code to fetch data:
 
@@ -386,6 +392,14 @@ Overall the process of creating a `GraphQL` and `GraphQLSchema` instance looks l
 ![Creating GraphQL](/img/graphql_creation.png)
 
 ### Book DataFetcher
+```java
+public DataFetcher getBookByIdDataFetcher() {
+    return dataFetchingEnvironment -> {
+        String bookId = dataFetchingEnvironment.getArgument("id");
+        return Book.getById(bookId);
+    };
+}
+```
 Our first method `getBookByIdDataFetcher` returns a `DataFetcher` implementation which takes a `DataFetcherEnvironment` and returns a book.
 In our case this means we need to get the `id` argument from the `bookById` field and find the book with this specific id. If we can't find it, we just return null.
 
@@ -399,6 +413,15 @@ type Query {
 ```
 
 ### Author DataFetcher
+```java
+public DataFetcher getAuthorDataFetcher() {
+    return dataFetchingEnvironment -> {
+        Book book = dataFetchingEnvironment.getSource();
+        String authorId = book.getAuthorId();
+        return Author.getById(authorId);
+    };
+}
+```
 Our second method `getAuthorDataFetcher`, returns a `DataFetcher` for getting the author for a specific book.
 Compared to the previously described book `DataFetcher`, we don't have an argument, but we have a book instance.
 The result of the `DataFetcher` from the parent field is made available via `getSource`.
@@ -412,59 +435,7 @@ We only implement two `DataFetchers`. As mentioned above, if you don't specify o
 A `PropertyDataFetcher` tries to lookup a property on a Java object in multiple ways. 
 In case of a `java.util.Map` it simply looks up the property by key. 
 
-TODO consider changing to POJOs
-
-This works perfectly fine for us because the keys of the book and author Maps are the same as the fields specified in the schema. 
-For example in the schema we define for the Book type the field `pageCount` and the book `DataFetcher` returns a `Map` with a key `pageCount`. 
-Because the field name is the same as the key in the `Map`("pageCount") the `PropertyDateFetcher` works for us.
-
-Let's assume for a second we have a mismatch and the book `Map` has a key `totalPages` instead of `pageCount`.
-```java
-// In the GraphQLDataFetchers class
-// Rename key from 'pageCount' to 'totalPages'
-private static List<Map<String, String>> books = Arrays.asList(
-        ImmutableMap.of("id", "book-1",
-                "name", "Harry Potter and the Philosopher's Stone",
-                "totalPages", "223",
-                "authorId", "author-1"),
-        ImmutableMap.of("id", "book-2",
-                "name", "Moby Dick",
-                "totalPages", "635",
-                "authorId", "author-2"),
-        ImmutableMap.of("id", "book-3",
-                "name", "Interview with the vampire",
-                "totalPages", "371",
-                "authorId", "author-3")
-);
-```
-
-This would result in a `null` value for `pageCount` for every book, because the `PropertyDataFetcher` can't fetch the right value. In order to fix that you would have to register a new `DataFetcher` for `Book.pageCount` which looks like this:
-
-```java
-// In the GraphQLProvider class
-private RuntimeWiring buildWiring() {
-    return RuntimeWiring.newRuntimeWiring()
-            .type(newTypeWiring("Query")
-                    .dataFetcher("bookById", graphQLDataFetchers.getBookByIdDataFetcher()))
-            .type(newTypeWiring("Book")
-                    .dataFetcher("author", graphQLDataFetchers.getAuthorDataFetcher())
-                    // This line is new: we need to register the additional DataFetcher
-                    .dataFetcher("pageCount", graphQLDataFetchers.getPageCountDataFetcher()))
-            .build();
-}
-
-// In the GraphQLDataFetchers class
-// Implement the DataFetcher
-public DataFetcher getPageCountDataFetcher() {
-    return dataFetchingEnvironment -> {
-        Map<String,String> book = dataFetchingEnvironment.getSource();
-        return book.get("totalPages");
-    };
-}
-```
-
-This `DataFetcher` would fix that problem by looking up the right key in the book `Map`.
-(Again: we don't need that for our example, because we don't have a naming mismatch)
+TODO a better POJO default datafetcher explanation
 
 ## Further reading
 ### Sample source code
