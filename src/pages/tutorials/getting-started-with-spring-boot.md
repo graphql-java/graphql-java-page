@@ -315,12 +315,12 @@ To help explain the key concepts, the following examples illustrate how to initi
 To make life a little easier, add [Google Guava](https://github.com/google/guava) to dependencies in `build.gradle`.
 ```groovy
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-graphql'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'com.google.guava:guava:26.0-jre' // NEW
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework:spring-webflux'
-	testImplementation 'org.springframework.graphql:spring-graphql-test'
+    implementation 'com.google.guava:guava:31.1-jre' // NEW
+    implementation 'org.springframework.boot:spring-boot-starter-graphql'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework:spring-webflux'
+    testImplementation 'org.springframework.graphql:spring-graphql-test'
 }
 ```
 
