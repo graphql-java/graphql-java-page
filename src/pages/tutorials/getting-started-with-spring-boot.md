@@ -108,7 +108,7 @@ Select:
 For the project metadata, use:
 
 - Group: `com.graphql-java.tutorial`
-- Artifact: `book-details`
+- Artifact: `bookDetails`
 
 For dependencies, use:
 
@@ -160,7 +160,7 @@ It is very important to understand that GraphQL doesn't dictate in any way where
 This is the power of GraphQL: it can come from a static in memory list, from a database or an external service.
 
 ### Create the Book class
-Add the following to `book-details/Book.java`
+Add the following to `bookDetails/Book.java`
 ```java
 public class Book {
 
@@ -197,9 +197,10 @@ public class Book {
 ```
 
 ### Create the Author class
-Add the following to `book-details/Author.java`
+Add the following to `bookDetails/Author.java`
 ```java
 public class Author {
+
     private String id;
     private String firstName;
     private String lastName;
@@ -231,7 +232,7 @@ Spring for GraphQL provides an [annotation-based programming model](https://docs
 
 Later in this tutorial we'll discuss how to manually create and register DataFetchers, without using this annotation feature.
 
-Add the following to `book-details/BookController.java`
+Add the following to `bookDetails/BookController.java`
 
 ```java
 @Controller
@@ -437,9 +438,7 @@ In case of a `POJO` it assumes that for a GraphQL field `fieldX` it can find a P
 
 ## Further reading
 ### Sample source code
-TODO upload this tutorial's sample code to the GraphQL Java org
-
-The source code for this tutorial can be found on GitHub.
+The source code for this tutorial can be found on [GitHub](https://github.com/graphql-java/graphql-java-tutorial).
 
 ### Documentation
 Read the GraphQL Java [documentation](https://www.graphql-java.com/documentation/).
