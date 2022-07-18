@@ -438,7 +438,7 @@ In case of a `POJO` it assumes that for a GraphQL field `fieldX` it can find a P
 
 ## Further reading
 ### Sample source code
-The source code for this tutorial can be found on [GitHub](https://github.com/graphql-java/graphql-java-tutorial).
+The source code for this tutorial can be found on [GitHub](https://github.com/graphql-java/tutorials).
 
 ### Documentation
 Read the GraphQL Java [documentation](https://www.graphql-java.com/documentation/).
