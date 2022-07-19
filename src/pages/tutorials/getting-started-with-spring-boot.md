@@ -120,8 +120,6 @@ All subsequently mentioned files and paths will be relative to this generated pr
 
 Spring for GraphQL adds many useful features including loading schema files, initializing GraphQL Java, and simplifying data fetching with controller annotations.
 
-Let's first use the Spring for GraphQL features to quickly build a working app. Later in this tutorial, we'll discuss how to replicate the Spring for GraphQL magic manually. 
-
 ## Schema
 
 Create a directory `src/main/resources/graphql`. 
@@ -157,7 +155,7 @@ It also defines the type `Book` which has the fields: `id`, `name`, `pageCount` 
 ## Source of the data
 To simplify the tutorial, book and author data will come from static lists inside their respective classes.
 It is very important to understand that GraphQL doesn't dictate in any way where the data comes from. 
-This is the power of GraphQL: it can come from a static in memory list, from a database or an external service.
+This is the power of GraphQL: it can come from a static in-memory list, from a database or an external service.
 
 ### Create the Book class
 Add the following to `bookDetails/Book.java`
@@ -230,8 +228,6 @@ public class Author {
 ## Adding code to fetch data
 Spring for GraphQL provides an [annotation-based programming model](https://docs.spring.io/spring-graphql/docs/current/reference/html/#controllers) to declare handler methods to fetch the data for specific GraphQL fields.
 
-Later in this tutorial we'll discuss how to manually create and register DataFetchers, without using this annotation feature.
-
 Add the following to `bookDetails/BookController.java`
 
 ```java
@@ -278,7 +274,7 @@ spring.graphql.graphiql.path=/graphiql
 ### Boot the application
 Start your Spring application. 
 
-Navigate to http://localhost:8080/graphiql or your custom URL.
+Navigate to [http://localhost:8080/graphiql](http://localhost:8080/graphiql) or your custom URL.
 
 ### Run the query
 Type in the query and hit the play button at the top of the window.
@@ -301,147 +297,15 @@ query {
 You should see a response like this.
 ![GraphQL response](/img/graphiQL.png)
 
-We have built a GraphQL server and run our first query. 
+We have built a GraphQL server and run our first query! 
 With the help of Spring for GraphQL features, we were able to achieve this with only a few lines of code.
-
-## Initializing GraphQL Java
-Let's dive into further detail into initializing GraphQL Java.
-
-`GraphQlSource` is the core Spring abstraction for access to the `graphql.GraphQL` instance to use for request execution.
-It provides a builder API to initialize GraphQL Java and build a `GraphQlSource`.
-See the [Spring for GraphQL documentation](https://docs.spring.io/spring-graphql/docs/current/reference/html/#execution-graphqlsource) for more detail on how to use the API to initialize GraphQL Java objects.
-
-To help explain the key concepts, the following examples illustrate how to initialize GraphQL Java *without* Spring for GraphQL features.
-
-To make life a little easier, add [Google Guava](https://github.com/google/guava) to dependencies in `build.gradle`.
-```groovy
-dependencies {
-    implementation 'com.google.guava:guava:31.1-jre' // NEW
-    implementation 'org.springframework.boot:spring-boot-starter-graphql'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework:spring-webflux'
-    testImplementation 'org.springframework.graphql:spring-graphql-test'
-}
-```
-
-Create a new `GraphQLProvider` class with an `init` method which will create a `GraphQL` instance:
-
-```java
-@Component
-public class GraphQLProvider {
-
-    private GraphQL graphQL;
-
-    @Bean
-    public GraphQL graphQL() {
-        return graphQL;
-    }
-
-    @PostConstruct
-    public void init() throws IOException {
-        URL url = Resources.getResource("schema.graphqls");
-        String sdl = Resources.toString(url, Charsets.UTF_8);
-        GraphQLSchema graphQLSchema = buildSchema(sdl);
-        this.graphQL = GraphQL.newGraphQL(graphQLSchema).build();
-    }
-
-    private GraphQLSchema buildSchema(String sdl) {
-      // TODO: we will create the schema here later
-    }
-}
-```
-
-We use Guava `Resources` to read the file from our classpath, then create a `GraphQLSchema` and `GraphQL` instance. 
-This `GraphQL` instance is exposed as a Spring Bean via the `graphQL()` method annotated with `@Bean`. 
-Spring for GraphQL uses a `GraphQL` instance to make our schema available via HTTP.
-
-What we still need to do is to implement the `buildSchema` method which creates the `GraphQLSchema` instance and wires in code to fetch data:
-
-```java
-@Autowired
-GraphQLDataFetchers graphQLDataFetchers;
-
-private GraphQLSchema buildSchema(String sdl) {
-    TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(sdl);
-    RuntimeWiring runtimeWiring = buildWiring();
-    SchemaGenerator schemaGenerator = new SchemaGenerator();
-    return schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);
-}
-
-private RuntimeWiring buildWiring() {
-    return RuntimeWiring.newRuntimeWiring()
-            .type(newTypeWiring("Query")
-                    .dataFetcher("bookById", graphQLDataFetchers.getBookByIdDataFetcher()))
-            .type(newTypeWiring("Book")
-                    .dataFetcher("author", graphQLDataFetchers.getAuthorDataFetcher()))
-            .build();
-}
-```
-
-`TypeDefinitionRegistry` is the parsed version of our schema file. `SchemaGenerator` combines the `TypeDefinitionRegistry` with `RuntimeWiring` to actually make the `GraphQLSchema`.
-
-`buildWiring` uses the `graphQLDataFetchers` bean to actually register two `DataFetcher`s:
-
-- One to retrieve a book with a specific ID
-- One to get the author for a specific book.
-
-`DataFetcher` and how to implement the `GraphQLDataFetchers` bean is explained in the next section.
-
-Overall the process of creating a `GraphQL` and `GraphQLSchema` instance looks like this:
-
-![Creating GraphQL](/img/graphql_creation.png)
-
-### Book DataFetcher
-```java
-public DataFetcher getBookByIdDataFetcher() {
-    return dataFetchingEnvironment -> {
-        String bookId = dataFetchingEnvironment.getArgument("id");
-        return Book.getById(bookId);
-    };
-}
-```
-Our first method `getBookByIdDataFetcher` returns a `DataFetcher` implementation which takes a `DataFetcherEnvironment` and returns a book.
-In our case this means we need to get the `id` argument from the `bookById` field and find the book with this specific id. If we can't find it, we just return null.
-
-The "id" in `String bookId = dataFetchingEnvironment.getArgument("id");` is the "id" from the `bookById` query field in the schema:
-
-```graphql
-type Query {
-  bookById(id: ID): Book
-}
-...
-```
-
-### Author DataFetcher
-```java
-public DataFetcher getAuthorDataFetcher() {
-    return dataFetchingEnvironment -> {
-        Book book = dataFetchingEnvironment.getSource();
-        String authorId = book.getAuthorId();
-        return Author.getById(authorId);
-    };
-}
-```
-Our second method `getAuthorDataFetcher`, returns a `DataFetcher` for getting the author for a specific book.
-Compared to the previously described book `DataFetcher`, we don't have an argument, but we have a book instance.
-The result of the `DataFetcher` from the parent field is made available via `getSource`.
-This is an important concept to understand: the `DataFetcher` for each field in GraphQL are called in a top-down fashion and the parent's result is the `source` property of the child `DataFetcherEnvironment`.
-
-We then use the previously fetched book to get the `authorId` and look for that specific author in the same way we look for a specific book.
-
-### Default DataFetchers
-We only implement two `DataFetchers`. As mentioned above, if you don't specify one, the default `PropertyDataFetcher` is used. In our case it means `Book.id`, `Book.name`, `Book.pageCount`, `Author.id`, `Author.firstName` and `Author.lastName` all have a default `PropertyDataFetcher` associated with it.
-
-A `PropertyDataFetcher` tries to lookup a property on a Java object in multiple ways. 
-In case of a `POJO` it assumes that for a GraphQL field `fieldX` it can find a POJO property called `fieldX`.
 
 ## Further reading
 ### Sample source code
 The source code for this tutorial can be found on [GitHub](https://github.com/graphql-java/tutorials).
 
 ### Documentation
-Read the GraphQL Java [documentation](https://www.graphql-java.com/documentation/).
+Read the GraphQL Java [documentation](https://www.graphql-java.com/documentation/getting-started).
 
 ### More Spring for GraphQL examples
 See more examples in the [Spring for GraphQL GitHub repo](https://github.com/spring-projects/spring-graphql/tree/main/samples).
