@@ -124,7 +124,7 @@ Spring for GraphQL adds many useful features including loading schema files, ini
 
 Create a directory `src/main/resources/graphql`. 
 
-Add a new file `schema.graphqls` to `src/main/resource/graphql` with the following content:
+Add a new file `schema.graphqls` to `src/main/resources/graphql` with the following content:
 
 ```graphql
 type Query {
