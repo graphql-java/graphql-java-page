@@ -3,7 +3,6 @@ title: "Schema"
 date: 2021-07-03T12:52:46+10:00
 description: Your GraphQL API has a schema which defines each field that can be queried or
              mutated and what types those fields are.
-
 ---
 
 # Creating a schema
@@ -19,7 +18,7 @@ SDL example:
 
 ```graphql
 type Foo {
-    bar: String
+  bar: String
 }
 ```
 
@@ -77,42 +76,43 @@ Take for example the following static schema definition file called ``starWarsSc
 
 ```graphql
 schema {
-    query: QueryType
+  query: QueryType
 }
 
 type QueryType {
-    hero(episode: Episode): Character
-    human(id : String) : Human
-    droid(id: ID!): Droid
+  hero(episode: Episode): Character
+  human(id : String) : Human
+  droid(id: ID!): Droid
 }
 
+
 enum Episode {
-    NEWHOPE
-    EMPIRE
-    JEDI
+  NEWHOPE
+  EMPIRE
+  JEDI
 }
 
 interface Character {
-    id: ID!
-    name: String!
-    friends: [Character]
-    appearsIn: [Episode]!
+  id: ID!
+  name: String!
+  friends: [Character]
+  appearsIn: [Episode]!
 }
 
 type Human implements Character {
-    id: ID!
-    name: String!
-    friends: [Character]
-    appearsIn: [Episode]!
-    homePlanet: String
+  id: ID!
+  name: String!
+  friends: [Character]
+  appearsIn: [Episode]!
+  homePlanet: String
 }
 
 type Droid implements Character {
-    id: ID!
-    name: String!
-    friends: [Character]
-    appearsIn: [Episode]!
-    primaryFunction: String
+  id: ID!
+  name: String!
+  friends: [Character]
+  appearsIn: [Episode]!
+  primaryFunction: String
 }
 ```
 
@@ -285,8 +285,8 @@ SDL Example:
 
 ```graphql
 type SimpsonCharacter {
-    name: String
-    mainCharacter: Boolean
+  name: String
+  mainCharacter: Boolean
 }
 ```
 
@@ -315,7 +315,7 @@ SDL Example:
 
 ```graphql
 interface ComicCharacter {
-    name: String;
+  name: String;
 }
 ```
 
@@ -338,13 +338,13 @@ SDL Example:
 
 ```graphql
 type Cat {
-    name: String;
-    lives: Int;
+  name: String;
+  lives: Int;
 }
 
 type Dog {
-    name: String;
-    bonesOwned: int;
+  name: String;
+  bonesOwned: int;
 }
 
 union Pet = Cat | Dog
@@ -382,9 +382,9 @@ SDL Example:
 
 ```graphql
 enum Color {
-    RED
-    GREEN
-    BLUE
+  RED
+  GREEN
+  BLUE
 }
 ```
 
@@ -392,12 +392,12 @@ Java Example:
 
 ```java
 GraphQLEnumType colorEnum = newEnum()
-    .name("Color")
-    .description("Supported colors.")
-    .value("RED")
-    .value("GREEN")
-    .value("BLUE")
-    .build();
+        .name("Color")
+        .description("Supported colors.")
+        .value("RED")
+        .value("GREEN")
+        .value("BLUE")
+        .build();
 ```
 
 ## ObjectInputType
@@ -406,7 +406,7 @@ SDL Example:
 
 ```graphql
 input Character {
-    name: String
+  name: String
 }
 ```
 
@@ -475,8 +475,8 @@ Imagine you start with a type like this in one schema file.
 
 ```graphql
 type Human {
-    id: ID!
-    name: String!
+  id: ID!
+  name: String!
 }
 ```
 
@@ -484,10 +484,10 @@ Another part of your system can extend this type to add more shape to it.
 
 ```graphql
 extend type Human implements Character {
-    id: ID!
-    name: String!
-    friends: [Character]
-    appearsIn: [Episode]!
+  id: ID!
+  name: String!
+  friends: [Character]
+  appearsIn: [Episode]!
 }
 ```
 
@@ -496,7 +496,7 @@ Duplicate fields will be merged as one (however field re-definitions into new ty
 
 ```graphql
 extend type Human {
-    homePlanet: String
+  homePlanet: String
 }
 ```
 
@@ -504,11 +504,11 @@ With all these type extensions in place the `Human` type now looks like this at 
 
 ```graphql
 type Human implements Character {
-    id: ID!
-    name: String!
-    friends: [Character]
-    appearsIn: [Episode]!
-    homePlanet: String
+  id: ID!
+  name: String!
+  friends: [Character]
+  appearsIn: [Episode]!
+  homePlanet: String
 }
 ```
 
@@ -521,22 +521,22 @@ schema {
 }
 
 type CombinedQueryFromMultipleTeams {
-    createdTimestamp: String
+  createdTimestamp: String
 }
 
 # maybe the invoicing system team puts in this set of attributes
 extend type CombinedQueryFromMultipleTeams {
-    invoicing: Invoicing
+  invoicing: Invoicing
 }
 
 # and the billing system team puts in this set of attributes
 extend type CombinedQueryFromMultipleTeams {
-    billing: Billing
+  billing: Billing
 }
 
 # and so and so forth
 extend type CombinedQueryFromMultipleTeams {
-    auditing: Auditing
+  auditing: Auditing
 }
 ```
 
@@ -546,7 +546,7 @@ Subscriptions allow you to perform a query and whenever a backing object for tha
 
 ```graphql
 subscription foo {
-    # normal graphql query
+  # normal graphql query
 }
 ```
 
@@ -566,36 +566,36 @@ It uses a visitor pattern with "commands" that allow you to insert, update or de
 
 ```java
 GraphQLTypeVisitorStub visitor = new GraphQLTypeVisitorStub() {
-        @Override
-        public TraversalControl visitGraphQLObjectType(GraphQLObjectType objectType, TraverserContext<GraphQLSchemaElement> context) {
-            GraphQLCodeRegistry.Builder codeRegistry = context.getVarFromParents(GraphQLCodeRegistry.Builder.class);
-            // we need to change __XXX introspection types to have directive extensions
-            if (someConditionalLogic(objectType)) {
-                GraphQLObjectType newObjectType = buildChangedObjectType(objectType, codeRegistry);
-                return changeNode(context, newObjectType);
-            }
-            return CONTINUE;
+    @Override
+    public TraversalControl visitGraphQLObjectType(GraphQLObjectType objectType, TraverserContext<GraphQLSchemaElement> context) {
+        GraphQLCodeRegistry.Builder codeRegistry = context.getVarFromParents(GraphQLCodeRegistry.Builder.class);
+        // we need to change __XXX introspection types to have directive extensions
+        if (someConditionalLogic(objectType)) {
+            GraphQLObjectType newObjectType = buildChangedObjectType(objectType, codeRegistry);
+            return changeNode(context, newObjectType);
         }
+        return CONTINUE;
+    }
 
-        private boolean someConditionalLogic(GraphQLObjectType objectType) {
-            // up to you to decide what causes a change, perhaps a directive is on the element
-            return objectType.hasDirective("specialDirective");
-        }
+    private boolean someConditionalLogic(GraphQLObjectType objectType) {
+        // up to you to decide what causes a change, perhaps a directive is on the element
+        return objectType.hasDirective("specialDirective");
+    }
 
-        private GraphQLObjectType buildChangedObjectType(GraphQLObjectType objectType, GraphQLCodeRegistry.Builder codeRegistry) {
-            GraphQLFieldDefinition newField = GraphQLFieldDefinition.newFieldDefinition()
-                    .name("newField").type(Scalars.GraphQLString).build();
-            GraphQLObjectType newObjectType = objectType.transform(builder -> builder.field(newField));
+    private GraphQLObjectType buildChangedObjectType(GraphQLObjectType objectType, GraphQLCodeRegistry.Builder codeRegistry) {
+        GraphQLFieldDefinition newField = GraphQLFieldDefinition.newFieldDefinition()
+                .name("newField").type(Scalars.GraphQLString).build();
+        GraphQLObjectType newObjectType = objectType.transform(builder -> builder.field(newField));
 
-            DataFetcher newDataFetcher = dataFetchingEnvironment -> {
-                return "someValueForTheNewField";
-            };
-            FieldCoordinates coordinates = FieldCoordinates.coordinates(objectType.getName(), newField.getName());
-            codeRegistry.dataFetcher(coordinates, newDataFetcher);
-            return newObjectType;
-        }
-    };
-    GraphQLSchema newSchema = SchemaTransformer.transformSchema(schema, visitor);
+        DataFetcher newDataFetcher = dataFetchingEnvironment -> {
+            return "someValueForTheNewField";
+        };
+        FieldCoordinates coordinates = FieldCoordinates.coordinates(objectType.getName(), newField.getName());
+        codeRegistry.dataFetcher(coordinates, newDataFetcher);
+        return newObjectType;
+    }
+};
+GraphQLSchema newSchema = SchemaTransformer.transformSchema(schema, visitor);
 ```
 
 You return "command" methods in your visitor that causes the `SchemaTransformer` to modify the schema while maintain its cyclic graph semantic

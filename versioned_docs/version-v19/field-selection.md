@@ -1,5 +1,5 @@
 ---
-title: "Field Selection"
+title: "Field selection"
 date: 2018-09-09T12:52:46+10:00
 description: How you can efficiently look ahead at the selected fields lower in the query
 ---
@@ -12,14 +12,14 @@ For example given the following query :
 
 ```graphql
 query {
-    user(userId : "xyz")  {
-        name
-        age
-        weight
-        friends {
-            name
-        }
+  user(userId : "xyz") {
+    name
+    age
+    weight
+    friends {
+      name
     }
+  }
 }
 ```
 
@@ -31,7 +31,6 @@ set and use different queries because it knows the caller wants friend informati
 
 ``graphql.schema.DataFetchingFieldSelectionSet`` is used to represent this field selection set.  It gives you maps
 of the fields and their ``graphql.schema.GraphQLFieldDefinition``s and argument values.
-
 
 ```java
 DataFetcher smartUserDF = new DataFetcher() {
@@ -64,24 +63,22 @@ So given a query like:
 
 ```graphql
 query {
-    users(first:10)  {
-        edges {
-            node {
-                name
-                age
-                weight
-                friends {
-                    name
-                }
-            }
+  users(first:10)  {
+    edges {
+      node {
+        name
+        age
+        weight
+        friends {
+          name
         }
+      }
     }
+  }
 }
 ```
 
-
 you can write code that gets the details of each specific field that matches a glob.
-
 
 ```java
 DataFetchingFieldSelectionSet selectionSet = env.getSelectionSet();

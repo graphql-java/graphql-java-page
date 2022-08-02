@@ -1,5 +1,5 @@
 ---
-title: "Field Visibility"
+title: "Field visibility"
 date: 2019-02-12T12:00:00+10:00
 description: How control the visibility of the fields defined in a schema
 ---
@@ -26,11 +26,9 @@ GraphQLSchema schema = GraphQLSchema.newSchema()
         .build();
 ```
 
-
 There is also another implementation that prevents instrumentation from being able to be performed on your schema, if that is a requirement.
 
 Note that this puts your server in contravention of the graphql specification and expectations of most clients so use this with caution.
-
 
 ```java
 GraphQLSchema schema = GraphQLSchema.newSchema()

@@ -17,22 +17,20 @@ Note : Data fetchers are some times called "resolvers" in other graphql implemen
 
 So imagine a type declaration like the one below :
 
-
 ```graphql
 type Query {
-    products(match : String) : [Product]   # a list of products
+  products(match : String) : [Product]   # a list of products
 }
 
 type Product {
-    id : ID
-    name : String
-    description : String
-    cost : Float
-    tax : Float
-    launchDate(dateFormat : String = "dd, MMM, yyyy') : String
+  id : ID
+  name : String
+  description : String
+  cost : Float
+  tax : Float
+  launchDate(dateFormat : String = "dd, MMM, yyyy') : String
 }
 ```
-
 
 The `Query.products` field has a data fetcher, as does each field in the type ``Product``.
 
@@ -60,7 +58,6 @@ DataFetcher productsDataFetcher = new DataFetcher<List<ProductDTO>>() {
 };
 ```
 
-
 Each ``DataFetcher`` is passed a ``graphql.schema.DataFetchingEnvironment`` object which contains what field is being fetched, what
 arguments have been supplied to the field and other information such as the field's type, its parent type, the query root object or the query
 context object.
@@ -79,7 +76,6 @@ POJO method to get the data.
 You can however still get access to the ``graphql.schema.DataFetchingEnvironment`` in your DTO methods.  This allows you to
 tweak values before sending them out.  For example above we have a ``launchDate`` field that takes an optional ``dateFormat``
 argument.  We can have the ProductDTO have logic that applies this date formatting to the desired format.
-
 
 ```java
 class ProductDTO {
@@ -105,7 +101,6 @@ class ProductDTO {
     }
 }
 ```
-
 
 ## Customising PropertyDataFetcher
 
@@ -149,7 +144,6 @@ GraphQLCodeRegistry codeRegistry = GraphQLCodeRegistry.newCodeRegistry()
         .build();
 ```
 
-
 ## The interesting parts of the DataFetchingEnvironment
 
 Every data fetcher is passed a ``graphql.schema.DataFetchingEnvironment`` object which allows it to know more about what is being fetched
@@ -184,9 +178,6 @@ currently executing field. This can be useful to help look ahead to see what sub
 * ``ExecutionId getExecutionId()`` - each query execution is given a unique id.  You can use this perhaps on logs to tag each individual
 query.
 
-
-
-
 ## The interesting parts of ExecutionStepInfo
 
 The execution of a graphql query creates a call tree of fields and their types.  ``graphql.execution.ExecutionStepInfo.getParentTypeInfo``
@@ -197,25 +188,21 @@ path.  This can be useful for logging and debugging queries.
 
 There are also helper methods there to help you get the underlying type name of non null and list wrapped types.
 
-
 ## The interesting parts of DataFetchingFieldSelectionSet
 
 Imagine a query such as the following
-
-
 ```graphql
 query {
-    products {
-        # the fields below represent the selection set
-        name
-        description
-        sellingLocations {
-            state
-        }
+  products {
+    # the fields below represent the selection set
+    name
+    description
+    sellingLocations {
+        state
     }
+  }
 }
 ```
-
 
 The sub fields here of the ``products`` field represent the selection set of that field.  It can be useful to know what sub selection has been asked for
 so the data fetcher can optimise the data access queries.  For example an SQL backed system may be able to use the field sub selection to
@@ -223,4 +210,3 @@ only retrieve the columns that have been asked for.
 
 In the example above we have asked for ``sellingLocations`` information and hence we may be able to make an more efficient data access query where
 we ask for product information and selling location information at the same time.
-

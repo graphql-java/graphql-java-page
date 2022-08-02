@@ -36,17 +36,17 @@ $ yarn run serve
 
 ## How to create a new release
 
-Create a new release by following the below (v18 used as an example)
+Create a new release by following the below (v19 used as an example)
 
 ```
-$ yarn run docusaurus docs:version v18
+$ yarn run docusaurus docs:version v19
 ```
 
 Then update `lastVersion` inside `docusaurus.config.js`
 ```
-lastVersion: "v18",
+lastVersion: "v19",
 ```
 
-Finally, change the Maven and Gradle sections in [documentation/getting-started.mdx](/documentation/getting-started.mdx) and the new version [v18/getting-started](/versioned_docs/version-v18/getting-started.md)
+Finally, change the Maven and Gradle sections in [documentation/getting-started.mdx](/documentation/getting-started.mdx) and versioned documentation inside `versioned_docs`.
 
 For more, see the [Docusaurus versioning documentation](https://docusaurus.io/docs/versioning).

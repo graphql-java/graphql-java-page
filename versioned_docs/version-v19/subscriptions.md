@@ -15,17 +15,16 @@ a graphql query is applied over that data and the results are passed on.
 See http://graphql.org/blog/subscriptions-in-graphql-and-relay/ for more general details on
 graphql subscriptions.
 
-
 Imagine you have an stock market pricing service and you make a graphql subscription to it like this
 
 ```graphql
 subscription StockCodeSubscription {
-    stockQuotes(stockCode:"IBM") {
-        dateTime
-        stockCode
-        stockPrice
-        stockPriceChange
-    }
+  stockQuotes(stockCode:"IBM") {
+    dateTime
+    stockCode
+    stockPrice
+    stockPriceChange
+  }
 }
 ```
 
@@ -48,7 +47,6 @@ ExecutionResult executionResult = graphQL.execute(query);
 
 Publisher<ExecutionResult> stockPriceStream = executionResult.getData();
 ```
-
 
 The ``Publisher<ExecutionResult>`` here is the publisher of a stream of events.  You need to subscribe to this with your processing
 code which will look something like the following
@@ -113,7 +111,6 @@ stockPriceStream.subscribe(new Subscriber<ExecutionResult>() {
 });
 ```
 
-
 You are now writing reactive-streams code to consume a series of ``ExecutionResults``.  You can see
 more details on reactive-streams code here http://www.reactive-streams.org/
 
@@ -131,14 +128,12 @@ is built using RxJava.
 See https://github.com/graphql-java/graphql-java-subscription-example for more detailed code on handling network concerns and
 the like.
 
-
 ## Subscription Data Fetchers
 
 The ``DataFetcher`` behind a subscription field is responsible for creating the ``Publisher`` of data.  The objects
 return by this Publisher will be mapped over the graphql query as each arrives and then sent back out as an execution result.
 
 You data fetcher is going to look something like this.
-
 
 ```java
 DataFetcher<Publisher<StockInfo>> publisherDataFetcher = new DataFetcher<Publisher<StockInfo>>() {
@@ -150,7 +145,5 @@ DataFetcher<Publisher<StockInfo>> publisherDataFetcher = new DataFetcher<Publish
 };
 ```
 
-
 Now the exact details of how you get that stream of events is up to you and you're reactive code.  graphql-java
 gives you a way to map the graphql query fields over that stream of objects just like a standard graphql query.
-

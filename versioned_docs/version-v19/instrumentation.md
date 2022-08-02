@@ -5,7 +5,6 @@ description: Instrumentation allows you to inject code that can observe the exec
 ---
 # Instrumentation
 
-
 The ``graphql.execution.instrumentation.Instrumentation`` interface allows you to inject code that can observe the
 execution of a query and also change the runtime behaviour.
 
@@ -15,10 +14,9 @@ When you build the ``Graphql`` object you can specify what ``Instrumentation`` t
 
 ```java
 GraphQL.newGraphQL(schema)
-        .instrumentation(new TracingInstrumentation())
-        .build();
+       .instrumentation(new TracingInstrumentation())
+       .build();
 ```
-
 
 ## Custom Instrumentation
 
@@ -80,7 +78,6 @@ class CustomInstrumentation extends SimpleInstrumentation {
 }
 ```
 
-
 ## Chaining Instrumentation
 
 You can combine multiple ``Instrumentation`` objects together using the ``graphql.execution.instrumentation.ChainedInstrumentation`` class which
@@ -96,8 +93,6 @@ GraphQL.newGraphQL(schema)
         .instrumentation(chainedInstrumentation)
         .build();
 ```
-
-
 
 ## Apollo Tracing Instrumentation
 
@@ -225,6 +220,7 @@ It would return a result like
     }
   }
 }
+
 ```
 
 ## Field Validation Instrumentation
@@ -255,13 +251,13 @@ FieldValidationInstrumentation instrumentation = new FieldValidationInstrumentat
 );
 
 GraphQL.newGraphQL(schema)
-        .instrumentation(instrumentation)
-        .build();
+       .instrumentation(instrumentation)
+       .build();
 ```
 
 ## Query Complexity Instrumentation
 
-``graphql.analysis.MaxQueryComplexityInstrumentation`` in an ``Instumentation`` implementation than can be used to abort a query if the total number of data
+``graphql.analysis.MaxQueryComplexityInstrumentation`` in an ``Instrumentation`` implementation than can be used to abort a query if the total number of data
 fields queried exceeds the defined limit.
 
 ```java
@@ -309,10 +305,9 @@ Would return a result like:
 }
 ```
 
-
 ## Query Depth Instrumentation
 
-``graphql.analysis.MaxQueryDepthInstrumentation`` in an ``Instumentation`` implementation than can be used to abort a query if the total depth of
+``graphql.analysis.MaxQueryDepthInstrumentation`` in an ``Instrumentation`` implementation than can be used to abort a query if the total depth of
 the query exceeds the defined limit.
 
 ```java
@@ -324,20 +319,20 @@ GraphQL.newGraphQL(schema)
 With a query like:
 
 ```graphql
-query {
-  hero {
-    name
-    friends {
-      name
-      friends {
+    query {
+      hero {
         name
         friends {
           name
+          friends {
+            name
+            friends {
+              name
+            }
+          }
         }
       }
     }
-  }
-}
 ```
 
 Would return a result like:

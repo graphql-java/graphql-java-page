@@ -1,5 +1,5 @@
 ---
-title: "SDL Directives"
+title: "SDL directives"
 date: 2018-09-09T12:52:46+10:00
 description: How SDL Directives can be used to adjust the behavior of your graphql API
 ---
@@ -21,31 +21,28 @@ with the conventional runtime wiring.
 
 For example imagine you have a type like the following
 
-
 ```graphql
 type Employee
-    id : ID
-    name : String!
-    startDate : String!
-    salary : Float
+  id : ID
+  name : String!
+  startDate : String!
+  salary : Float
 }
 ```
-
 
 Publishing ``salary`` information to every one who can see this employee's ``name`` might not be want you want.  Rather you want some sort of access control
 to be in place such that if your role is that of a manager, you can see salaries, otherwise you get no data back.
 
 Directives can help you declare this more easily.  Our declaration above would become something like the following:
 
-
 ```graphql
 directive @auth(role : String!) on FIELD_DEFINITION
 
 type Employee
-    id : ID
-    name : String!
-    startDate : String!
-    salary : Float @auth(role : "manager")
+  id : ID
+  name : String!
+  startDate : String!
+  salary : Float @auth(role : "manager")
 }
 ```
 
@@ -57,24 +54,21 @@ that needs manager role authorisation.
 directive @auth(role : String!) on FIELD_DEFINITION
 
 type Employee
-    id : ID
-    name : String!
-    startDate : String!
-    salary : Float @auth(role : "manager")
+  id : ID
+  name : String!
+  startDate : String!
+  salary : Float @auth(role : "manager")
 }
 
 type Department {
-    id : ID
-    name : String
-    yearlyOperatingBudget : Float @auth(role : "manager")
-    monthlyMarketingBudget : Float @auth(role : "manager")
+  id : ID
+  name : String
+  yearlyOperatingBudget : Float @auth(role : "manager")
+  monthlyMarketingBudget : Float @auth(role : "manager")
 }
 ```
 
-
-
 We now need to wire in the code that can handle any field with this ``@auth`` directive.  We use ``graphql.schema.idl.SchemaDirectiveWiring`` to do this.
-
 
 ```java
 class AuthorisationDirective implements SchemaDirectiveWiring {
@@ -143,21 +137,18 @@ declared like so before use.
 directive @auth(role : String!) on FIELD_DEFINITION
 
 type Employee
-    id : ID
+  id : ID
 
-    # and this is a usage of that declared directive
-    salary : Float @auth(role : "manager")
+  # and this is a usage of that declared directive
+  salary : Float @auth(role : "manager")
 }
 ```
 
-
 The one exception to this is the ``@deprecated`` directive which is implicitly declared for you as follows :
 
-
 ```graphql
-directive @deprecated(  reason: String = "No longer supported") on FIELD_DEFINITION | ENUM_VALUE
+directive @deprecated(reason: String = "No longer supported") on FIELD_DEFINITION | ENUM_VALUE
 ```
-
 
 The valid SDL directive locations are as follows :
 
@@ -175,10 +166,7 @@ INPUT_OBJECT,
 INPUT_FIELD_DEFINITION
 ```
 
-
-
 Directives are commonly applied to fields definitions but as you can see there are a number of places they can be applied.
-
 
 ## Another Example - Date Formatting
 
@@ -193,7 +181,7 @@ opt into what ever date formatting you provide per request.
 directive @dateFormat on FIELD_DEFINITION
 
 type Query {
-    dateField : String @dateFormat
+  dateField : String @dateFormat
 }
 ```
 
@@ -302,17 +290,16 @@ directive @mixedcase on FIELD_DEFINITION
 directive @reversed on FIELD_DEFINITION
 
 type Query {
-    lowerCaseValue : String @uppercase
-    upperCaseValue : String @lowercase
-    mixedCaseValue : String @mixedcase
+  lowerCaseValue : String @uppercase
+  upperCaseValue : String @lowercase
+  mixedCaseValue : String @mixedcase
 
-    #
-    # directives are applied in order hence this will be lower, then upper, then mixed then reversed
-    #
-    allTogetherNow : String @lowercase @uppercase @mixedcase @reversed
+  #
+  # directives are applied in order hence this will be lower, then upper, then mixed then reversed
+  #
+  allTogetherNow : String @lowercase @uppercase @mixedcase @reversed
 }
 ```
 
 When the above was executed each directive would be applied one on top of the other.  Each directive implementation should be careful
 to preserve the previous data fetcher to retain behaviour (unless of course you mean to throw it away)
-

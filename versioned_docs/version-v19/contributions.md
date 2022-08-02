@@ -20,7 +20,7 @@ In order to make this a pleasant as possible for everybody involved, here are so
 
   * Please be a as focused and clear as possible  and don't mix concerns. This includes refactorings mixed with bug-fixes/features, see [Open Source Contribution Etiquette](http://tirania.org/blog/archive/2010/Dec-31.html)
 
-  * It would be good to add a automatic test. All tests are written in [Spock](http://spockframework.github.io/spock/docs/1.0/index.html). 
+  * It would be good to add a automatic test. All tests are written in [Spock](http://spockframework.github.io/spock/docs/1.0/index.html).
 
 ## Build and test locally
 
@@ -29,7 +29,7 @@ Just clone the repo and type
 ```bash
 ./gradlew build
 ```
-<br/>
+
 In `build/libs` you will find the jar file.
 
 Running the tests:

@@ -5,12 +5,11 @@ description: graphql-java has support for Relay
 ---
 # Relay Support
 
-
 Very basic support for [Relay](https://github.com/facebook/relay) is included.
 
-Please look at [https://github.com/graphql-java/todomvc-relay-java](https://github.com/graphql-java/todomvc-relay-java) for a full example project,
+Please look at [https://github.com/graphql-java/todomvc-relay-java](https://github.com/graphql-java/todomvc-relay-java) for a full example project.
 
-Relay send queries to the GraphQL server as JSON containing a ``query`` field and a ``variables`` field. The ``query`` field is a JSON string,
+Relay sends queries to the GraphQL server as JSON containing a ``query`` field and a ``variables`` field. The ``query`` field is a JSON string,
 and the ``variables`` field is a map of variable definitions. A relay-compatible server will need to parse this JSON and pass the ``query``
 string to this library as the query and the ``variables`` map as the third argument to ``execute`` as shown below.
 
@@ -34,11 +33,8 @@ public Object executeOperation(@RequestBody Map body) {
 }
 ```
 
-
 ## Apollo Support
 
-There is no special support for `Apollo <https://github.com/apollographql/apollo-client>`_ included: Apollo works with any schema.
+There is no special support for [Apollo](https://github.com/apollographql/apollo-client) included: Apollo works with any schema.
 
 The Controller example shown above works with Apollo too.
-
-
