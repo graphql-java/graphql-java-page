@@ -13,18 +13,17 @@ As the designer of the type schema, it is your challenge to get these elements t
 
 For example imagine we want to have a graphql type schema as follows:
 
-
 ```graphql
 type Query {
-    products(match : String) : [Product]   # a list of products
+  products(match : String) : [Product]   # a list of products
 }
 
 type Product {
-    id : ID
-    name : String
-    description : String
-    cost : Float
-    tax : Float
+  id : ID
+  name : String
+  description : String
+  cost : Float
+  tax : Float
 }
 ```
 
@@ -32,10 +31,10 @@ We could then run queries over this simple schema via a something like the follo
 
 ```graphql
 query ProductQuery {
-    products(match : "Paper*")
-    {
-        id, name, cost, tax
-    }
+  products(match : "Paper*")
+  {
+    id, name, cost, tax
+  }
 }
 ```
 
@@ -167,4 +166,3 @@ For every object in the list it will look for an ``id`` field, find it by name i
 response.  It does that for every field in the query on that type.
 
 By creating a "unified view" at the higher level data fetcher, you have mapped between your runtime view of the data and the graphql schema view of the data.
-

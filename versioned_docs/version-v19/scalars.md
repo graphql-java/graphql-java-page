@@ -83,7 +83,6 @@ mutation Contact($mainContact: Email!) {
 }
 ```
 
-
 Our custom Email scalar will
 
 * be called via ``parseValue`` to convert the ``$mainContact`` variable value into a runtime object
@@ -100,7 +99,6 @@ The JavaDoc method contract of ``graphql.schema.Coercing`` says the following
 * The ``serialise`` MUST ONLY allow ``graphql.schema.CoercingSerializeException`` to be thrown from it.  This indicates that the
 value cannot be serialised into an appropriate form.  You must not allow other runtime exceptions to escape this method to get
 the normal graphql behaviour for validation.  You MUST return a non null value
-
 
 * The ``parseValue`` MUST ONLY allow ``graphql.schema.CoercingParseValueException`` to be thrown from it.  This indicates that the
 value cannot be parsed as input into an appropriate form.  You must not allow other runtime exceptions to escape this method to get
@@ -179,4 +177,3 @@ public static class EmailScalar {
     }
 }
 ```
-

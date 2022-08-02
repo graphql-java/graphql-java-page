@@ -16,15 +16,15 @@ names.  It is likely that many of these people will be friends in common.
 
 ```graphql
 {
-    hero {
+  hero {
+    name
+    friends {
+      name
+      friends {
         name
-        friends {
-            name
-            friends {
-               name
-            }
-        }
+      }
     }
+  }
 }
 ```
 
@@ -86,7 +86,6 @@ if need be.
 
 Here is how you might put this in place:
 
-
 ```java
 //
 // a batch loader function that will be called with N or more keys for batch loading
@@ -101,7 +100,6 @@ BatchLoader<String, Object> characterBatchLoader = new BatchLoader<String, Objec
         return CompletableFuture.supplyAsync(() -> getCharacterDataViaBatchHTTPApi(keys));
     }
 };
-
 
 //
 // use this data loader in the data fetchers associated with characters and put them into
@@ -124,7 +122,6 @@ DataFetcher<?> friendsDataFetcher = new DataFetcher<Object>() {
         return dataLoader.loadMany(friendIds);
     }
 };
-
 
 //
 // this instrumentation implementation will dispatch all the data loaders

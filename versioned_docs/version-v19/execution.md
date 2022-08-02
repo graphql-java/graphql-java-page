@@ -117,7 +117,6 @@ class CustomRuntimeException extends RuntimeException implements GraphQLError {
 }
 ```
 
-
 You can change this behaviour by creating your own ``graphql.execution.DataFetcherExceptionHandler`` exception handling code and
 giving that to the execution strategy.
 
@@ -136,7 +135,6 @@ DataFetcherExceptionHandler handler = new DataFetcherExceptionHandler() {
 ExecutionStrategy executionStrategy = new AsyncExecutionStrategy(handler);
 ```
 
-
 ## Returning data and errors
 
 It is also possible to return both data and multiple errors in a ``DataFetcher`` implementation by returning
@@ -151,9 +149,9 @@ DataFetcher userDataFetcher = new DataFetcher() {
     @Override
     public Object get(DataFetchingEnvironment environment) {
         Map response = fetchUserFromRemoteGraphQLResource(environment.getArgument("userId"));
-        List<GraphQLError> errors = response.get("errors")).stream()
+        List<GraphQLError> errors = response.get("errors").stream()
             .map(MyMapGraphQLError::new)
-            .collect(Collectors.toList();
+            .collect(Collectors.toList());
         return new DataFetcherResult(response.get("data"), errors);
     }
 };
@@ -183,12 +181,9 @@ Map<String, Object> toSpecificationResult = executionResult.toSpecification();
 sendAsJson(toSpecificationResult);
 ```
 
-
-
-
 ## Mutations
 
-A good starting point to learn more about mutating data in graphql is http://graphql.org/learn/queries/#mutations 
+A good starting point to learn more about mutating data in graphql is http://graphql.org/learn/queries/#mutations
 
 In essence you need to define a ``GraphQLObjectType`` that takes arguments as input.  Those arguments are what you can use to mutate your data store
 via the data fetcher invoked.
@@ -266,7 +261,6 @@ GraphQLSchema schema = GraphQLSchema.newSchema()
         .build();
 ```
 
-
 Notice that the input arguments are of type ``GraphQLInputObjectType``.  This is important.  Input arguments can ONLY be of that type
 and you cannot use output types such as ``GraphQLObjectType``.  Scalars types are considered both input and output types.
 
@@ -327,7 +321,6 @@ promise.thenAccept(executionResult -> {
 promise.join();
 ```
 
-
 The use of ``CompletableFuture`` allows you to compose actions and functions that will be applied when the execution completes.  The final
 call to ``.join()`` waits for the execution to happen.
 
@@ -342,8 +335,6 @@ ExecutionResult executionResult = graphQL.execute(executionInput);
 CompletableFuture<ExecutionResult> promise = graphQL.executeAsync(executionInput);
 ExecutionResult executionResult2 = promise.join();
 ```
-
-
 
 If a ``graphql.schema.DataFetcher`` returns a ``CompletableFuture<T>`` object then this will be composed into the overall asynchronous
 query execution.  This means you can fire off a number of field fetching requests in parallel.  Exactly what
@@ -374,12 +365,13 @@ DataFetcher userDataFetcher = environment -> CompletableFuture.supplyAsync(
 The graphql-java engine ensures that all the ``CompletableFuture`` objects are composed together to provide an execution result
 that follows the graphql specification.
 
-There is a helpful shortcut in graphql-java to create asynchronous data fetchers. 
+There is a helpful shortcut in graphql-java to create asynchronous data fetchers.
 Use ``graphql.schema.AsyncDataFetcher.async(DataFetcher<T>)`` to wrap a
 ``DataFetcher``. This can be used with static imports to produce more readable code.
 
 ```java
 DataFetcher userDataFetcher = async(environment -> fetchUserViaHttp(environment.getArgument("userId")));
+
 ```
 
 ## Execution Strategies
@@ -388,7 +380,6 @@ A class derived from ``graphql.execution.ExecutionStrategy`` is used to run a qu
 strategies are provided with graphql-java and if you are really keen you can even write your own.
 
 You can wire in what execution strategy to use when you create the ``GraphQL`` object.
-
 
 ```java
 GraphQL.newGraphQL(schema)
@@ -424,8 +415,6 @@ query {
 }
 ```
 
-
-
 The ``AsyncExecutionStrategy`` is free to dispatch the *enemies* field at the same time as the *friends* field.  It does not
 have to do *enemies* first followed by *friends*, which would be less efficient.
 
@@ -436,7 +425,6 @@ This behaviour is allowed in the graphql specification and in fact is actively e
 for read only queries.
 
 See `specification <http://facebook.github.io/graphql/#sec-Normal-evaluation>`_ for details.
-
 
 ## AsyncSerialExecutionStrategy
 
@@ -457,7 +445,6 @@ See http://www.reactive-streams.org/ for more information on the reactive ``Publ
 
 Also see the page on [subscriptions](subscriptions.md) for more details on how to write a subscription based graphql service.
 
-
 ## Query Caching
 
 Before the ``graphql-java`` engine executes a query it must be parsed and validated, and this process can be somewhat time consuming.
@@ -475,14 +462,14 @@ PreparsedDocumentProvider preparsedCache = PreparsedDocumentProvider {
             Function<String, PreparsedDocumentEntry> mapCompute = key -> computeFunction.apply(executionInput);
             return cache.get(executionInput.getQuery(), mapCompute);
     }
-}    
+}
 
 GraphQL graphQL = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema)
         .preparsedDocumentProvider(preparsedCache) (2)
         .build();
 ```
 
-1. Create an instance of preferred cache instance, here is `Caffeine <https://github.com/ben-manes/caffeine>`_  used as it is a high quality caching solution. The cache instance should be 
+1. Create an instance of preferred cache instance, here is `Caffeine <https://github.com/ben-manes/caffeine>`_  used as it is a high quality caching solution. The cache instance should be
 thread safe and shared.
 2. The ``PreparsedDocumentProvider`` is a functional interface with only a getDocument method This is called to get a ``cached`` pre-parsed query and if its not present, then the computeFunction can be called to parse and validate the query.
 
@@ -493,9 +480,9 @@ The following query:
 
 ```graphql
 query HelloTo {
-     sayHello(to: "Me") {
-        greeting
-     }
+  sayHello(to: "Me") {
+    greeting
+  }
 }
 ```
 
@@ -503,21 +490,16 @@ Should be rewritten as:
 
 ```graphql
 query HelloTo($to: String!) {
-     sayHello(to: $to) {
-        greeting
-     }
+  sayHello(to: $to) {
+    greeting
+  }
 }
 ```
-
-
 with variables:
-
 ```json
 {
-   "to": "Me"
+    "to": "Me"
 }
 ```
 
-
 The query is now reused regardless of variable values provided.
-

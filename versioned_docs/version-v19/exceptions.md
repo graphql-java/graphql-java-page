@@ -5,12 +5,11 @@ description: Outlines the exceptions used in graphql-java
 ---
 # Runtime Exceptions
 
-
 Runtime exceptions can be thrown by the graphql engine if certain exceptional situations are encountered.  The following
 are a list of the exceptions that can be thrown all the way out of a ``graphql.execute(...)`` call.
 
 These are not graphql errors in execution but rather totally unacceptable conditions in which to execute a graphql query.
- 
+
  -  `graphql.schema.CoercingSerializeException`
 
  is thrown when a value cannot be serialised by a Scalar type, for example
@@ -62,4 +61,3 @@ contained in the GraphQL query.
 
  is thrown as a low level code assertion exception for truly unexpected code conditions, things we assert
 should never happen in practice.
-
