@@ -313,7 +313,7 @@ Then later when the `DataLoader` is dispatched, it's `BatchLoader` function is c
 functions they all can run at once.  In the code above `CompletableFuture.supplyAsync(() -> getTheseCharacters(keys));` will run the ``getTheseCharacters``
 method in another thread.
 
-# Passing context to your data loader
+## Passing context to your data loader
 
 The data loader library supports two types of context being passed to the batch loader. The first is
 an overall context object per dataloader, and the second is a map of per loaded key context objects.
