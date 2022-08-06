@@ -254,7 +254,7 @@ The GraphQL type system supports the following kind of types:
 * InputObject
 * Enum
 
-## Scalar
+### Scalar
 
 ``graphql-java`` supports the following Scalars:
 
@@ -279,7 +279,7 @@ Note that the semantics around the extended scalars might not be understood by y
 Long (max value 2^63-1) into a JavaScript Number ( max value 2^53 - 1)
 may be problematic for you.
 
-## Object
+### Object
 
 SDL Example:
 
@@ -307,7 +307,7 @@ GraphQLObjectType simpsonCharacter = newObject()
     .build();
 ```
 
-## Interface
+### Interface
 
 Interfaces are abstract definitions of types.
 
@@ -315,7 +315,7 @@ SDL Example:
 
 ```graphql
 interface ComicCharacter {
-  name: String;
+  name: String
 }
 ```
 
@@ -332,19 +332,19 @@ GraphQLInterfaceType comicCharacter = newInterface()
     .build();
 ```
 
-## Union
+### Union
 
 SDL Example:
 
 ```graphql
 type Cat {
-  name: String;
-  lives: Int;
+  name: String
+  lives: Int
 }
 
 type Dog {
-  name: String;
-  bonesOwned: int;
+  name: String
+  bonesOwned: Int
 }
 
 union Pet = Cat | Dog
@@ -376,7 +376,28 @@ GraphQLCodeRegistry codeRegistry = newCodeRegistry()
         .build();
 ```
 
-## Enum
+### InputObject
+
+SDL Example:
+
+```graphql
+input Character {
+  name: String
+}
+```
+
+Java Example:
+
+```java
+GraphQLInputObjectType inputObjectType = newInputObject()
+    .name("inputObjectType")
+    .field(newInputObjectField()
+            .name("field")
+            .type(GraphQLString))
+    .build();
+```
+
+### Enum
 
 SDL Example:
 
@@ -398,27 +419,6 @@ GraphQLEnumType colorEnum = newEnum()
         .value("GREEN")
         .value("BLUE")
         .build();
-```
-
-## ObjectInputType
-
-SDL Example:
-
-```graphql
-input Character {
-  name: String
-}
-```
-
-Java Example:
-
-```java
-GraphQLInputObjectType inputObjectType = newInputObject()
-    .name("inputObjectType")
-    .field(newInputObjectField()
-            .name("field")
-            .type(GraphQLString))
-    .build();
 ```
 
 ## Type References (recursive types)
@@ -443,7 +443,7 @@ GraphQLObjectType person = newObject()
 When the schema is declared via SDL, no special handling of recursive types is needed as it is detected and done for
 you.
 
-# Modularising the Schema SDL
+## Modularising the Schema SDL
 
 Having one large schema file is not always viable. You can modularise you schema using two techniques.
 
@@ -540,7 +540,7 @@ extend type CombinedQueryFromMultipleTeams {
 }
 ```
 
-# Subscription Support
+## Subscription Support
 
 Subscriptions allow you to perform a query and whenever a backing object for that query changes an updated will be sent.
 
@@ -552,7 +552,7 @@ subscription foo {
 
 See the page on [subscriptions](subscriptions.md) for more details
 
-# Changing Schema
+## Changing Schema
 
 The `GraphQLSchema` is an immutable object once its is built. To make things more complicated it is in fact an immutable
 cyclic graph.
