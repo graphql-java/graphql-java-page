@@ -28,7 +28,7 @@ type Product {
   description : String
   cost : Float
   tax : Float
-  launchDate(dateFormat : String = "dd, MMM, yyyy') : String
+  launchDate(dateFormat : String = "dd, MMM, yyyy") : String
 }
 ```
 
