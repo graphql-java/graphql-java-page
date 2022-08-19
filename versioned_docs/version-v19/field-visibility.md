@@ -19,10 +19,13 @@ GraphqlFieldVisibility blockedFields = BlockedFields.newBlock()
         .addPattern("Droid.appearsIn")
         .addPattern(".*\\.hero") // it uses regular expressions
         .build();
+GraphQLCodeRegistry codeRegistry = GraphQLCodeRegistry.newCodeRegistry()
+        .fieldVisibility(blockedFields)
+        .build();
 
 GraphQLSchema schema = GraphQLSchema.newSchema()
         .query(StarWarsSchema.queryType)
-        .fieldVisibility(blockedFields)
+        .codeRegistry(codeRegistry)
         .build();
 ```
 
@@ -31,9 +34,12 @@ There is also another implementation that prevents instrumentation from being ab
 Note that this puts your server in contravention of the graphql specification and expectations of most clients so use this with caution.
 
 ```java
+GraphQLCodeRegistry codeRegistry = GraphQLCodeRegistry.newCodeRegistry()
+        .fieldVisibility(NoIntrospectionGraphqlFieldVisibility.NO_INTROSPECTION_FIELD_VISIBILITY)
+        .build();
 GraphQLSchema schema = GraphQLSchema.newSchema()
         .query(StarWarsSchema.queryType)
-        .fieldVisibility(NoIntrospectionGraphqlFieldVisibility.NO_INTROSPECTION_FIELD_VISIBILITY)
+        .codeRegistry(codeRegistry)
         .build();
 ```
 
