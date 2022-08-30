@@ -474,7 +474,7 @@ thread safe and shared.
 2. The ``PreparsedDocumentProvider`` is a functional interface with only a getDocument method This is called to get a ``cached`` pre-parsed query and if its not present, then the computeFunction can be called to parse and validate the query.
 
 
-In order to achieve high cache hit ration it is recommended that field arguments are passed in as variables instead of directly in the query.
+In order to achieve high cache hit ratio it is recommended that field arguments are passed in as variables instead of directly in the query.
 
 The following query:
 
