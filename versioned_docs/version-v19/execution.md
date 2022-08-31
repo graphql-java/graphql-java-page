@@ -456,13 +456,13 @@ Please note that this does not cache the result of the query, only the parsed ``
 ```java
 Cache<String, PreparsedDocumentEntry> cache = Caffeine.newBuilder().maximumSize(10_000).build(); (1)
 
-PreparsedDocumentProvider preparsedCache = PreparsedDocumentProvider {
+PreparsedDocumentProvider preparsedCache = new PreparsedDocumentProvider() {
     @Override
     public PreparsedDocumentEntry getDocument(ExecutionInput executionInput, Function<ExecutionInput, PreparsedDocumentEntry> computeFunction) {
             Function<String, PreparsedDocumentEntry> mapCompute = key -> computeFunction.apply(executionInput);
             return cache.get(executionInput.getQuery(), mapCompute);
     }
-}
+};
 
 GraphQL graphQL = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema)
         .preparsedDocumentProvider(preparsedCache) (2)
