@@ -95,7 +95,7 @@ BatchLoader<String, Object> characterBatchLoader = new BatchLoader<String, Objec
     @Override
     public CompletionStage<List<Object>> load(List<String> keys) {
         //
-        // we use supplyAsync() of values here for maximum parellisation
+        // we use supplyAsync() of values here for maximum parallelisation
         //
         return CompletableFuture.supplyAsync(() -> getCharacterDataViaBatchHTTPApi(keys));
     }
@@ -179,7 +179,7 @@ at [https://github.com/graphql-java/java-dataloader](https://github.com/graphql-
 ## Data Loader only works with AsyncExecutionStrategy
 
 The only execution that works with DataLoader is `graphql.execution.AsyncExecutionStrategy`.  This is because this execution strategy knows
-then the most optimal time to dispatch() your load calls is.  It does this by deeply tracking how many fields are outstanding and whether they
+when the most optimal time to dispatch() your load calls is.  It does this by deeply tracking how many fields are outstanding and whether they
 are list values and so on.
 
 Other execution strategies such as `ExecutorServiceExecutionStrategy` can't do this and hence if the data loader code detects
