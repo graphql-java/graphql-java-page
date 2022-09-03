@@ -3,23 +3,25 @@ title: "Scalars"
 date: 2018-09-09T12:52:46+10:00
 description: How scalar types work in graphql and how to write your own scalars
 ---
-# Scalars in graphql
+# Scalars in GraphQL
 
 ## Scalars
 
-The leaf nodes of the graphql type system are called scalars.  Once you reach a scalar type you
-cannot descend down any further into the type hierarchy.  A scalar type is meant to represent
+The leaf nodes of the GraphQL type system are called scalars. Once you reach a scalar type, you
+cannot descend any further into the type hierarchy. A scalar type is meant to represent
 an indivisible value.
 
-The graphql specification says that all implementations must have the following scalar types.
+The [GraphQL specification](https://spec.graphql.org/draft/#sec-Scalars) states that all implementations must have the following scalar types:
 
 * String aka ``GraphQLString`` - A UTF‐8 character sequence.
 * Boolean aka ``GraphQLBoolean`` - true or false.
 * Int aka ``GraphQLInt`` - A signed 32‐bit integer.
 * Float aka ``GraphQLFloat`` - A signed double-precision floating-point value.
-* ID aka ``GraphQLID`` - A unique identifier which is serialized in the same way as a String; however, defining it as an ID signifies that it is not intended to be human‐readable.
+* ID aka ``GraphQLID`` - A unique identifier which is serialized in the same way as a String. However, defining it as an ID signifies that it is not intended to be human‐readable.
 
-graphql-java adds the following scalar types which are useful in Java based systems
+The class ``graphql.Scalars`` contains singleton instances of the provided scalar types.
+
+[graphql-java-extended-scalars](https://github.com/graphql-java/graphql-java-extended-scalars) adds the following scalar types which are useful in Java based systems:
 
 * Long aka ``GraphQLLong`` - a java.lang.Long based scalar
 * Short aka ``GraphQLShort`` - a java.lang.Short based scalar
@@ -27,17 +29,14 @@ graphql-java adds the following scalar types which are useful in Java based syst
 * BigDecimal aka ``GraphQLBigDecimal`` - a java.math.BigDecimal based scalar
 * BigInteger aka ``GraphQLBigInteger`` - a java.math.BigInteger based scalar
 
+## Writing your own Custom Scalars
 
-The class ``graphql.Scalars`` contains singleton instances of the provided scalar types
-
-## Writing your Own Custom Scalars
-
-You can write your own custom scalar implementations.  In doing so you take on the responsibility for coercing values
+You can write your own custom scalar implementations. In doing so you take on the responsibility for coercing values
 at runtime, which we will explain in a moment.
 
 Imagine we decide we need to have an email scalar type.  It will take email addresses as input and output.
 
-We would create a singleton ``graphql.schema.GraphQLScalarType`` instance for this like so.
+We would create a singleton ``graphql.schema.GraphQLScalarType`` instance for this.
 
 ```java
 public static final GraphQLScalarType EMAIL = GraphQLScalarType.newScalar()
@@ -64,13 +63,13 @@ public static final GraphQLScalarType EMAIL = GraphQLScalarType.newScalar()
 
 ## Coercing values
 
-The real work in any custom scalar implementation is the ``graphql.schema.Coercing`` implementation.  This is responsible for 3 functions
+The real work in any custom scalar implementation is the ``graphql.schema.Coercing`` implementation. This is responsible for 3 functions:
 
 * ``parseValue`` - takes a variable input object and converts into the Java runtime representation
 * ``parseLiteral`` - takes an AST literal ``graphql.language.Value`` as input and converts into the Java runtime representation
 * ``serialize`` - takes a Java object and converts it into the output shape for that scalar
 
-So your custom scalar code has to handle 2 forms of input (parseValue / parseLiteral)  and 1 form of output (serialize).
+So your custom scalar code has to handle 2 forms of input (`parseValue` / `parseLiteral`) and 1 form of output (`serialize`).
 
 Imagine this query, which uses variables, AST literals and outputs our scalar type ``email``.
 
@@ -83,18 +82,18 @@ mutation Contact($mainContact: Email!) {
 }
 ```
 
-Our custom Email scalar will
+Our custom Email scalar will:
 
 * be called via ``parseValue`` to convert the ``$mainContact`` variable value into a runtime object
 * be called via ``parseLiteral`` to convert the AST ``graphql.language.StringValue`` "backup@company.com" into a runtime object
-* be called via ``serialise`` to turn the runtime representation of mainContactEmail into a form ready for output
+* be called via ``serialize`` to turn the runtime representation of mainContactEmail into a form ready for output
 
 ## Validation of input and output
 
-The methods can validate that the received input makes sense.  For example our email scalar will try to validate that the input
+The methods can validate that the received input makes sense. For example our email scalar will try to validate that the input
 and output are indeed email addresses.
 
-The JavaDoc method contract of ``graphql.schema.Coercing`` says the following
+The JavaDoc method contract of ``graphql.schema.Coercing`` says the following:
 
 * The ``serialise`` MUST ONLY allow ``graphql.schema.CoercingSerializeException`` to be thrown from it.  This indicates that the
 value cannot be serialised into an appropriate form.  You must not allow other runtime exceptions to escape this method to get
@@ -108,13 +107,12 @@ the normal graphql behaviour for validation.  You MUST return a non null value.
 AST value cannot be parsed as input into an appropriate form.  You must not allow any runtime exceptions to escape this method to get
 the normal graphql behaviour for validation.
 
-Some people try to rely on runtime exceptions for validation and hope that they come out as graphql errors.  This is not the case.  You
+Some people try to rely on runtime exceptions for validation and hope that they come out as graphql errors. This is not the case. You
 MUST follow the ``Coercing`` method contracts to allow the graphql-java engine to work according to the graphql specification on scalar types.
 
 ## Example implementation
 
-The following is a really rough implementation of our imagined ``email`` scalar type to show you how one might implement the ``Coercing`` methods
-such a scalar.
+The following is a really rough implementation of our imagined ``email`` scalar type to show you how one might implement the ``Coercing`` methods.
 
 ```java
 public static class EmailScalar {
