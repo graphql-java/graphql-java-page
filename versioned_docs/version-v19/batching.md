@@ -273,7 +273,7 @@ DataFetcher<?> dataFetcherThatCallsTheDataLoader = new DataFetcher<Object>() {
 ```
 
 In the example above, the call to `characterDataLoader.load(argId)` can happen some time in the future on another thread.  The graphql-java
-engine has no way of knowing when it's a good time to dispatch outstanding `DataLoader` calls and hence the data loader call might never complete
+engine has no way of knowing when it's good time to dispatch outstanding `DataLoader` calls and hence the data loader call might never complete
 as expected and no results will be returned.
 
 Remember a data loader call is just a promise to actually get a value later when it's an optimal time for all outstanding calls to be batched
@@ -309,7 +309,7 @@ DataFetcher<?> dataFetcherThatCallsTheDataLoader = new DataFetcher<Object>() {
 Notice above the `characterDataLoader.load(argId)` returns immediately.  This will enqueue the call for data until a later time when all
 the graphql fields are dispatched.
 
-Then later when the `DataLoader` is dispatched, its `BatchLoader` function is called.  This code can be asynchronous so that if you have multiple batch loader
+Then later when the `DataLoader` is dispatched, it's `BatchLoader` function is called.  This code can be asynchronous so that if you have multiple batch loader
 functions they all can run at once.  In the code above `CompletableFuture.supplyAsync(() -> getTheseCharacters(keys));` will run the ``getTheseCharacters``
 method in another thread.
 
