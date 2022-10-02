@@ -1,6 +1,6 @@
 ---
 title: "Spring for GraphQL is the recommended Spring integration"
-authors: andi
+authors: donna
 slug: spring-for-graphql
 ---
 
@@ -10,6 +10,6 @@ Use [Spring Initializr](https://start.spring.io/) to create a GraphQL applicatio
 
 See also the Spring for GraphQL [documentation](https://docs.spring.io/spring-graphql/docs/current/reference/html/) and the repo on [GitHub](https://github.com/spring-projects/spring-graphql).
 
-Before the official Spring for GraphQL integration was released, there were many other GraphQL integrations for Spring, including the similarly and confusingly named [GraphQL Java Spring](https://github.com/graphql-java/graphql-java-spring) project from the GraphQL Java team, published under the `com.graphql-java` group ID. Many tutorials are still referring to this archived and unrelated project.
+Before the official Spring for GraphQL integration was released, there were many other GraphQL integrations for Spring, including the similarly named [GraphQL Java Spring](https://github.com/graphql-java-kickstart/graphql-spring-boot) project from the GraphQL Java team, published under the `com.graphql-java` and `com.graphql-java-kickstart` group IDs. Many tutorials are still referring to this unrelated project.
 
-To avoid confusion, please use the official integration named **"Spring for GraphQL"**, published under `org.springframework` and related group IDs.
+Please use the official integration named **"Spring for GraphQL"**, published under `org.springframework` and related group IDs.

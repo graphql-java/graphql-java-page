@@ -1,4 +1,3 @@
-# TODO: add authors
 andi:
   name: Andreas Marek
   title: Maintainer of GraphQL Java
@@ -10,3 +9,8 @@ brad:
   title: Maintainer of GraphQL Java
   url: https://github.com/bbakerman
   image_url: https://github.com/bbakerman.png
+
+donna:
+  name: Donna Zhou
+  url: https://github.com/dondonz
+  image_url: https://github.com/dondonz.png
