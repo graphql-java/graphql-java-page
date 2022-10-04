@@ -3,6 +3,13 @@ title: First release of GraphQL Java Spring
 authors: andi
 slug: graphql-java-spring-support
 ---
+:::caution
+**[Spring for GraphQL](https://spring.io/projects/spring-graphql) is the official and current Spring integration.** The integration is a collaboration between the Spring and GraphQL Java teams, and is maintained by the Spring team. 
+
+[We recommend using Spring for GraphQL](https://www.graphql-java.com/blog/spring-for-graphql), rather than the older Spring project mentioned in this blog post.
+
+See our [Spring for GraphQL](https://www.graphql-java.com/tutorials/getting-started-with-spring-boot) tutorial for how to get started.
+:::
 
 We are happy to release the first version of the GraphQL Java Spring (Boot) project.
 
