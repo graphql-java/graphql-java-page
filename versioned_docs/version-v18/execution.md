@@ -34,7 +34,7 @@ More complex query examples can be found in the [StarWars query tests](https://g
 ## Data Fetchers
 
 Each graphql field type has a ``graphql.schema.DataFetcher`` associated with it.  Other graphql implementations often call this
-type of code *resolvers**.
+type of code *resolvers*.
 
 Often you can rely on ``graphql.schema.PropertyDataFetcher`` to examine Java POJO objects to
 provide field values from them.  If your don't specify a data fetcher on a field, this is what will be used.
