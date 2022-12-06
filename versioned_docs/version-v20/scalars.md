@@ -95,16 +95,16 @@ and output are indeed email addresses.
 
 The JavaDoc method contract of ``graphql.schema.Coercing`` says the following:
 
-* The ``serialise`` MUST ONLY allow ``graphql.schema.CoercingSerializeException`` to be thrown from it.  This indicates that the
-value cannot be serialised into an appropriate form.  You must not allow other runtime exceptions to escape this method to get
-the normal graphql behaviour for validation.  You MUST return a non null value
+* The ``serialize`` MUST ONLY allow ``graphql.schema.CoercingSerializeException`` to be thrown from it. This indicates that the
+value cannot be serialized into an appropriate form.  You must not allow other runtime exceptions to escape this method to get
+the normal graphql behaviour for validation.
 
-* The ``parseValue`` MUST ONLY allow ``graphql.schema.CoercingParseValueException`` to be thrown from it.  This indicates that the
-value cannot be parsed as input into an appropriate form.  You must not allow other runtime exceptions to escape this method to get
-the normal graphql behaviour for validation.  You MUST return a non null value.
+* The ``parseValue`` MUST ONLY allow ``graphql.schema.CoercingParseValueException`` to be thrown from it. This indicates that the
+value cannot be parsed as input into an appropriate form. You must not allow other runtime exceptions to escape this method to get
+the normal graphql behaviour for validation.
 
-* The ``parseLiteral``  MUST ONLY allow ``graphql.schema.CoercingParseLiteralException`` to be thrown from it.  This indicates that the
-AST value cannot be parsed as input into an appropriate form.  You must not allow any runtime exceptions to escape this method to get
+* The ``parseLiteral`` MUST ONLY allow ``graphql.schema.CoercingParseLiteralException`` to be thrown from it. This indicates that the
+AST value cannot be parsed as input into an appropriate form. You must not allow any runtime exceptions to escape this method to get
 the normal graphql behaviour for validation.
 
 Some people try to rely on runtime exceptions for validation and hope that they come out as graphql errors. This is not the case. You

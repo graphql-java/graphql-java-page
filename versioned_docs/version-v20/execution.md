@@ -149,9 +149,9 @@ DataFetcher userDataFetcher = new DataFetcher() {
     @Override
     public Object get(DataFetchingEnvironment environment) {
         Map response = fetchUserFromRemoteGraphQLResource(environment.getArgument("userId"));
-        List<GraphQLError> errors = response.get("errors")).stream()
+        List<GraphQLError> errors = response.get("errors").stream()
             .map(MyMapGraphQLError::new)
-            .collect(Collectors.toList();
+            .collect(Collectors.toList());
         return new DataFetcherResult(response.get("data"), errors);
     }
 };
