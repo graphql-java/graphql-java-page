@@ -204,7 +204,7 @@ is the AST representation of a graphql `Enum` value.  This will be converted by 
 So a query document like the following will end up mapping the AST enum input value `RED` to the JVM value `"RED"`.
 
 ```graphql
-query q {
+query MyColors {
     toPantone(color : RED)
 }
 ```
