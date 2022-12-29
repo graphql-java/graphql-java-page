@@ -3,9 +3,9 @@ title: "Data mapping"
 date: 2018-09-09T12:52:46+10:00
 description: How graphql-java maps object data to graphql types
 ---
-# Mapping data
+# Mapping output data
 
-## How graphql maps object data to types
+## How graphql maps object data to output types
 
 At its heart graphql is all about declaring a type schema and mapping that over backing runtime data.
 
@@ -166,3 +166,154 @@ For every object in the list it will look for an ``id`` field, find it by name i
 response.  It does that for every field in the query on that type.
 
 By creating a "unified view" at the higher level data fetcher, you have mapped between your runtime view of the data and the graphql schema view of the data.
+
+# Mapping input data
+
+## How graphql maps object data to input types
+
+Input type values are provided to as input to a graphql operation.  The three kinds of types that can be input are **Enums**, **Scalars** and **Input Object Types** and the **List** and **Non-Null** variants of these
+type kinds.
+
+The following outlines how graphql-java represents these type kinds in JVM runtime terms.
+
+### Enums
+
+graphql-java maps input `Enum` values by name.  When you create the `graphql.schema.GraphQLEnumType` instance you can in theory map a name `java.lang.String`
+to any JVM object.  But this is not common at all.  Mostly the name of the enum value is the actual value of it.
+
+```graphql
+enum RGB {
+    RED, BLUE, GREEN
+}
+
+scalar Pantone
+
+type Query {
+    toPantone( color : RGB) : Pantone
+}
+```
+
+The `RGB` enum type above has the runtime JVM `java.lang.String` values of `"RED"`,`"BLUE"` and `"GREEN"` on input and output.
+
+The graphql-java system allow you to also input `java.lang.Enum` but this is not common at all for input.  The reason it's not common is that this would 
+require you to turn your network input into Java enums and this is not a common action of serialisation frameworks.
+
+If the input value to the enum comes from the graphql operation document, then the input value will initially be a `graphql.language.EnumValue` which
+is the AST representation of a graphql `Enum` value.  This will be converted by graphql-java to a value by name.  
+
+So a query document like the following will end up mapping the AST enum input value `RED` to the JVM value `"RED"`.
+
+```graphql
+query q {
+    toPantone(color : RED)
+}
+```
+
+### Scalars
+
+The input values to a scalar are controlled by the scalar implementation.  If their `graphql.schema.Coercing#parseValue(java.lang.Object, graphql.GraphQLContext, java.util.Locale)` accepts
+a certain value then it's up to them to decide what JVM object is returned by the scalar code.
+
+The graphql-java scalars will return the following values as JVM object input values.
+
+* **String** aka ``GraphQLString`` - will produce a `java.lang.String`
+* **Boolean** aka ``GraphQLBoolean`` - will produce a `java.lang.Boolean`
+* **Int** aka ``GraphQLInt`` - will produce a `java.lang.Integer`
+* **Float** aka ``GraphQLFloat`` - will produce a `java.lang.Double`
+* **ID** aka ``GraphQLID`` - will produce a `java.lang.String`
+
+### Input Object Types
+
+Input object types are complex input types with named input fields. The runtime JVM representation will be a `java.util.Map`.  Specifically 
+a map that ordered its keys in a predictable way.
+
+So imagine this input type named `Person`
+
+```graphql
+input Person {
+    name : String!
+    age : Int!
+}
+
+type Query {
+    contact(person : Person) : String
+}
+```
+
+This will be represented at runtime as a `java.util.Map` containing a key `name` with a `java.lang.String` value and 
+a key `age` with a `java.lang.Integer` value.
+
+### Nonnull input types
+
+There is no special runtime object used for non-null input types other than the called code can safely assume that the object
+is not a null value.
+
+```graphql
+type Query {
+    field(arg1 : String!, arg2 : String) : String
+}
+```
+
+So in the example above the `arg1` field argument will always be a non-null `java.lang.String` value while `arg2` may be `null` at runtime.
+
+### Lists of input types
+
+If the input type is a graphql list input type then the runtime JVM representation will be a `java.util.List` of the wrapped input type.
+
+So as an example, given
+
+```graphql
+type Query {
+    field(arg : [String!]!) : String
+}
+```
+
+The `arg` field argument would be a non-null `java.util.List` containing zero or more non-null `java.lang.String` values.
+
+In graphql you can say that a list is non-null and its entries are also non-null
+however there is no way to say that the list has one or more entries.  
+
+The `arg` field argument above could be an empty list.  It will not be `null` but it could be empty.
+
+Complex runtime input values can be declared and the runtime representation will reflect that.
+
+```graphql
+input Person {
+    name : String!
+    age : Int!
+    friends : [Person!]
+}
+
+type Query {
+    contacts(people : [Person!]!) : String
+}
+
+```
+
+The `person` field argument would be a `java.util.List` containing one or more `java.util.Map`s, where each map contained named entries 
+and the `friends` map entry could itself be a `java.util.List` containing one or more `java.util.Map`s, so imagine 
+the following representation at runtime :
+
+```java
+        List.of(
+                Map.of("name", "Brad",
+                        "age", 42,
+                        "friends", List.of(
+                                Map.of("name", "Bill",
+                                        "age", 17,
+                                        "friends", List.of()
+                                )
+                        )
+                ),
+                Map.of("name", "Andreas",
+                        "age", 34,
+                        "friends", List.of(
+                                Map.of("name", "Ted",
+                                        "age", 15,
+                                        "friends", List.of()
+                                )
+                        )
+                )
+        );
+
+```
