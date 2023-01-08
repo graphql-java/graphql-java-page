@@ -16,7 +16,7 @@ Let's suppose we want to query the details for a specific book from an online st
 With GraphQL you send the following query to the server to get the details for the book with the id "book-1":
 
 ```graphql
-{
+query bookDetails {
   bookById(id: "book-1"){
     id
     name
@@ -280,7 +280,7 @@ Navigate to [http://localhost:8080/graphiql](http://localhost:8080/graphiql) or 
 Type in the query and hit the play button at the top of the window.
 
 ```graphql
-query {
+query bookDetails {
   bookById(id: "book-1") {
     id
     name
@@ -308,7 +308,7 @@ The source code for this tutorial can be found on [GitHub](https://github.com/gr
 Read the GraphQL Java [documentation](https://www.graphql-java.com/documentation/getting-started).
 
 ### More Spring for GraphQL examples
-See more examples in the [Spring for GraphQL GitHub repo](https://github.com/spring-projects/spring-graphql/tree/main/samples).
+See samples in the [1.0.x branch](https://github.com/spring-projects/spring-graphql/tree/1.0.x/samples), which will soon be [moved into](https://github.com/spring-projects/spring-graphql/issues/208) a separate repository.
 
 ### GitHub Discussions
 We also use [GitHub Discussions](https://github.com/graphql-java/graphql-java/discussions) for any questions or problems.
