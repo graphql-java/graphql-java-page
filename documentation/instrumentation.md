@@ -8,7 +8,7 @@ description: Instrumentation allows you to inject code that can observe the exec
 The ``graphql.execution.instrumentation.Instrumentation`` interface allows you to inject code that can observe the
 execution of a query and also change the runtime behaviour.
 
-The primary use case for this is to allow say performance monitoring and custom logging but it could be used for many different purposes.
+The primary use case for this is to allow say performance monitoring and custom logging, but it could be used for many purposes.
 
 When you build the ``Graphql`` object you can specify what ``Instrumentation`` to use (if any).
 
@@ -22,7 +22,7 @@ GraphQL.newGraphQL(schema)
 
 An implementation of ``Instrumentation`` needs to implement the "begin" step methods that represent the execution of a graphql query.
 
-Each step must give back a non null ``graphql.execution.instrumentation.InstrumentationContext`` object which will be called back
+Each step must give back a non-null ``graphql.execution.instrumentation.InstrumentationContext`` object which will be called back
 when the step completes, and will be told that it succeeded or failed with a Throwable.
 
 The following is a basic custom ``Instrumentation`` that measures overall execution time and puts it into a stateful object.
@@ -47,19 +47,18 @@ class CustomInstrumentation extends SimpleInstrumentation {
     }
 
     @Override
-    public InstrumentationContext<ExecutionResult> beginExecution(InstrumentationExecutionParameters parameters) {
+    public @Nullable InstrumentationContext<ExecutionResult> beginExecution(InstrumentationExecutionParameters parameters, InstrumentationState state) {
         long startNanos = System.nanoTime();
         return new SimpleInstrumentationContext<ExecutionResult>() {
             @Override
             public void onCompleted(ExecutionResult result, Throwable t) {
-                CustomInstrumentationState state = parameters.getInstrumentationState();
-                state.recordTiming(parameters.getQuery(), System.nanoTime() - startNanos);
+                ((CustomInstrumentationState) state).recordTiming(parameters.getQuery(), System.nanoTime() - startNanos);
             }
         };
     }
 
     @Override
-    public DataFetcher<?> instrumentDataFetcher(DataFetcher<?> dataFetcher, InstrumentationFieldFetchParameters parameters) {
+    public @NotNull DataFetcher<?> instrumentDataFetcher(DataFetcher<?> dataFetcher, InstrumentationFieldFetchParameters parameters, InstrumentationState state) {
         //
         // this allows you to intercept the data fetcher used to fetch a field and provide another one, perhaps
         // that enforces certain behaviours or has certain side effects on the data
@@ -68,9 +67,9 @@ class CustomInstrumentation extends SimpleInstrumentation {
     }
 
     @Override
-    public CompletableFuture<ExecutionResult> instrumentExecutionResult(ExecutionResult executionResult, InstrumentationExecutionParameters parameters) {
+    public @NotNull CompletableFuture<ExecutionResult> instrumentExecutionResult(ExecutionResult executionResult, InstrumentationExecutionParameters parameters, InstrumentationState state) {
         //
-        // this allows you to instrument the execution result some how.  For example the Tracing support uses this to put
+        // this allows you to instrument the execution result somehow.  For example the Tracing support uses this to put
         // the `extensions` map of data in place
         //
         return CompletableFuture.completedFuture(executionResult);
