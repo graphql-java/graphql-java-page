@@ -36,7 +36,7 @@ class CustomInstrumentationState implements InstrumentationState {
     }
 }
 
-class CustomInstrumentation extends SimpleInstrumentation {
+class CustomInstrumentation extends SimplePerformantInstrumentation {
     @Override
     public InstrumentationState createState() {
         //
