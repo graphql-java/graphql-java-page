@@ -9,7 +9,7 @@ We’re formalising our release schedule to give the community a better idea of 
 ## General release schedule
 Going forward, we plan to have 4 releases every year, one per quarter. We will alternate between releases containing breaking changes, and releases containing features and bugfixes (without breaking changes).
 
-For example: our next release 20.1 will be in early April 2023, and this will be a feature and bugfix release without breaking changes. Therefore, we’re going to retain Java 8 in the April release. Our subsequent release will be in early July 2023 and will contain breaking changes, including upgrading to Java 11.
+For example: our next release 20.1 will be in late March 2023, and this will be a feature and bugfix release without breaking changes. Therefore, we’re going to retain Java 8 in the April release. Our subsequent release will be around early July 2023 and will contain breaking changes, including upgrading to Java 11.
 
 ## Security backports
 We will backport critical bugfixes and security fixes for versions dating back 18 months (or roughly 6 versions). These fixes will be backported depending on severity and demand. As security fixes are time sensitive, we will release them on demand instead of waiting for the next quarterly release date.
