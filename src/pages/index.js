@@ -17,7 +17,7 @@ function HomepageHeader() {
           <Link
               className="button button--secondary button--lg"
               to="https://leanpub.com/graphql-java/">
-            Preorder the GraphQL Java Book now
+            Buy the GraphQL with Java and Spring book now
           </Link>
         </div>
       </div>
