@@ -47,6 +47,8 @@ Then update `lastVersion` inside `docusaurus.config.js`
 lastVersion: "v20",
 ```
 
-Finally, change the Maven and Gradle sections in [documentation/getting-started.mdx](/documentation/getting-started.mdx) and versioned documentation inside `versioned_docs`.
+Delete the oldest version by deleting the oldest version's directory inside `versioned_docs` and the corresponding file in `versioned_sidebars`. Then delete the oldest version from `versions.json`.
+
+Finally, change the Maven and Gradle sections in [documentation/getting-started.mdx](/documentation/getting-started.mdx).
 
 For more, see the [Docusaurus versioning documentation](https://docusaurus.io/docs/versioning).
