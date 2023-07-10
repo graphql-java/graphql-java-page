@@ -98,7 +98,7 @@ GraphQL.newGraphQL(schema)
 ``graphql.execution.instrumentation.tracing.TracingInstrumentation`` is an ``Instrumentation`` implementation that creates tracing information
 about the query that is being executed.
 
-It follows the Apollo proposed tracing format defined at `https://github.com/apollographql/apollo-tracing <https://github.com/apollographql/apollo-tracing>`_
+It follows the Apollo proposed tracing format defined at [https://github.com/apollographql/apollo-tracing](https://github.com/apollographql/apollo-tracing).
 
 A detailed tracing map will be created and placed in the ``extensions`` section of the result.
 
