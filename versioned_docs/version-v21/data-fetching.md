@@ -28,7 +28,7 @@ type Product {
   description : String
   cost : Float
   tax : Float
-  launchDate(dateFormat : String = "dd, MMM, yyyy") : String
+  launchDate(dateFormat : String = "dd, MMM, yyyy') : String
 }
 ```
 
@@ -113,23 +113,8 @@ called ``fieldX`` or a map key called ``fieldX`` if the backing object is a ``Ma
 However you may have small differences between your graphql schema naming and runtime object naming.  For example imagine that ``Product.description`` is actually
 represented as ``getDesc()`` in the runtime backing Java object.
 
-If you are using SDL to specify your schema then you can use the ``@fetch`` directive to indicate this remapping.
-
-```graphql
-directive @fetch(from : String!) on FIELD_DEFINITION
-
-type Product {
-    id : ID
-    name : String
-    description : String @fetch(from:"desc")
-    cost : Float
-    tax : Float
-}
-```
-
+You can specify it directly by wiring in a field data fetcher.
 This will tell the ``graphql.schema.PropertyDataFetcher`` to use the property name ``desc`` when fetching data for the graphql field named ``description``.
-
-If you are hand coding your schema then you can just specify it directly by wiring in a field data fetcher.
 
 ```java
 GraphQLFieldDefinition descriptionField = GraphQLFieldDefinition.newFieldDefinition()
