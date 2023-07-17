@@ -7,7 +7,7 @@ id: tutorial-getting-started
 
 In this tutorial, you will create a GraphQL server in Java using [Spring for GraphQL](https://docs.spring.io/spring-graphql/docs/current/reference/html/). It requires a little Spring and Java knowledge. While we give a brief introduction to GraphQL, the focus of this tutorial is developing a GraphQL server in Java.
 
-If you're looking to learn more after this tutorial, we (the maintainers) have written a book! [**GraphQL with Java and Spring**](https://leanpub.com/graphql-java) includes everything you need to know to build a production ready GraphQL service with Spring for GraphQL. It's available on [Leanpub](https://leanpub.com/graphql-java) and [Amazon](https://www.amazon.com/GraphQL-Java-Spring-Andreas-Marek-ebook/dp/B0C96ZYWPF/).
+If you're looking to learn more after this tutorial, we (the maintainers) have written a book! [**GraphQL with Java and Spring**](https://leanpub.com/graphql-java) includes everything you need to know to build a production ready GraphQL service with Spring for GraphQL, the official Spring integration built on top of the GraphQL Java engine. It's available on [Leanpub](https://leanpub.com/graphql-java) and [Amazon](https://www.amazon.com/GraphQL-Java-Spring-Andreas-Marek-ebook/dp/B0C96ZYWPF/).
 
 ## A very short introduction to GraphQL
 
@@ -304,7 +304,7 @@ With the help of Spring for GraphQL features, we were able to achieve this with 
 
 ## Further reading
 ### Book
-If you want to learn more, we have written a book! [**GraphQL with Java and Spring**](https://leanpub.com/graphql-java) includes everything you need to know to build a production ready GraphQL service with Spring for GraphQL. 
+If you want to learn more, we have written a book! [**GraphQL with Java and Spring**](https://leanpub.com/graphql-java) includes everything you need to know to build a production ready GraphQL service with Spring for GraphQL and GraphQL Java. 
 
 Learn first-hand from the founder of GraphQL Java and co-author of Spring for GraphQL. The book is suitable for beginners and also includes advanced topics for intermediate readers. The book is available on [Leanpub](https://leanpub.com/graphql-java) and [Amazon](https://www.amazon.com/GraphQL-Java-Spring-Andreas-Marek-ebook/dp/B0C96ZYWPF/).
 
