@@ -7,6 +7,8 @@ id: tutorial-getting-started
 
 In this tutorial, you will create a GraphQL server in Java using [Spring for GraphQL](https://docs.spring.io/spring-graphql/docs/current/reference/html/). It requires a little Spring and Java knowledge. While we give a brief introduction to GraphQL, the focus of this tutorial is developing a GraphQL server in Java.
 
+If you're looking to learn more after this tutorial, we (the maintainers) have written a book! [**GraphQL with Java and Spring**](https://leanpub.com/graphql-java) includes everything you need to know to build a production ready GraphQL service with Spring for GraphQL. It's available on [Leanpub](https://leanpub.com/graphql-java) and [Amazon](https://www.amazon.com/GraphQL-Java-Spring-Andreas-Marek-ebook/dp/B0C96ZYWPF/).
+
 ## A very short introduction to GraphQL
 
 GraphQL is a query language to retrieve data from a server. It is an alternative to REST, SOAP or gRPC.
@@ -145,7 +147,7 @@ type Author {
 }
 ```
 
-This schema defines one top level field (in the type `Query`):  `bookById` which returns the details of a specific book.
+This schema defines one top level field (in the type `Query`): `bookById` which returns the details of a specific book.
 
 It also defines the type `Book` which has the fields: `id`, `name`, `pageCount` and `author`.
 `author` is of type `Author`, which is defined after `Book`.
@@ -301,6 +303,11 @@ We have built a GraphQL server and run our first query!
 With the help of Spring for GraphQL features, we were able to achieve this with only a few lines of code.
 
 ## Further reading
+### Book
+If you want to learn more, we have written a book! [**GraphQL with Java and Spring**](https://leanpub.com/graphql-java) includes everything you need to know to build a production ready GraphQL service with Spring for GraphQL. 
+
+Learn first-hand from the founder of GraphQL Java and co-author of Spring for GraphQL. The book is suitable for beginners and also includes advanced topics for intermediate readers. The book is available on [Leanpub](https://leanpub.com/graphql-java) and [Amazon](https://www.amazon.com/GraphQL-Java-Spring-Andreas-Marek-ebook/dp/B0C96ZYWPF/).
+
 ### Sample source code
 The source code for this tutorial can be found on [GitHub](https://github.com/graphql-java/tutorials).
 
