@@ -59,7 +59,7 @@ GraphQL graphQL = GraphQL
 
 String query = "" +
         "    subscription StockCodeSubscription {\n" +
-        "        stockQuotes(stockCode:\"IBM') {\n" +
+        "        stockQuotes(stockCode:\"IBM\") {\n" +
         "            dateTime\n" +
         "            stockCode\n" +
         "            stockPrice\n" +
