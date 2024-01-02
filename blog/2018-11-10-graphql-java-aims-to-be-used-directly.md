@@ -25,6 +25,10 @@ The core project doesn't deal with any form of HTTP or JSON specific things and 
 dependencies at all. This will not change, but we recognize the need for having an easy way to get a
 full service up and running. This is why we are currently working on first class Spring (Boot) support.
 
+:::info
+Update: You can now use [Spring for GraphQL](https://docs.spring.io/spring-graphql/reference/), the official GraphQL integration. It's a collaboration between the Spring and GraphQL Java teams. See our [quick start tutorial](https://www.graphql-java.com/tutorials/getting-started-with-spring-boot/).
+:::
+
 This is not done yet, but it will provide an easy way to integrate GraphQL Java in a Spring (Boot) application
 without adding any abstraction on top of GraphQL Java. It will also be extended over time with more advanced features
 like Apollo Defer support.

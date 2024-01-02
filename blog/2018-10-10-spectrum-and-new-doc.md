@@ -3,6 +3,10 @@ title: Moving to spectrum and new documentation home
 authors: andi
 slug: spectrum-and-new-doc
 ---
+:::info
+Update: we now use GitHub Discussions on the [GitHub repository](https://github.com/graphql-java/graphql-java/discussions).
+:::
+
 We have two exciting changes to announce:
 
 # New support channel at spectrum
