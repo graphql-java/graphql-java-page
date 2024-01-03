@@ -5,7 +5,7 @@ id: tutorial-getting-started
 ---
 # Getting started with Spring for GraphQL
 
-In this tutorial, you will create a GraphQL server in Java using [Spring for GraphQL](https://docs.spring.io/spring-graphql/reference/). It requires a little Spring and Java knowledge. While we give a brief introduction to GraphQL, the focus of this tutorial is developing a GraphQL server in Java.
+In this tutorial, you will create a GraphQL server in Java using [Spring for GraphQL](https://docs.spring.io/spring-graphql/reference/) in 3 minutes. It requires a little Spring and Java knowledge. While we give a brief introduction to GraphQL, the focus of this tutorial is developing a GraphQL server in Java.
 
 If you're looking to learn more after this tutorial, we (the maintainers) have written a book! [**GraphQL with Java and Spring**](https://leanpub.com/graphql-java) includes everything you need to know to build a production ready GraphQL service with Spring for GraphQL, the official Spring integration built on top of the GraphQL Java engine. It's available on [Leanpub](https://leanpub.com/graphql-java) and [Amazon](https://www.amazon.com/GraphQL-Java-Spring-Andreas-Marek-ebook/dp/B0C96ZYWPF/).
 
@@ -105,11 +105,11 @@ Select:
 
 - Gradle Project
 - Spring Boot 3
-- Java 17 or higher (Java 17 is the baseline version for Spring Boot 3)
+- Java 17 or higher
 
 For the project metadata, use:
 
-- Group: `com.graphql-java.tutorial`
+- Group: `com.graphqljava.tutorial`
 - Artifact: `bookDetails`
 
 For dependencies, select:
@@ -123,8 +123,6 @@ All subsequently mentioned files and paths will be relative to this generated pr
 Spring for GraphQL adds many useful features including loading schema files, initializing GraphQL Java, and simplifying data fetching with controller annotations.
 
 ## Schema
-
-Create a directory `src/main/resources/graphql`. 
 
 Add a new file `schema.graphqls` to `src/main/resources/graphql` with the following content:
 
@@ -294,7 +292,7 @@ With the help of Spring for GraphQL features, we were able to achieve this with 
 
 ## Further reading
 ### Book
-If you want to learn more, we have written a book! [**GraphQL with Java and Spring**](https://leanpub.com/graphql-java) includes everything you need to know to build a production ready GraphQL service with Spring for GraphQL and GraphQL Java. 
+If you want to learn more, we (the maintainers) have written a book! [**GraphQL with Java and Spring**](https://leanpub.com/graphql-java) includes everything you need to know to build a production ready GraphQL service with Spring for GraphQL and GraphQL Java. 
 
 Learn first-hand from the founder of GraphQL Java and co-author of Spring for GraphQL. The book is suitable for beginners and also includes advanced topics for intermediate readers. The book is available on [Leanpub](https://leanpub.com/graphql-java) and [Amazon](https://www.amazon.com/GraphQL-Java-Spring-Andreas-Marek-ebook/dp/B0C96ZYWPF/).
 
