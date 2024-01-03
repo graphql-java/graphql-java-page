@@ -5,7 +5,7 @@ id: tutorial-getting-started
 ---
 # Getting started with Spring for GraphQL
 
-In this tutorial, you will create a GraphQL server in Java using [Spring for GraphQL](https://docs.spring.io/spring-graphql/docs/current/reference/html/). It requires a little Spring and Java knowledge. While we give a brief introduction to GraphQL, the focus of this tutorial is developing a GraphQL server in Java.
+In this tutorial, you will create a GraphQL server in Java using [Spring for GraphQL](https://docs.spring.io/spring-graphql/reference/). It requires a little Spring and Java knowledge. While we give a brief introduction to GraphQL, the focus of this tutorial is developing a GraphQL server in Java.
 
 If you're looking to learn more after this tutorial, we (the maintainers) have written a book! [**GraphQL with Java and Spring**](https://leanpub.com/graphql-java) includes everything you need to know to build a production ready GraphQL service with Spring for GraphQL, the official Spring integration built on top of the GraphQL Java engine. It's available on [Leanpub](https://leanpub.com/graphql-java) and [Amazon](https://www.amazon.com/GraphQL-Java-Spring-Andreas-Marek-ebook/dp/B0C96ZYWPF/).
 
@@ -85,7 +85,7 @@ We've barely scratched the surface of what's possible with GraphQL. Further info
 [GraphQL Java](https://www.graphql-java.com) is the Java (server) implementation for GraphQL.
 There are several repositories in the GraphQL Java Github org. The most important one is the [GraphQL Java Engine](https://github.com/graphql-java/graphql-java) which is the basis for everything else.
 
-The GraphQL Java Engine is only concerned with executing queries. It doesn't deal with any HTTP or JSON related topics. For these aspects, we will use [Spring for GraphQL](https://docs.spring.io/spring-graphql/docs/current/reference/html/) which takes care of exposing our API via Spring Boot over HTTP.
+The GraphQL Java Engine is only concerned with executing queries. It doesn't deal with any HTTP or JSON related topics. For these aspects, we will use [Spring for GraphQL](https://docs.spring.io/spring-graphql/reference/) which takes care of exposing our API via Spring Boot over HTTP.
 
 The main steps of creating a GraphQL Java server are:
 
@@ -104,17 +104,17 @@ The easiest way to create a Spring Boot app is to use the [Spring Initializr](ht
 Select:
 
 - Gradle Project
-- Java
-- Spring Boot 2.7.x
+- Spring Boot 3
+- Java 17 or higher (Java 17 is the baseline version for Spring Boot 3)
 
 For the project metadata, use:
 
 - Group: `com.graphql-java.tutorial`
 - Artifact: `bookDetails`
 
-For dependencies, use:
+For dependencies, select:
 
-- Spring Web
+- Spring Web, and
 - Spring for GraphQL
 
 Then click on `Generate` for a ready to use Spring Boot app.
@@ -160,81 +160,68 @@ It is very important to understand that GraphQL doesn't dictate in any way where
 This is the power of GraphQL: it can come from a static in-memory list, from a database or an external service.
 
 ### Create the Book class
+
 Add the following to `bookDetails/Book.java`
 ```java
-public class Book {
+package com.graphqljava.tutorial.bookDetails;
 
-    private String id;
-    private String name;
-    private int pageCount;
-    private String authorId;
+import java.util.Arrays;
+import java.util.List;
 
-    public Book(String id, String name, int pageCount, String authorId) {
-        this.id = id;
-        this.name = name;
-        this.pageCount = pageCount;
-        this.authorId = authorId;
-    }
-    
+record Book(String id, String name, int pageCount, String authorId) {
+
     private static List<Book> books = Arrays.asList(
-            new Book("book-1", "Harry Potter and the Philosopher's Stone", 223, "author-1"),
-            new Book("book-2", "Moby Dick", 635, "author-2"),
-            new Book("book-3", "Interview with the vampire", 371, "author-3")
+        new Book("book-1", "Harry Potter and the Philosopher's Stone", 223, "author-1"),
+        new Book("book-2", "Moby Dick", 635, "author-2"),
+        new Book("book-3", "Interview with the vampire", 371, "author-3")
     );
 
     public static Book getById(String id) {
-        return books.stream().filter(book -> book.getId().equals(id)).findFirst().orElse(null);
+        return books.stream().filter(book -> book.id().equals(id)).findFirst().orElse(null);
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getAuthorId() {
-        return authorId;
-    }
 }
 ```
 
 ### Create the Author class
 Add the following to `bookDetails/Author.java`
 ```java
-public class Author {
+package com.graphqljava.tutorial.bookDetails;
 
-    private String id;
-    private String firstName;
-    private String lastName;
+import java.util.Arrays;
+import java.util.List;
 
-    public Author(String id, String firstName, String lastName) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
+record Author(String id, String firstName, String lastName) {
 
     private static List<Author> authors = Arrays.asList(
-            new Author("author-1", "Joanne", "Rowling"),
-            new Author("author-2", "Herman", "Melville"),
-            new Author("author-3", "Anne", "Rice")
+        new Author("author-1", "Joanne", "Rowling"),
+        new Author("author-2", "Herman", "Melville"),
+        new Author("author-3", "Anne", "Rice")
     );
 
     public static Author getById(String id) {
-        return authors.stream().filter(author -> author.getId().equals(id)).findFirst().orElse(null);
+        return authors.stream().filter(author -> author.id().equals(id)).findFirst().orElse(null);
     }
 
-    public String getId() {
-        return id;
-    }
 }
 ```
 
 ## Adding code to fetch data
-Spring for GraphQL provides an [annotation-based programming model](https://docs.spring.io/spring-graphql/docs/current/reference/html/#controllers) to declare handler methods to fetch the data for specific GraphQL fields.
+Spring for GraphQL provides an [annotation-based programming model](https://docs.spring.io/spring-graphql/reference/controllers.html) to declare handler methods to fetch the data for specific GraphQL fields.
 
 Add the following to `bookDetails/BookController.java`
 
 ```java
+package com.graphqljava.tutorial.bookDetails;
+
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
+import org.springframework.stereotype.Controller;
+
 @Controller
-public class BookController {
+class BookController {
+
     @QueryMapping
     public Book bookById(@Argument String id) {
         return Book.getById(id);
@@ -242,10 +229,12 @@ public class BookController {
 
     @SchemaMapping
     public Author author(Book book) {
-        return Author.getById(book.getAuthorId());
+        return Author.getById(book.authorId());
     }
+
 }
 ```
+
 The `@QueryMapping` annotation binds this method to a query, a field under the Query type.
 The query field is then determined from the method name, `bookById`. It could also be declared on the annotation. 
 Spring for GraphQL uses `RuntimeWiring.Builder` to register the handler method as a `graphql.schema.DataFetcher` for the query field `bookById`.
@@ -259,7 +248,7 @@ The `@SchemaMapping` annotation maps a handler method to a field in the GraphQL 
 The field name defaults to the method name, and the type name defaults to the simple class name of the source/parent object injected into the method. In this example, the field defaults to `author` and the type defaults to `Book`.
 The type and field can be specified in the annotation.
 
-For more, see the [documentation for the Spring for GraphQL annotated controller feature](https://docs.spring.io/spring-graphql/docs/current/reference/html/#controllers).
+For more, see the [documentation for the Spring for GraphQL annotated controller feature](https://docs.spring.io/spring-graphql/reference/controllers.html).
 
 That's all the code we need! Let's run our first query.
 
@@ -270,8 +259,9 @@ GraphiQL is a useful visual interface for writing and executing queries, and muc
 
 ```
 spring.graphql.graphiql.enabled=true
-spring.graphql.graphiql.path=/graphiql
 ```
+
+This will enable GraphiQL at the path `/graphiql` by default. You can change this path by configuring `spring.graphql.graphiql.path`.
 
 ### Boot the application
 Start your Spring application. 
@@ -315,7 +305,7 @@ The source code for this tutorial can be found on [GitHub](https://github.com/gr
 Read the GraphQL Java [documentation](https://www.graphql-java.com/documentation/getting-started).
 
 ### More Spring for GraphQL examples
-See samples in the [1.0.x branch](https://github.com/spring-projects/spring-graphql/tree/1.0.x/samples), which will soon be [moved into](https://github.com/spring-projects/spring-graphql/issues/208) a separate repository.
+See the [Spring for GraphQL documentation for more samples](https://docs.spring.io/spring-graphql/reference/samples.html).
 
 ### GitHub Discussions
 We also use [GitHub Discussions](https://github.com/graphql-java/graphql-java/discussions) for any questions or problems.
