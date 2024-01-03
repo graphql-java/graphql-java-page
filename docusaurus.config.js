@@ -103,10 +103,6 @@ const config = {
                 label: 'GitHub Discussions',
                 href: 'https://github.com/graphql-java/graphql-java/discussions',
               },
-              {
-                label: 'Twitter',
-                href: 'https://twitter.com/graphql_java',
-              },
             ],
           },
           {
