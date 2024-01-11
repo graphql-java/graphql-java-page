@@ -21,7 +21,7 @@ The [GraphQL specification](https://spec.graphql.org/draft/#sec-Scalars) states 
 
 The class ``graphql.Scalars`` contains singleton instances of the provided scalar types.
 
-[graphql-java-extended-scalars](https://github.com/graphql-java/graphql-java-extended-scalars) adds the following scalar types which are useful in Java based systems:
+[graphql-java-extended-scalars](https://github.com/graphql-java/graphql-java-extended-scalars) adds many more scalars, including the following which are useful in Java based systems:
 
 * Long aka ``GraphQLLong`` - a java.lang.Long based scalar
 * Short aka ``GraphQLShort`` - a java.lang.Short based scalar
@@ -29,12 +29,14 @@ The class ``graphql.Scalars`` contains singleton instances of the provided scala
 * BigDecimal aka ``GraphQLBigDecimal`` - a java.math.BigDecimal based scalar
 * BigInteger aka ``GraphQLBigInteger`` - a java.math.BigInteger based scalar
 
+See the [documentation](https://github.com/graphql-java/graphql-java-extended-scalars) for how to use Extended Scalars.
+
 ## Writing your own Custom Scalars
 
-You can write your own custom scalar implementations. In doing so you take on the responsibility for coercing values
+If the scalar you want isn't in a library, you can also write your own custom scalar implementation. In doing so you take on the responsibility for coercing values
 at runtime, which we will explain in a moment.
 
-Imagine we decide we need to have an email scalar type.  It will take email addresses as input and output.
+Imagine we decide we need to have an email scalar type. It will take email addresses as input and output.
 
 We would create a singleton ``graphql.schema.GraphQLScalarType`` instance for this.
 
