@@ -1,6 +1,6 @@
 ---
 title: "Scalars"
-date: 2018-09-09T12:52:46+10:00
+date: 2024-01-11
 description: How scalar types work in graphql and how to write your own scalars
 ---
 # Scalars in GraphQL
