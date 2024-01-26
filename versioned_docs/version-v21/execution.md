@@ -73,18 +73,28 @@ Here is the code for the standard behaviour.
 
 ```java
 public class SimpleDataFetcherExceptionHandler implements DataFetcherExceptionHandler {
-    private static final Logger log = LoggerFactory.getLogger(SimpleDataFetcherExceptionHandler.class);
 
-    @Override
-    public void accept(DataFetcherExceptionHandlerParameters handlerParameters) {
-        Throwable exception = handlerParameters.getException();
-        SourceLocation sourceLocation = handlerParameters.getField().getSourceLocation();
-        ExecutionPath path = handlerParameters.getPath();
+    private static final Logger logNotSafe = LogKit.getNotPrivacySafeLogger(SimpleDataFetcherExceptionHandler.class);
+
+    static final SimpleDataFetcherExceptionHandler defaultImpl = new SimpleDataFetcherExceptionHandler();
+
+    private DataFetcherExceptionHandlerResult handleExceptionImpl(DataFetcherExceptionHandlerParameters handlerParameters) {
+        Throwable exception = unwrap(handlerParameters.getException());
+        SourceLocation sourceLocation = handlerParameters.getSourceLocation();
+        ResultPath path = handlerParameters.getPath();
 
         ExceptionWhileDataFetching error = new ExceptionWhileDataFetching(path, exception, sourceLocation);
-        handlerParameters.getExecutionContext().addError(error);
-        log.warn(error.getMessage(), exception);
+        logException(error, exception);
+
+        return DataFetcherExceptionHandlerResult.newResult().error(error).build();
     }
+
+    @Override
+    public CompletableFuture<DataFetcherExceptionHandlerResult> handleException(DataFetcherExceptionHandlerParameters handlerParameters) {
+        return CompletableFuture.completedFuture(handleExceptionImpl(handlerParameters));
+    }
+    
+    // See class for other methods
 }
 ```
 
@@ -127,8 +137,7 @@ behaviour.
 ```java
 DataFetcherExceptionHandler handler = new DataFetcherExceptionHandler() {
     @Override
-    public void accept(DataFetcherExceptionHandlerParameters handlerParameters) {
-        //
+    public CompletableFuture<DataFetcherExceptionHandlerResult> handleException(DataFetcherExceptionHandlerParameters handlerParameters) {
         // do your custom handling here.  The parameters have all you need
     }
 };
