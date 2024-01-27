@@ -50,5 +50,3 @@ It is better to think about certain features you want to discuss instead referri
 
 # Feedback or questions
 We use [GitHub Discussions](https://github.com/graphql-java/graphql-java/discussions) for general feedback and questions.
-
-You can also contact us on Twitter: [@graphql_java](https://twitter.com/graphql_java)

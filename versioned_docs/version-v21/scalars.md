@@ -1,6 +1,6 @@
 ---
 title: "Scalars"
-date: 2018-09-09T12:52:46+10:00
+date: 2024-01-11
 description: How scalar types work in graphql and how to write your own scalars
 ---
 # Scalars in GraphQL
@@ -21,7 +21,7 @@ The [GraphQL specification](https://spec.graphql.org/draft/#sec-Scalars) states 
 
 The class ``graphql.Scalars`` contains singleton instances of the provided scalar types.
 
-[graphql-java-extended-scalars](https://github.com/graphql-java/graphql-java-extended-scalars) adds the following scalar types which are useful in Java based systems:
+[graphql-java-extended-scalars](https://github.com/graphql-java/graphql-java-extended-scalars) adds many more scalars, including the following which are useful in Java based systems:
 
 * Long aka ``GraphQLLong`` - a java.lang.Long based scalar
 * Short aka ``GraphQLShort`` - a java.lang.Short based scalar
@@ -29,12 +29,14 @@ The class ``graphql.Scalars`` contains singleton instances of the provided scala
 * BigDecimal aka ``GraphQLBigDecimal`` - a java.math.BigDecimal based scalar
 * BigInteger aka ``GraphQLBigInteger`` - a java.math.BigInteger based scalar
 
+See the [documentation](https://github.com/graphql-java/graphql-java-extended-scalars) for how to use Extended Scalars.
+
 ## Writing your own Custom Scalars
 
-You can write your own custom scalar implementations. In doing so you take on the responsibility for coercing values
+If the scalar you want isn't in a library, you can also write your own custom scalar implementation. In doing so you take on the responsibility for coercing values
 at runtime, which we will explain in a moment.
 
-Imagine we decide we need to have an email scalar type.  It will take email addresses as input and output.
+Imagine we decide we need to have an email scalar type. It will take email addresses as input and output.
 
 We would create a singleton ``graphql.schema.GraphQLScalarType`` instance for this.
 
@@ -44,17 +46,17 @@ public static final GraphQLScalarType EMAIL = GraphQLScalarType.newScalar()
         .description("A custom scalar that handles emails")
         .coercing(new Coercing() {
             @Override
-            public Object serialize(Object dataFetcherResult) {
+            public Object serialize(Object dataFetcherResult, GraphQLContext graphQLContext, Locale locale) {
                 return serializeEmail(dataFetcherResult);
             }
 
             @Override
-            public Object parseValue(Object input) {
+            public Object parseValue(Object input, GraphQLContext graphQLContext, Locale locale) {
                 return parseEmailFromVariable(input);
             }
 
             @Override
-            public Object parseLiteral(Object input) {
+            public Object parseLiteral(Value input, CoercedVariables variables, GraphQLContext graphQLContext, Locale locale) {
                 return parseEmailFromAstLiteral(input);
             }
         })
@@ -96,16 +98,16 @@ and output are indeed email addresses.
 The JavaDoc method contract of ``graphql.schema.Coercing`` says the following:
 
 * The ``serialize`` MUST ONLY allow ``graphql.schema.CoercingSerializeException`` to be thrown from it. This indicates that the
-value cannot be serialized into an appropriate form.  You must not allow other runtime exceptions to escape this method to get
-the normal graphql behaviour for validation.
+  value cannot be serialized into an appropriate form.  You must not allow other runtime exceptions to escape this method to get
+  the normal graphql behaviour for validation.
 
 * The ``parseValue`` MUST ONLY allow ``graphql.schema.CoercingParseValueException`` to be thrown from it. This indicates that the
-value cannot be parsed as input into an appropriate form. You must not allow other runtime exceptions to escape this method to get
-the normal graphql behaviour for validation.
+  value cannot be parsed as input into an appropriate form. You must not allow other runtime exceptions to escape this method to get
+  the normal graphql behaviour for validation.
 
 * The ``parseLiteral`` MUST ONLY allow ``graphql.schema.CoercingParseLiteralException`` to be thrown from it. This indicates that the
-AST value cannot be parsed as input into an appropriate form. You must not allow any runtime exceptions to escape this method to get
-the normal graphql behaviour for validation.
+  AST value cannot be parsed as input into an appropriate form. You must not allow any runtime exceptions to escape this method to get
+  the normal graphql behaviour for validation.
 
 Some people try to rely on runtime exceptions for validation and hope that they come out as graphql errors. This is not the case. You
 MUST follow the ``Coercing`` method contracts to allow the graphql-java engine to work according to the graphql specification on scalar types.
@@ -122,17 +124,17 @@ public static class EmailScalar {
             .description("A custom scalar that handles emails")
             .coercing(new Coercing() {
                 @Override
-                public Object serialize(Object dataFetcherResult) {
+                public Object serialize(Object dataFetcherResult, GraphQLContext graphQLContext, Locale locale) {
                     return serializeEmail(dataFetcherResult);
                 }
 
                 @Override
-                public Object parseValue(Object input) {
+                public Object parseValue(Object input, GraphQLContext graphQLContext, Locale locale) {
                     return parseEmailFromVariable(input);
                 }
 
                 @Override
-                public Object parseLiteral(Object input) {
+                public Object parseLiteral(Value input, CoercedVariables variables, GraphQLContext graphQLContext, Locale locale) {
                     return parseEmailFromAstLiteral(input);
                 }
             })

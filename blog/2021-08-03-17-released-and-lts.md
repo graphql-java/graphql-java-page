@@ -17,5 +17,5 @@ Going forward we decided to no offer any LTS versions anymore. We will only acti
 the latest version (currently 17). We may backport critical bugfixes, but we are not committed to it.
 
 If this is a huge problem for you or your Company and you are willing to help us with maintaining a LTS
-version you can reach us at Twitter [GraphQL Java](https://twitter.com/graphql_java) or per mail at
+version you can reach us via email at
 hello at graphql-java dot com.
