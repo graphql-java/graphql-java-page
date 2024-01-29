@@ -74,8 +74,6 @@ Here is the code for the standard behaviour.
 ```java
 public class SimpleDataFetcherExceptionHandler implements DataFetcherExceptionHandler {
 
-    private static final Logger logNotSafe = LogKit.getNotPrivacySafeLogger(SimpleDataFetcherExceptionHandler.class);
-
     static final SimpleDataFetcherExceptionHandler defaultImpl = new SimpleDataFetcherExceptionHandler();
 
     private DataFetcherExceptionHandlerResult handleExceptionImpl(DataFetcherExceptionHandlerParameters handlerParameters) {
