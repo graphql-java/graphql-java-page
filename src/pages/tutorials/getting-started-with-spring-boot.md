@@ -305,5 +305,10 @@ Read the GraphQL Java [documentation](https://www.graphql-java.com/documentation
 ### More Spring for GraphQL examples
 See the [Spring for GraphQL documentation for more samples](https://docs.spring.io/spring-graphql/reference/samples.html).
 
+### Tutorials written by the community
+If you'd like to see a longer tutorial with pure GraphQL Java and without any framework such as Spring, [Benjamin Habegger](https://github.com/bhabegger) has written a detailed [tutorial](https://medium.com/@benjamin.habegger/step-by-step-guide-to-build-a-graphql-server-in-java-over-multiple-data-sources-30c0c7b4b409).
+
+We welcome tutorials written by the community. If you'd like to see a tutorial here, please post on [GitHub Discussions](https://github.com/graphql-java/graphql-java/discussions).
+
 ### GitHub Discussions
 We also use [GitHub Discussions](https://github.com/graphql-java/graphql-java/discussions) for any questions or problems.
