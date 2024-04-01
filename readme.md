@@ -49,6 +49,6 @@ lastVersion: "v20",
 
 Delete the oldest version by deleting the oldest version's directory inside `versioned_docs` and the corresponding file in `versioned_sidebars`. Then delete the oldest version from `versions.json`.
 
-Finally, change the Maven and Gradle sections in [documentation/getting-started.mdx](/documentation/getting-started.mdx).
+Finally, change the Maven and Gradle sections for the latest docs in [documentation/getting-started.mdx](/documentation/getting-started.mdx) and the `getting-started` file for your newly created version.
 
 For more, see the [Docusaurus versioning documentation](https://docusaurus.io/docs/versioning).
