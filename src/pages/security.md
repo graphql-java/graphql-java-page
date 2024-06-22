@@ -20,6 +20,12 @@ The maintainers reserve the right to make a pragmatic decision to make adjustmen
 Instead, **report the vulnerability privately** via the Security tab on the [graphql-java GitHub repository](https://github.com/graphql-java/graphql-java). See instructions at [https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing/privately-reporting-a-security-vulnerability](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing/privately-reporting-a-security-vulnerability).
 :::
 
+## Disclosure policy
+The GraphQL Java maintainers will collaborate with those who report vulnerabilities privately via the [GitHub vulnerability reporting form](https://www.graphql-java.com/security). 
+We will acknowledge and review vulnerability reports as soon as we can. To protect the community, please do not publicly disclose the vulnerability.
+The maintainers will make a public announcement after the vulnerability is fixed. 
+
+Please allow time for the maintainers to review vulnerability reports, please note we are an open source project run by volunteers.
 
 ## Common Vulnerabilities and Exposures (CVEs)
 
