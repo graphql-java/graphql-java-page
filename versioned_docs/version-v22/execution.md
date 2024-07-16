@@ -465,9 +465,9 @@ Cache<String, PreparsedDocumentEntry> cache = Caffeine.newBuilder().maximumSize(
 
 PreparsedDocumentProvider preparsedCache = new PreparsedDocumentProvider() {
     @Override
-    public PreparsedDocumentEntry getDocument(ExecutionInput executionInput, Function<ExecutionInput, PreparsedDocumentEntry> computeFunction) {
+    public CompletableFuture<PreparsedDocumentEntry> getDocumentAsync(ExecutionInput executionInput, Function<ExecutionInput, PreparsedDocumentEntry> computeFunction) {
             Function<String, PreparsedDocumentEntry> mapCompute = key -> computeFunction.apply(executionInput);
-            return cache.get(executionInput.getQuery(), mapCompute);
+            return CompletableFuture.completedFuture(cache.get(executionInput.getQuery(), mapCompute));
     }
 };
 
