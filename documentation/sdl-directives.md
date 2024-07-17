@@ -75,14 +75,12 @@ class AuthorisationDirective implements SchemaDirectiveWiring {
 
     @Override
     public GraphQLFieldDefinition onField(SchemaDirectiveWiringEnvironment<GraphQLFieldDefinition> environment) {
-        String targetAuthRole = (String) environment.getDirective().getArgument("role").getValue();
+        String targetAuthRole = (String) environment.getDirective().getArgument("role").getArgumentValue().getValue();
 
-        GraphQLFieldDefinition field = environment.getElement();
-        GraphQLFieldsContainer parentType = environment.getFieldsContainer();
         //
         // build a data fetcher that first checks authorisation roles before then calling the original data fetcher
         //
-        DataFetcher originalDataFetcher = environment.getCodeRegistry().getDataFetcher(parentType, field);
+        DataFetcher originalDataFetcher = environment.getFieldDataFetcher();
         DataFetcher authDataFetcher = new DataFetcher() {
             @Override
             public Object get(DataFetchingEnvironment dataFetchingEnvironment) throws Exception {
@@ -98,8 +96,7 @@ class AuthorisationDirective implements SchemaDirectiveWiring {
         };
         //
         // now change the field definition to have the new authorising data fetcher
-        environment.getCodeRegistry().dataFetcher(parentType, field, authDataFetcher);
-        return field;
+        return environment.setFieldDataFetcher(authDataFetcher);
     }
 }
 
@@ -112,10 +109,9 @@ RuntimeWiring.newRuntimeWiring()
 ```
 
 This has modified the ``GraphQLFieldDefinition`` so that its original data fetcher will ONLY be called if the current authorisation context
-has the ``manager`` role.  Exactly what mechanisms you use for authorisation is up to you.  You could use Spring Security for example say, graphql-java doesn't
-really care.
+has the ``manager`` role. You can use any mechanism for authorisation, for example Spring Security or anything else.
 
-You would provide this authorisation checker into the execution "context" object of the graphql input so it can then be accessed later in the
+You would provide this authorisation checker into the execution "context" object of the graphql input, so it can then be accessed later in the
 ``DataFetchingEnvironment``.
 
 ```java
@@ -129,7 +125,7 @@ ExecutionInput executionInput = ExecutionInput.newExecutionInput()
 
 ## Declaring Directives
 
-In order to use a directive in SDL, the graphql specification requires that you MUST declare its shape before using it.  Our ``@auth`` directive example above needs to be
+In order to use a directive in SDL, the graphql specification requires that you MUST declare its shape before using it. Our ``@auth`` directive example above needs to be
 declared like so before use.
 
 ```graphql
@@ -144,13 +140,13 @@ type Employee
 }
 ```
 
-The one exception to this is the ``@deprecated`` directive which is implicitly declared for you as follows :
+The one exception to this is the ``@deprecated`` directive which is implicitly declared for you as follows:
 
 ```graphql
 directive @deprecated(reason: String = "No longer supported") on FIELD_DEFINITION | ENUM_VALUE
 ```
 
-The valid SDL directive locations are as follows :
+The valid SDL directive locations are as follows:
 
 ```graphql
 SCHEMA,
@@ -170,11 +166,11 @@ Directives are commonly applied to fields definitions but as you can see there a
 
 ## Another Example - Date Formatting
 
-Date formatting is a cross cutting concern that we should only have to write once and apply it in many areas.
+Date formatting is a cross-cutting concern that we should only have to write once and apply it in many areas.
 
 The following demonstrates an example schema directive that can apply date formatting to fields that are ``LocaleDate`` objects.
 
-Whats great in this example is that it adds an extra ``format`` argument to each field that it is applied to.  So the clients can
+What's great in this example is that it adds an extra ``format`` argument to each field that it is applied to. So the clients can
 opt into what ever date formatting you provide per request.
 
 ```graphql
@@ -275,13 +271,13 @@ public static void main(String[] args) {
 Notice the SDL definition did not have a ``format`` argument yet once the directive wiring is applied, it is added
 to the field definition and hence clients can begin to use it.
 
-Please note that graphql-java does not ship with this implementation.  It is merely provided here as
+Please note that graphql-java does not ship with this implementation. It is merely provided here as
 an example of what you could add yourself.
 
 
 ## Chaining Behaviour
 
-The directives are applied in the order they are encountered.  For example imagine directives that changed the case of a field value.
+The directives are applied in the order they are encountered. For example imagine directives that changed the case of a field value.
 
 ```graphql
 directive @uppercase on FIELD_DEFINITION
@@ -301,5 +297,5 @@ type Query {
 }
 ```
 
-When the above was executed each directive would be applied one on top of the other.  Each directive implementation should be careful
+When the above was executed each directive would be applied one on top of the other. Each directive implementation should be careful
 to preserve the previous data fetcher to retain behaviour (unless of course you mean to throw it away)
