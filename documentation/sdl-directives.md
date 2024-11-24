@@ -30,7 +30,7 @@ type Employee
 }
 ```
 
-Publishing ``salary`` information to every one who can see this employee's ``name`` might not be want you want.  Rather you want some sort of access control
+Publishing ``salary`` information to every one who can see this employee's ``name`` might not be what you want.  Rather you want some sort of access control
 to be in place such that if your role is that of a manager, you can see salaries, otherwise you get no data back.
 
 Directives can help you declare this more easily.  Our declaration above would become something like the following:
