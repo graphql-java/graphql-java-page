@@ -1,5 +1,5 @@
 ---
-title: "Parser limits"
+title: "Limits"
 date: 2024-11-24T10:00:00+10:00
 description: Configuring limits to prevent DoS attacks
 ---
@@ -35,9 +35,9 @@ public static final int MAX_RULE_DEPTH = 500;
 ```
 
 ## Introspection Query Limits
-Introspection queries can be a vector for attacks by causing a "field explosion". graphql-java includes measures to limit introspection queries:
+graphql-java includes measures to limit introspection queries:
 
-**GoodFaithIntrospection:** Ensures introspection queries do not exploit the "field explosion" trick and limits the depth and field count.
+**GoodFaithIntrospection:** Ensures introspection queries remain under a reasonable size.
 
 ```java
 public static final int GOOD_FAITH_MAX_FIELDS_COUNT = 500;
@@ -47,6 +47,6 @@ public static final int GOOD_FAITH_MAX_DEPTH_COUNT = 20;
 ## Instrumentation
 Beyond parser level limits, graphql-java provides instrumentation to manage query complexity:
 
-**MaxQueryDepthInstrumentation:** Limits the depth of a query to prevent overly complex queries.
+**MaxQueryComplexityInstrumentation:** Limits the complexity of a query to prevent excessive resource usage. [See example on the Instrumentation page](/documentation/master/instrumentation#query-complexity-instrumentation).
 
-**MaxQueryComplexityInstrumentation:** Limits the complexity of a query to prevent excessive resource usage.
+**MaxQueryDepthInstrumentation:** Limits the depth of a query to prevent overly complex queries. [See example on the Instrumentation page](/documentation/master/instrumentation#query-depth-instrumentation)
