@@ -22,7 +22,7 @@ the benchmarks in an isolated cloud environment.
 
 Currently, it runs on every commit to the `master` branch and the results are stored in the  
 [performance results folder](https://github.com/graphql-java/graphql-java/tree/master/performance-results).
-
+You can visualize and compare results with the [JMH Visualizer tool](https://jmh.morethan.io/), a free tool which runs in the browser.
 Our goal is to provide clear and reproducible performance improvements over time while preventing any regressions.
 
 This work is sponsored and made possible by [Atlassian](https://www.atlassian.com/) and we are very grateful for their support.
