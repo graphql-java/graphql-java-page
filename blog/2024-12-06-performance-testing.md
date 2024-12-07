@@ -4,7 +4,7 @@ authors: andi
 slug: performance
 ---
 
-GraphQL Java has become a mature and widely adopted library of the last 9.5 years.
+GraphQL Java has become a mature and widely adopted library over the past 9.5 years.
 And while we continue to maintain, improve and add features, we don't expect revolutionary changes to the core of the library.
 
 As side effect of this maturity it became clear over the least years, that performance is a key aspect that users are interested in.
