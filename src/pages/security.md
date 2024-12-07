@@ -29,6 +29,8 @@ Please allow time for the maintainers to review vulnerability reports, please no
 
 ## Common Vulnerabilities and Exposures (CVEs)
 
+[GraphQL Java is the CVE Numbering Authority (CNA)](https://www.cve.org/PartnerInformation/ListofPartners/partner/graphql-java) for GraphQL Java, Java DataLoader, GraphQL Java Extended Scalars, and GraphQL Java Extended Validation.
+
 #### CVE-2024-40094
 Patched by versions 21.5, 20.9, 19.11, build version 0.0.0-2024-03-22T04-18-12-97743bc, or later
 * [Announcement on GitHub](https://github.com/graphql-java/graphql-java/discussions/3641)
