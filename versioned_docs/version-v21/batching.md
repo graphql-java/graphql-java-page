@@ -8,7 +8,7 @@ description: How to avoid the dreaded N+1 calls for data and make your graphql s
 If you are using `graphql`, you are likely to making queries on a graph of data (no surprises there).  However, it's easy
 to implement inefficient code with naive loading of a graph of data.
 
-Using `java-dataloader` will help you to make this a more efficient process by both caching and batching requests for that graph of data items.  If `dataloader`
+Using [java-dataloader](https://github.com/graphql-java/java-dataloader) will help you to make this a more efficient process by both caching and batching requests for that graph of data items.  If `dataloader`
 has seen a data item before, it will have cached the value and will return it without having to ask for it again.
 
 Imagine we have the StarWars query outlined below.  It asks us to find a hero, and their friend's names, and their friend's friend's
