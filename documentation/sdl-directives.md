@@ -75,7 +75,7 @@ class AuthorisationDirective implements SchemaDirectiveWiring {
 
     @Override
     public GraphQLFieldDefinition onField(SchemaDirectiveWiringEnvironment<GraphQLFieldDefinition> environment) {
-        String targetAuthRole = (String) environment.getDirective().getArgument("role").getArgumentValue().getValue();
+        String targetAuthRole = (String) environment.getAppliedDirective().getArgument("role").getArgumentValue().getValue();
 
         //
         // build a data fetcher that first checks authorisation roles before then calling the original data fetcher
