@@ -44,7 +44,7 @@ It might look like the following :
 DataFetcher productsDataFetcher = new DataFetcher<List<ProductDTO>>() {
     @Override
     public List<ProductDTO> get(DataFetchingEnvironment environment) {
-        DatabaseSecurityCtx ctx = environment.getContext();
+        DatabaseSecurityCtx ctx = environment.getGraphQlContext().get("databaseSecurityCtx");
 
         List<ProductDTO> products;
         String match = environment.getArgument("match");
@@ -62,7 +62,7 @@ Each ``DataFetcher`` is passed a ``graphql.schema.DataFetchingEnvironment`` obje
 arguments have been supplied to the field and other information such as the field's type, its parent type, the query root object or the query
 context object.
 
-Note how the data fetcher code above uses the ``context`` object as an application specific security handle to get access
+Note how the data fetcher code above uses the context object as an application specific security handle to get access
 to the database.  This is a common technique to provide lower layer calling context.
 
 Once we have a list of ``ProductDTO`` objects we typically don't need specialised data fetchers on each field.  graphql-java
@@ -135,33 +135,32 @@ Every data fetcher is passed a ``graphql.schema.DataFetchingEnvironment`` object
 and what arguments have been provided.  Here are some of the more interesting parts of ``DataFetchingEnvironment``.
 
 * ``<T> T getSource()`` - the ``source`` object is used to get information for a field.  Its the object that is the result
-of the parent field fetch.  In the common case it is an in memory DTO object and hence simple POJO getters will be used for fields values.  In more complex cases, you may examine it to know
-how to get the specific information for the current field.  As the graphql field tree is executed, each returned field value
-becomes the ``source`` object for child fields.
+  of the parent field fetch.  In the common case it is an in memory DTO object and hence simple POJO getters will be used for fields values.  In more complex cases, you may examine it to know
+  how to get the specific information for the current field.  As the graphql field tree is executed, each returned field value
+  becomes the ``source`` object for child fields.
 
 * ``<T> T getRoot()`` - this special object is used to seed the graphql query.  The ``root`` and the ``source`` is the same thing for the
-top level fields.  The root object never changes during the query and it may be null and hence no used.
+  top level fields.  The root object never changes during the query and it may be null and hence no used.
 
 * ``Map<String, Object> getArguments()`` - this represents the arguments that have been provided on a field and the values of those
-arguments that have been resolved from passed in variables, AST literals and default argument values.  You use the arguments
-of a field to control what values it returns.
+  arguments that have been resolved from passed in variables, AST literals and default argument values.  You use the arguments
+  of a field to control what values it returns.
 
-* ``<T> T getContext()`` - the context object is set up when the query is first executed and stays the same over the lifetime
-of the query.  The context can be any value and is typically used to give each data fetcher some calling context needed
-when trying to get field data.  For example the current user credentials or the database connection parameters could be contained
-with a ``context`` object so that data fetchers can make business layer calls.  One of the key design decisions you have as a graphql
-system designer is how you will use context in your fetchers if at all.  Some people use a dependency framework that injects context into
-data fetchers automatically and hence don't need to use this.
-
+* ``<T> T getGraphQLContext()`` - the context object is set up when the query is first executed and stays the same over the lifetime
+  of the query.  The context can be any value and is typically used to give each data fetcher some calling context needed
+  when trying to get field data.  For example the current user credentials or the database connection parameters could be contained
+  with a context object so that data fetchers can make business layer calls.  One of the key design decisions you have as a graphql
+  system designer is how you will use context in your fetchers if at all.  Some people use a dependency framework that injects context into
+  data fetchers automatically and hence don't need to use this.
 
 * ``ExecutionStepInfo getExecutionStepInfo()`` - the field type information is a catch all bucket of field type information that is built up as
-the query is executed.  The following section explains more on this.
+  the query is executed.  The following section explains more on this.
 
 * ``DataFetchingFieldSelectionSet getSelectionSet()`` - the selection set represents the child fields that have been "selected" under neath the
-currently executing field. This can be useful to help look ahead to see what sub field information a client wants.  The following section explains more on this.
+  currently executing field. This can be useful to help look ahead to see what sub field information a client wants.  The following section explains more on this.
 
 * ``ExecutionId getExecutionId()`` - each query execution is given a unique id.  You can use this perhaps on logs to tag each individual
-query.
+  query.
 
 ## The interesting parts of ExecutionStepInfo
 

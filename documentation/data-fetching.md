@@ -44,7 +44,7 @@ It might look like the following :
 DataFetcher productsDataFetcher = new DataFetcher<List<ProductDTO>>() {
     @Override
     public List<ProductDTO> get(DataFetchingEnvironment environment) {
-        DatabaseSecurityCtx ctx = environment.getContext();
+        DatabaseSecurityCtx ctx = environment.getGraphQlContext().get("databaseSecurityCtx");
 
         List<ProductDTO> products;
         String match = environment.getArgument("match");
@@ -62,7 +62,7 @@ Each ``DataFetcher`` is passed a ``graphql.schema.DataFetchingEnvironment`` obje
 arguments have been supplied to the field and other information such as the field's type, its parent type, the query root object or the query
 context object.
 
-Note how the data fetcher code above uses the ``context`` object as an application specific security handle to get access
+Note how the data fetcher code above uses the context object as an application specific security handle to get access
 to the database.  This is a common technique to provide lower layer calling context.
 
 Once we have a list of ``ProductDTO`` objects we typically don't need specialised data fetchers on each field.  graphql-java
@@ -146,13 +146,12 @@ top level fields.  The root object never changes during the query and it may be 
 arguments that have been resolved from passed in variables, AST literals and default argument values.  You use the arguments
 of a field to control what values it returns.
 
-* ``<T> T getContext()`` - the context object is set up when the query is first executed and stays the same over the lifetime
+* ``<T> T getGraphQLContext()`` - the context object is set up when the query is first executed and stays the same over the lifetime
 of the query.  The context can be any value and is typically used to give each data fetcher some calling context needed
 when trying to get field data.  For example the current user credentials or the database connection parameters could be contained
-with a ``context`` object so that data fetchers can make business layer calls.  One of the key design decisions you have as a graphql
+with a context object so that data fetchers can make business layer calls.  One of the key design decisions you have as a graphql
 system designer is how you will use context in your fetchers if at all.  Some people use a dependency framework that injects context into
 data fetchers automatically and hence don't need to use this.
-
 
 * ``ExecutionStepInfo getExecutionStepInfo()`` - the field type information is a catch all bucket of field type information that is built up as
 the query is executed.  The following section explains more on this.
