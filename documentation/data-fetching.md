@@ -147,7 +147,7 @@ arguments that have been resolved from passed in variables, AST literals and def
 of a field to control what values it returns.
 
 * ``<T> T getGraphQLContext()`` - the context object is set up when the query is first executed and stays the same over the lifetime
-of the query.  The context can be any value and is typically used to give each data fetcher some calling context needed
+of the query.  The context is a map that can contain any value and is typically used to give each data fetcher some calling context needed
 when trying to get field data.  For example the current user credentials or the database connection parameters could be contained
 with a context object so that data fetchers can make business layer calls.  One of the key design decisions you have as a graphql
 system designer is how you will use context in your fetchers if at all.  Some people use a dependency framework that injects context into

@@ -42,19 +42,19 @@ It might look like the following :
 
 ```java
 DataFetcher productsDataFetcher = new DataFetcher<List<ProductDTO>>() {
-    @Override
-    public List<ProductDTO> get(DataFetchingEnvironment environment) {
-        DatabaseSecurityCtx ctx = environment.getGraphQlContext().get("databaseSecurityCtx");
+  @Override
+  public List<ProductDTO> get(DataFetchingEnvironment environment) {
+    DatabaseSecurityCtx ctx = environment.getGraphQlContext().get("databaseSecurityCtx");
 
-        List<ProductDTO> products;
-        String match = environment.getArgument("match");
-        if (match != null) {
-            products = fetchProductsFromDatabaseWithMatching(ctx, match);
-        } else {
-            products = fetchAllProductsFromDatabase(ctx);
-        }
-        return products;
+    List<ProductDTO> products;
+    String match = environment.getArgument("match");
+    if (match != null) {
+      products = fetchProductsFromDatabaseWithMatching(ctx, match);
+    } else {
+      products = fetchAllProductsFromDatabase(ctx);
     }
+    return products;
+  }
 };
 ```
 
@@ -80,25 +80,25 @@ argument.  We can have the ProductDTO have logic that applies this date formatti
 ```java
 class ProductDTO {
 
-    private ID id;
-    private String name;
-    private String description;
-    private Double cost;
-    private Double tax;
-    private LocalDateTime launchDate;
+  private ID id;
+  private String name;
+  private String description;
+  private Double cost;
+  private Double tax;
+  private LocalDateTime launchDate;
 
-    // ...
+  // ...
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    // ...
+  // ...
 
-    public String getLaunchDate(DataFetchingEnvironment environment) {
-        String dateFormat = environment.getArgument("dateFormat");
-        return yodaTimeFormatter(launchDate,dateFormat);
-    }
+  public String getLaunchDate(DataFetchingEnvironment environment) {
+    String dateFormat = environment.getArgument("dateFormat");
+    return yodaTimeFormatter(launchDate,dateFormat);
+  }
 }
 ```
 
@@ -147,7 +147,7 @@ and what arguments have been provided.  Here are some of the more interesting pa
   of a field to control what values it returns.
 
 * ``<T> T getGraphQLContext()`` - the context object is set up when the query is first executed and stays the same over the lifetime
-  of the query.  The context can be any value and is typically used to give each data fetcher some calling context needed
+  of the query.  The context is a map that can contain any value and is typically used to give each data fetcher some calling context needed
   when trying to get field data.  For example the current user credentials or the database connection parameters could be contained
   with a context object so that data fetchers can make business layer calls.  One of the key design decisions you have as a graphql
   system designer is how you will use context in your fetchers if at all.  Some people use a dependency framework that injects context into
@@ -182,7 +182,7 @@ query {
     name
     description
     sellingLocations {
-        state
+      state
     }
   }
 }
