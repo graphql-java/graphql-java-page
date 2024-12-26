@@ -415,7 +415,7 @@ We can access operation directives usage during execution via `getQueryDirective
 ```java
 DataFetcher<?> cacheDataFetcher = new DataFetcher<Object>() {
     @Override
-    public String get(DataFetchingEnvironment env) {
+    public Object get(DataFetchingEnvironment env) {
         QueryDirectives queryDirectives = env.getQueryDirectives();
         List<QueryAppliedDirective> cacheDirectives = queryDirectives
                 .getImmediateAppliedDirective("cache");
