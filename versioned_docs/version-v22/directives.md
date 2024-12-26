@@ -3,6 +3,14 @@ title: "SDL directives"
 date: 2018-09-09T12:52:46+10:00
 description: How SDL Directives can be used to adjust the behavior of your graphql API
 ---
+# Directives
+
+[Directives](https://spec.graphql.org/draft/#sec-Language.Directives) are a powerful feature of GraphQL, allowing you to declare additional data to a schema or document. This data can then be used to change runtime execution or type validation behavior.
+
+There are two broad categories of directives, schema and operation directives. Schema directives are used on schema elements, and operation directives are used in operations within a GraphQL document.
+
+Often, operation directives are also called "query directives", although they can be used in any GraphQL operation. Whilst both names can be used interchangeably, note that GraphQL Java class names use "query directives".
+
 # Schema Directives
 
 ## Adding Behaviour
@@ -298,3 +306,131 @@ type Query {
 
 When the above was executed each directive would be applied one on top of the other. Each directive implementation should be careful
 to preserve the previous data fetcher to retain behaviour (unless of course you mean to throw it away)
+
+# Operation Directives (also known as Query Directives)
+Let's define an operation directive `@cache`, which can be used on operation fields.
+
+```graphql
+# Can only be used on a field in a GraphQL document
+directive @cache on FIELD
+
+type Query {
+    pet: Pet
+}
+
+type Pet {
+    name: String
+    lastTimeOutside: String
+}
+```
+
+We can only use this `@cache` directive on fields in a GraphQL document, which contains operations.
+
+```graphql
+query myPet {
+    pet {
+        name
+        lastTimeOutside @cache
+    }
+}
+```
+
+Directives can also have arguments. Let's add a `maxAge` argument, with a default value of 1000.
+
+```graphql
+# Argument with a default value
+directive @cache(maxAge: Int = 1000) on FIELD
+```
+
+In a GraphQL document, we could use our updated `@cache` directive to specify a maxAge value:
+
+```graphql
+query myPet {
+    pet {
+        name
+        lastTimeOutside @cache(maxAge: 500)
+    }
+}
+```
+
+All custom schema and operation directives don't have any effect until we implement new custom behavior. For example, the operation above where `lastTimeOutside` has a `@cache` directive behaves exactly the same as without it, until we have implemented some new logic. We'll demonstrate implementation of behavior for directives in the next section of this page.
+
+Here is an operation directive with all possible eight locations in a GraphQL document, which contains operations.
+
+```graphql
+type @foo on QUERY | MUTATION | SUBSCRIPTION |
+  FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD |
+  INLINE_FRAGMENT | VARIABLE_DEFINITION
+
+query someQuery(
+    $var: String @foo # Variable definition
+    ) @foo # Query
+    {
+        field @foo  # Field
+        ... on Query @foo { # Inline fragment
+            field
+        }
+        ...someFragment @foo # Fragment spread
+}
+
+fragment someFragment @foo { # Fragment
+    field
+}
+
+mutation someMutation @foo { # Mutation
+    field
+}
+
+subscription someSubscription @foo { # Subscription
+    field
+}
+```
+
+Although it is technically possible to define a directive that includes locations associated with schema and operation directives, in practice this is not common.
+
+## Implementing logic for operation directives
+
+Let's implement the logic for a `@cache` operation directive:
+
+```graphql
+directive @cache(maxAge: Int) on FIELD
+```
+
+This is an operation directive that enables clients to specify how recent cache entries must be. This is an example of an operation directive that can change execution.
+
+For example, a client specifies that `hello` cache entries must not be older than 500 ms, otherwise we re-fetch these entries.
+
+```graphql
+query caching {
+    hello @cache(maxAge: 500)
+}
+```
+
+In GraphQL Java, operation directive definitions are represented as `GraphQLDirective`s. Operation directive usages are represented as `QueryAppliedDirective`s. Note that the word "query" here is misleading, as it actually refers to a directive that applies to any of the three GraphQL operations: queries, mutations, or subscriptions. Operation directives are still commonly referred to as "query" directives, hence the class name.
+
+Usages of operation directives are represented in GraphQL Java as instances of `QueryAppliedDirective`, and provided argument values are represented as `QueryAppliedDirectiveArgument`.
+
+We can access operation directives usage during execution via `getQueryDirectives()` in `DataFetchingEnvironment`. For example:
+
+```java
+DataFetcher<?> cacheDataFetcher = new DataFetcher<Object>() {
+    @Override
+    public String get(DataFetchingEnvironment env) {
+        QueryDirectives queryDirectives = env.getQueryDirectives();
+        List<QueryAppliedDirective> cacheDirectives = queryDirectives
+                .getImmediateAppliedDirective("cache");
+        // We get a List, because we could have
+        // repeatable directives
+        if (cacheDirectives.size() > 0) {
+            QueryAppliedDirective cache = cacheDirectives.get(0);
+            QueryAppliedDirectiveArgument maxAgeArgument
+                    = cache.getArgument("maxAge");
+            int maxAge = maxAgeArgument.getValue();
+
+            // Now we know the max allowed cache time and
+            // can make use of it
+            // Your logic goes here
+        }
+    }
+};
+```
