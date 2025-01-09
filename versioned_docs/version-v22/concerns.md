@@ -44,7 +44,7 @@ This made up example shows how you can pass yourself information to help execute
 UserContext contextForUser = YourGraphqlContextBuilder.getContextForUser(getCurrentUser());
 
 ExecutionInput executionInput = ExecutionInput.newExecutionInput()
-        .context(contextForUser)
+        .graphQLContext(context -> context.put("userContext", contextForUser))
         .build();
 
 ExecutionResult executionResult = graphQL.execute(executionInput);
@@ -57,7 +57,7 @@ ExecutionResult executionResult = graphQL.execute(executionInput);
 DataFetcher dataFetcher = new DataFetcher() {
     @Override
     public Object get(DataFetchingEnvironment environment) {
-        UserContext userCtx = environment.getContext();
+        UserContext userCtx = environment.getGraphQlContext().get("userContext");
         Long businessObjId = environment.getArgument("businessObjId");
 
         return invokeBusinessLayerMethod(userCtx, businessObjId);

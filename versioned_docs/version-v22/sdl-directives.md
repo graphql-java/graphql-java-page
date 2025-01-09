@@ -75,7 +75,7 @@ class AuthorisationDirective implements SchemaDirectiveWiring {
 
     @Override
     public GraphQLFieldDefinition onField(SchemaDirectiveWiringEnvironment<GraphQLFieldDefinition> environment) {
-        String targetAuthRole = (String) environment.getDirective().getArgument("role").getArgumentValue().getValue();
+        String targetAuthRole = (String) environment.getAppliedDirective().getArgument("role").getArgumentValue().getValue();
 
         //
         // build a data fetcher that first checks authorisation roles before then calling the original data fetcher
@@ -84,8 +84,7 @@ class AuthorisationDirective implements SchemaDirectiveWiring {
         DataFetcher authDataFetcher = new DataFetcher() {
             @Override
             public Object get(DataFetchingEnvironment dataFetchingEnvironment) throws Exception {
-                Map<String, Object> contextMap = dataFetchingEnvironment.getContext();
-                AuthorisationCtx authContext = (AuthorisationCtx) contextMap.get("authContext");
+                AuthorisationCtx authContext = dataFetchingEnvironment.getGraphQlContext().get("authContext");
 
                 if (authContext.hasRole(targetAuthRole)) {
                     return originalDataFetcher.get(dataFetchingEnvironment);
@@ -119,7 +118,7 @@ AuthorisationCtx authCtx = AuthorisationCtx.obtain();
 
 ExecutionInput executionInput = ExecutionInput.newExecutionInput()
         .query(query)
-        .context(authCtx)
+        .graphQLContext(builder -> builder.put("authContext", authCtx))
         .build();
 ```
 
