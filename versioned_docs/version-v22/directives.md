@@ -11,6 +11,8 @@ There are two broad categories of directives, schema and operation directives. S
 
 Often, operation directives are also called "query directives", although they can be used in any GraphQL operation. Whilst both names can be used interchangeably, note that GraphQL Java class names use "query directives".
 
+Note for those who love the details: the terminology of directives is a bit confusing. It is technically possible to define a directive that is both a schema and operation directive, in other words, defined for both schema and operation locations. However in practice, this is not common.
+
 # Schema Directives
 
 ## Adding Behaviour
