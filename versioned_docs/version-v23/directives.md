@@ -9,7 +9,7 @@ description: How SDL Directives can be used to adjust the behavior of your graph
 
 There are two broad categories of directives, schema and operation directives. Schema directives are used on schema elements, and operation directives are used in operations within a GraphQL document.
 
-Often, operation directives are also called "query directives", although they can be used in any GraphQL operation. Whilst both names can be used interchangeably, note that GraphQL Java class names use "query directives".
+Often, operation directives are also called "query directives", although they can be used in any GraphQL operation. Whilst both names can be used interchangeably, note that GraphQL Java class names use "query directives". 
 
 Note for those who love the details: the terminology of directives is a bit confusing. It is technically possible to define a directive that is both a schema and operation directive, in other words, defined for both schema and operation locations. However in practice, this is not common.
 
@@ -310,7 +310,7 @@ When the above was executed each directive would be applied one on top of the ot
 to preserve the previous data fetcher to retain behaviour (unless of course you mean to throw it away)
 
 # Operation Directives (also known as Query Directives)
-Let's define an operation directive `@cache`, which can be used on operation fields.
+Let's define an operation directive `@cache`, which can be used on operation fields. 
 
 ```graphql
 # Can only be used on a field in a GraphQL document

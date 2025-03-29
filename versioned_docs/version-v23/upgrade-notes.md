@@ -41,7 +41,7 @@ You can use the `LegacyCoercingInputInterceptor` implementation to monitor traff
 
 ```java
 InputInterceptor legacyInputInterceptor = LegacyCoercingInputInterceptor.observesValues((inputValue, graphQLInputType) -> {
-        emitAMetric(inputValue, graphQLInputType);
+    emitAMetric(inputValue, graphQLInputType);
 });
 
 ExecutionInput executionInput = ExecutionInput.newExecutionInput()
