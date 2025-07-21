@@ -392,7 +392,7 @@ You must opt-in to Chained DataLoaders via `GraphQLUnusualConfiguration.Dataload
 1. Set `enableDataLoaderChaining(true)` to enable Chained DataLoaders
 2. Provide a `ScheduledExecutorService` to GraphQL Java, with method `delayedDataLoaderExecutorFactory` and a parameter that implements `DelayedDataLoaderDispatcherExecutorFactory` 
 
-For example
+For example, to set `enableDataLoaderChaining`:
 ```java
 GraphQL graphQL = GraphQL.unusualConfiguration(graphqlContext)
     .dataloaderConfig()
