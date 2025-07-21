@@ -436,6 +436,6 @@ def barDF = { env ->
 
 By opting in to Chained DataLoaders, GraphQL Java will also calculate when to dispatch "delayed" DataLoaders.
 
-The default value for the time to wait for these "delayed" DataLoaders is 500,000ns (`DEFAULT_BATCH_WINDOW_NANO_SECONDS_DEFAULT`). If you like, you can configure your own batch window by setting a key-value pair in `GraphQLContext`. Set `DataLoaderDispatchingContextKeys.DELAYED_DATA_LOADER_BATCH_WINDOW_SIZE_NANO_SECONDS` to be your preferred batch window size in nanoseconds.
+The default value for the time to wait for these "delayed" DataLoaders is 500,000ns (`DEFAULT_BATCH_WINDOW_NANO_SECONDS_DEFAULT`). If you like, you can configure your own batch window via the method `delayedDataLoaderBatchWindowSize` in `GraphQLUnusualConfiguration.DataloaderConfig`.
 
 Note that the case, where one DataLoader depends on another DataLoader all within the same DataFetcher, is unaffected by this batch window configuration. This window configuration only changes how long to wait for the "delayed" DataLoader case, where a DataLoader depends on another async task.
