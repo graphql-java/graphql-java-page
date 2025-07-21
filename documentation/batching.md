@@ -387,13 +387,20 @@ DataFetcher<CompletableFuture<Object>> df1 = env -> {
 ```
 
 ### How do I enable Chained DataLoaders?
-As this changes execution order, you must opt-in to Chained DataLoaders by setting key-value pairs in `GraphQLContext`.
+You must opt-in to Chained DataLoaders via `GraphQLUnusualConfiguration.DataloaderConfig`, as this may change order of dispatching.
 
-1. Set `DataLoaderDispatchingContextKeys.ENABLE_DATA_LOADER_CHAINING` to `true` to enable Chained DataLoaders
-2. Provide a `ScheduledExecutorService` to GraphQL Java, with key `DataLoaderDispatchingContextKeys.DELAYED_DATA_LOADER_DISPATCHING_EXECUTOR_FACTORY` and value implementing `DelayedDataLoaderDispatcherExecutorFactory` 
+1. Set `enableDataLoaderChaining(true)` to enable Chained DataLoaders
+2. Provide a `ScheduledExecutorService` to GraphQL Java, with method `delayedDataLoaderExecutorFactory` and a parameter that implements `DelayedDataLoaderDispatcherExecutorFactory` 
+
+For example
+```java
+GraphQL graphQL = GraphQL.unusualConfiguration(graphqlContext)
+    .dataloaderConfig()
+    .enableDataLoaderChaining(true);
+```
 
 ### What changed in GraphQL Java 25.0?
-The DataFetcher in the example above, before version 25.0 would have caused execution to hang, because the first DataLoader ("name") was never dispatched.
+The DataFetcher in the example above, before version 25.0 would have caused execution to hang, because the second DataLoader ("email") was never dispatched.
 
 Prior to version 25.0, users of GraphQL Java needed to manually dispatch DataLoaders to ensure execution completed. From version 25.0, the GraphQL Java engine will automatically dispatch Chained DataLoaders.
 
