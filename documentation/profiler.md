@@ -1,7 +1,6 @@
 ---
 title: "Profiling requests"
 date: 2025-08-05T12:52:46+10:00
-description: How to avoid the dreaded N+1 calls for data and make your graphql system more efficient
 ---
 
 # Profiling GraphQL requests
