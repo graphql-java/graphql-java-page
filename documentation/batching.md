@@ -389,8 +389,7 @@ DataFetcher<CompletableFuture<Object>> df1 = env -> {
 ### How do I enable Chained DataLoaders?
 You must opt-in to Chained DataLoaders via `GraphQLUnusualConfiguration.DataloaderConfig`, as this may change order of dispatching.
 
-1. Set `enableDataLoaderChaining(true)` to enable Chained DataLoaders
-2. Provide a `ScheduledExecutorService` to GraphQL Java, with method `delayedDataLoaderExecutorFactory` and a parameter that implements `DelayedDataLoaderDispatcherExecutorFactory` 
+Set `enableDataLoaderChaining(true)` to enable Chained DataLoaders.
 
 For example, to set `enableDataLoaderChaining`:
 ```java
@@ -410,7 +409,7 @@ Note: The GraphQL Java engine can only optimally calculate DataLoader dispatches
 
 ### A special case: Delayed DataLoaders
 
-In a previous code snippet we demonstrated one DataLoader depending on another DataLoader.
+In a previous code snippet, we demonstrated one DataLoader depending on another DataLoader.
 
 Another special case is a "delayed" DataLoader, where a DataLoader depends on a slow async task instead. For example, here are two DataFetchers from [a test example](https://github.com/graphql-java/graphql-java/blob/master/src/test/groovy/graphql/ChainedDataLoaderTest.groovy):
 
@@ -434,8 +433,4 @@ def barDF = { env ->
 } as DataFetcher
 ```
 
-By opting in to Chained DataLoaders, GraphQL Java will also calculate when to dispatch "delayed" DataLoaders.
-
-The default value for the time to wait for these "delayed" DataLoaders is 500,000ns (`DEFAULT_BATCH_WINDOW_NANO_SECONDS_DEFAULT`). If you like, you can configure your own batch window via the method `delayedDataLoaderBatchWindowSize` in `GraphQLUnusualConfiguration.DataloaderConfig`.
-
-Note that the case, where one DataLoader depends on another DataLoader all within the same DataFetcher, is unaffected by this batch window configuration. This window configuration only changes how long to wait for the "delayed" DataLoader case, where a DataLoader depends on another async task.
+By opting in to Chained DataLoaders, GraphQL Java will also calculate when to dispatch "delayed" DataLoaders. These "delayed" DataLoaders will be enqueued for dispatch after the async task completes.
