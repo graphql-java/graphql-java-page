@@ -49,7 +49,7 @@ ProfilerResult profilerResult = executionInput.getGraphQLContext().get(ProfilerR
 
 if (profilerResult != null) {
     Map<String, Object> summary = profilerResult.shortSummaryMap();
-    System.out.println(summary); // or log
+    System.out.println(summary); // or log as you prefer
 }
 ```
 
