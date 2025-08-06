@@ -370,3 +370,67 @@ DataFetcher<?> dataFetcherThatCallsTheDataLoader = new DataFetcher<Object>() {
     }
 };
 ```
+
+## Chained DataLoaders
+
+The automatic dispatching of Chained DataLoaders is a new feature included in GraphQL Java 25.0 onwards. Before this version, DataLoaders in chains needed to be manually dispatched.
+
+A Chained DataLoader is where one DataLoader depends on another, within the same DataFetcher.
+
+For example in code:
+```java
+DataFetcher<CompletableFuture<Object>> df1 = env -> {
+    return env.getDataLoader("name").load("Key1").thenCompose(result -> {
+        return env.getDataLoader("email").load(result);
+    });
+};
+```
+
+### How do I enable Chained DataLoaders?
+You must opt-in to Chained DataLoaders via `GraphQLUnusualConfiguration.DataloaderConfig`, as this may change order of dispatching.
+
+Set `enableDataLoaderChaining(true)` to enable Chained DataLoaders.
+
+For example, to set `enableDataLoaderChaining`:
+```java
+GraphQL graphQL = GraphQL.unusualConfiguration(graphqlContext)
+    .dataloaderConfig()
+    .enableDataLoaderChaining(true);
+```
+
+### What changed in GraphQL Java 25.0?
+The DataFetcher in the example above, before version 25.0 would have caused execution to hang, because the second DataLoader ("email") was never dispatched.
+
+Prior to version 25.0, users of GraphQL Java needed to manually dispatch DataLoaders to ensure execution completed. From version 25.0, the GraphQL Java engine will automatically dispatch Chained DataLoaders.
+
+If you're looking for more examples, and the technical details, please see [our tests](https://github.com/graphql-java/graphql-java/blob/master/src/test/groovy/graphql/ChainedDataLoaderTest.groovy).
+
+Note: The GraphQL Java engine can only optimally calculate DataLoader dispatches on a per-level basis. It does not calculate optimal DataLoader dispatching across different levels of an operation's field tree.
+
+### A special case: Delayed DataLoaders
+
+In a previous code snippet, we demonstrated one DataLoader depending on another DataLoader.
+
+Another special case is a "delayed" DataLoader, where a DataLoader depends on a slow async task instead. For example, here are two DataFetchers from [a test example](https://github.com/graphql-java/graphql-java/blob/master/src/test/groovy/graphql/ChainedDataLoaderTest.groovy):
+
+```groovy
+def fooDF = { env ->
+    return supplyAsync {
+        Thread.sleep(1000)
+        return "fooFirstValue"
+    }.thenCompose {
+        return env.getDataLoader("dl").load(it)
+    }
+} as DataFetcher
+
+def barDF = { env ->
+    return supplyAsync {
+        Thread.sleep(1000)
+        return "barFirstValue"
+    }.thenCompose {
+        return env.getDataLoader("dl").load(it)
+    }
+} as DataFetcher
+```
+
+By opting in to Chained DataLoaders, GraphQL Java will also calculate when to dispatch "delayed" DataLoaders. These "delayed" DataLoaders will be enqueued for dispatch after the async task completes.
