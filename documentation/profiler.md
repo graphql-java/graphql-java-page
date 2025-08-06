@@ -52,8 +52,6 @@ if (profilerResult != null) {
 }
 ```
 
-You could alternatively access and log the request's `ProfilerResult` from an `Instrumentation`.
-
 ## Understanding the Profiler Results
 
 A great way to get a quick overview about `ProfilerResult` is by using the `shortSummaryMap()` method. It returns a map with key metrics about the execution, which you can use for logging. Let's break down what each key means.
@@ -110,3 +108,9 @@ Here's what the result types mean:
 | `COMPLETABLE_FUTURE_COMPLETED`     | The DataFetcher returned a `CompletableFuture` that was already completed when it was returned. |
 | `COMPLETABLE_FUTURE_NOT_COMPLETED` | The DataFetcher returned an incomplete `CompletableFuture`.    |
 | `MATERIALIZED`                     | The DataFetcher returned a simple value (i.e., not a `CompletableFuture`).                   |
+
+### A note on engine timing statistics logged from an `Instrumentation`
+
+If you're logging the `ProfilerResult` from an `Instrumentation`, note that engine timing statistics such as `startTimeNs`, `endTimeNs`, `totalRunTimeNs`, `engineTotalRunningTimeNs` will be set to `0`. This is because the timing is set after all `Instrumentation`s have run, so it is not available from within an `Instrumentation`.
+
+Apart from engine timing information, all other `ProfilerResult` information is still valid if accessed from within an `Instrumentation`.
