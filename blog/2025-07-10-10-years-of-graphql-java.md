@@ -20,13 +20,13 @@ I was working at a small company which used a REST(ish) API for their web app. T
 I sat down for a week or so and invested all my free time to come up with the first version of GraphQL Java as quick as possible. Very quickly after I released a version 0.1 I already got a first contributor and user. (The) REST is history 🙂 
 
 ### Brad's story
-I was an architect on the Jira Service Desk product (now JSM) and we were embracing dynamic UIs driven by having more data called via browser calls.  If you don't know what jQuery and AJAX is - just trust me, it was cool in its time.
+I was an architect at Atlassian on the Jira Service Desk product (now JSM) and we were embracing dynamic UIs driven by having more data called via browser calls.  If you don't know what jQuery and AJAX is - just trust me, it was cool in its time.
 
-We invented a REST endpoint nicked names The Smoosher - you made a call and we just smooshed all the data you need to paint the JSD portal screens.  It worked but it clearly broke all the RESTian orthodoxy around resources and state and other networking dogma.
+We invented a REST endpoint nicked named The Smoosher - you made a call and we just smooshed all the data you need to paint the JSD portal screens.  It worked but it clearly broke all the RESTian orthodoxy around resources and state and other networking dogma.
 
-I started looking into GraphQL as a more architectural technique of getting the data you need for a dynamic UI.  As a JVM back end, I started to look into graphql-java.
+I started looking into GraphQL as a more architectural technique for getting the data you need for a dynamic UI.  As we had a JVM back end, I started to look into graphql-java.
 
-My first PR was adding the Instrumentation classes that kinda still exist today (albeit in a more efficient form).  graphql-java became an after-work hobby to keep my hand in at coding (architects are always draw away from coding towards the dark side called a rich text editor and eventually Keynote / Powerpoint)
+My first PR was adding the Instrumentation classes that kinda still exist today (albeit in a more efficient form).  graphql-java became an after-work hobby to keep my hand in at coding (architects are always drawn away from coding towards the dark side called a rich text editor and eventually Keynote / Powerpoint)
 
 ### Donna's story
 I started a new job on the same team as Andi and Brad. At the time, GraphQL was completely new to me, yet I knew I had to learn pretty quickly for the job! I like to learn by coding, so I picked a few bug tickets to give me a goal to aim for. Andi and Brad patiently explained concepts and reviewed my PRs (and still do!), making the whole experience much less daunting.
