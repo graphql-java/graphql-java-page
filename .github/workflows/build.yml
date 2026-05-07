@@ -12,6 +12,9 @@ on:
 permissions:
   contents: read
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     name: Build and validate
@@ -26,19 +29,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: yarn
-
-      - name: Enable Yarn
-        run: |
-          corepack enable
-          corepack prepare yarn@1.22.22 --activate
-          yarn --version
+          cache: npm
 
       - name: Install dependencies
-        run: yarn install --ignore-scripts --non-interactive
+        run: npm ci --ignore-scripts
 
       - name: Build site
-        run: yarn build
+        run: npm run build
 
-      - name: Audit dependencies
-        run: yarn audit --groups dependencies --level high
+      - name: Audit high-risk dependencies
+        run: npm audit --omit=dev --audit-level=high
