@@ -37,5 +37,24 @@ jobs:
       - name: Build site
         run: npm run build
 
+      - name: Smoke test built site
+        run: |
+          npx --yes serve@14.2.4 build --listen 3000 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+
+          for attempt in {1..30}; do
+            if curl --fail --silent --show-error http://127.0.0.1:3000/ > /tmp/home.html; then
+              break
+            fi
+            sleep 1
+          done
+
+          test -s /tmp/home.html
+          grep -q "GraphQL Java" /tmp/home.html
+
+          curl --fail --silent --show-error http://127.0.0.1:3000/documentation/getting-started > /tmp/docs.html
+          grep -q "Getting started" /tmp/docs.html
+
       - name: Audit high-risk dependencies
         run: npm audit --omit=dev --audit-level=high
