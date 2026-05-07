@@ -27,12 +27,13 @@ const config = {
     {
       tagName: 'script',
       attributes: {
-        async: true,
+        async: 'true',
         src: 'https://plausible.io/js/pa-p0EwT1dUPS95Hq8MWvpRd.js',
       },
     },
     {
       tagName: 'script',
+      attributes: {},
       innerHTML: plausibleInitScript,
     },
   ],
