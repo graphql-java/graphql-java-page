@@ -52,6 +52,7 @@ jobs:
 
           test -s /tmp/home.html
           grep -q "GraphQL Java" /tmp/home.html
+          grep -q "https://plausible.io/js/pa-p0EwT1dUPS95Hq8MWvpRd.js" /tmp/home.html
 
           curl --fail --silent --show-error http://127.0.0.1:3000/documentation/getting-started > /tmp/docs.html
           grep -q "Getting started" /tmp/docs.html

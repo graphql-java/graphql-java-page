@@ -3,6 +3,11 @@
 
 const {themes} = require('prism-react-renderer');
 
+const plausibleInitScript = `
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+`;
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'GraphQL Java',
@@ -18,6 +23,19 @@ const config = {
   favicon: 'img/favicon.ico',
   organizationName: 'graphql-java', // Usually your GitHub org/user name.
   projectName: 'graphql-java-page', // Usually your repo name.
+  headTags: [
+    {
+      tagName: 'script',
+      attributes: {
+        async: true,
+        src: 'https://plausible.io/js/pa-p0EwT1dUPS95Hq8MWvpRd.js',
+      },
+    },
+    {
+      tagName: 'script',
+      innerHTML: plausibleInitScript,
+    },
+  ],
   presets: [
     [
       '@docusaurus/preset-classic',
@@ -43,9 +61,6 @@ const config = {
           blogSidebarTitle: 'All posts',
           blogSidebarCount: 'ALL',
           postsPerPage: 5,
-        },
-        googleAnalytics: {
-          trackingID: 'UA-126627606-1',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
