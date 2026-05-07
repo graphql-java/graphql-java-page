@@ -10,7 +10,11 @@ const config = {
   url: 'https://graphql-java.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
+  },
   favicon: 'img/favicon.ico',
   organizationName: 'graphql-java', // Usually your GitHub org/user name.
   projectName: 'graphql-java-page', // Usually your repo name.
