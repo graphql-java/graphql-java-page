@@ -5,5 +5,15 @@
   "assets": {
     "directory": "./build",
     "not_found_handling": "404-page"
-  }
+  },
+  "routes": [
+    {
+      "pattern": "graphql-java.com",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.graphql-java.com",
+      "custom_domain": true
+    }
+  ]
 }
