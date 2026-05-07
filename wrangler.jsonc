@@ -1,0 +1,9 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "graphql-java-page",
+  "compatibility_date": "2026-05-06",
+  "assets": {
+    "directory": "./build",
+    "not_found_handling": "404-page"
+  }
+}
