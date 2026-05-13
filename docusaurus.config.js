@@ -36,6 +36,29 @@ const config = {
       attributes: {},
       innerHTML: plausibleInitScript,
     },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'preconnect',
+        href: 'https://fonts.googleapis.com',
+        crossorigin: 'anonymous',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'preconnect',
+        href: 'https://fonts.gstatic.com',
+        crossorigin: 'anonymous',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600&display=swap',
+      },
+    },
   ],
   presets: [
     [
@@ -86,8 +109,9 @@ const config = {
             position: 'left',
             label: 'Documentation',
           },
-          {to: 'https://leanpub.com/graphql-java/', label: 'Book', position: 'left'},
+          {href: 'https://leanpub.com/graphql-java/', label: 'Book', position: 'left'},
           {to: '/tutorials/getting-started-with-spring-boot', label: 'Tutorial', position: 'left'},
+          {href: 'https://feddi.dev', label: 'Federation', position: 'left', className: 'navbar-federation-link'},
           {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/security', label: 'Security', position: 'left'},
           {to: '/about', label: 'About', position: 'left'},

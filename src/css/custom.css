@@ -26,3 +26,33 @@
 html[data-theme='dark'] .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.3);
 }
+
+.navbar-federation-link {
+  color: #E91E8C !important;
+  font-weight: 500 !important;
+  background: rgba(233, 30, 140, 0.07) !important;
+  border-radius: 6px;
+  padding: 4px 10px !important;
+}
+
+.navbar-federation-link:hover {
+  background: rgba(233, 30, 140, 0.13) !important;
+}
+
+.navbar__link svg {
+  position: relative;
+  top: 1px;
+}
+
+/* Version badge pill */
+.navbar__items--right .dropdown > .navbar__link {
+  font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  background: #f4f4f4;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 0.8rem;
+}
+
+html[data-theme='dark'] .navbar__items--right .dropdown > .navbar__link {
+  background: rgba(255, 255, 255, 0.08);
+}
