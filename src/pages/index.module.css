@@ -1,24 +1,228 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
-
-.heroBanner {
-  padding: 4rem 0;
+/* Hero */
+.hero {
+  background: #E91E8C;
+  color: white;
   text-align: center;
-  position: relative;
-  overflow: hidden;
-  height: 80vh; /*  TODO remove this line when landing page copy is added */
+  padding: 5rem 2rem;
 }
 
-@media screen and (max-width: 966px) {
-  .heroBanner {
-    padding: 2rem;
-  }
+.heroTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 54px;
+  letter-spacing: -1.5px;
+  color: white;
+  margin: 0 0 0.75rem;
+  line-height: 1.1;
 }
 
-.buttons {
+.heroSubtitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 1rem;
+}
+
+.trustBar {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.65);
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.dot {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.ctaRow {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.ctaPrimary {
+  composes: cta;
+  background: white;
+  color: #E91E8C;
+  font-weight: 600;
+}
+
+.ctaPrimary:hover {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.ctaSecondary {
+  composes: cta;
+  background: transparent;
+  color: white;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+}
+
+.ctaSecondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Content */
+.content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3.5rem 2rem;
+}
+
+.section {
+  margin-bottom: 3rem;
+}
+
+.sectionLabel {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #999;
+  margin-bottom: 1rem;
+}
+
+/* Cards */
+.cardGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.card {
+  border: 0.5px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 14px 16px;
+  text-decoration: none;
+  display: block;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.card:hover {
+  border-color: #ccc;
+  background: #fafafa;
+}
+
+.cardTitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--ifm-font-color-base);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.cardDesc {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  color: #888;
+}
+
+/* Federation card */
+.federationCard {
+  background: #fff5fa;
+  border: 0.5px solid #ffccdd;
+  border-radius: 8px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.federationText {
+  flex: 1;
+}
+
+.federationTitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--ifm-font-color-base);
+  margin-bottom: 6px;
+}
+
+.federationBody {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.federationBtn {
+  background: #E91E8C;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  border-radius: 6px;
+  padding: 8px 16px;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.federationBtn:hover {
+  background: #d01a7e;
+}
+
+/* Dark mode */
+:global([data-theme='dark']) .card {
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+:global([data-theme='dark']) .card:hover {
+  background: var(--ifm-color-emphasis-100);
+  border-color: var(--ifm-color-emphasis-400);
+}
+
+:global([data-theme='dark']) .cardDesc {
+  color: var(--ifm-color-emphasis-700);
+}
+
+:global([data-theme='dark']) .federationCard {
+  background: rgba(233, 30, 140, 0.08);
+  border-color: rgba(233, 30, 140, 0.25);
+}
+
+:global([data-theme='dark']) .federationBody {
+  color: var(--ifm-color-emphasis-700);
+}
+
+@media (max-width: 600px) {
+  .heroTitle {
+    font-size: 40px;
+  }
+
+  .cardGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .federationCard {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
