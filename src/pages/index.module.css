@@ -65,7 +65,9 @@
 }
 
 .ctaPrimary:hover {
+  color: #E91E8C;
   background: rgba(255, 255, 255, 0.92);
+  text-decoration: none;
 }
 
 .ctaSecondary {
@@ -76,7 +78,9 @@
 }
 
 .ctaSecondary:hover {
+  color: white;
   background: rgba(255, 255, 255, 0.08);
+  text-decoration: none;
 }
 
 /* Content */
@@ -119,6 +123,7 @@
 .card:hover {
   border-color: #ccc;
   background: #fafafa;
+  text-decoration: none;
 }
 
 .cardTitle {
@@ -186,7 +191,9 @@
 }
 
 .federationBtn:hover {
+  color: white;
   background: #d01a7e;
+  text-decoration: none;
 }
 
 /* Dark mode */
